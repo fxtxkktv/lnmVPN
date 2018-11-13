@@ -4,10 +4,6 @@ System.py
 *.swp
 *.sw
 *.log
+*.pid
+*.sock
 venv/*
-logs/*
-plugins/backupset/* 
-plugins/dnsmasq/*
-plugins/firewall/*  
-plugins/networks/*
-plugins/ocserv/*   
