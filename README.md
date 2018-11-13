@@ -25,16 +25,14 @@ yum install gcc mysql-server mysql-devel ocserv openconnect epel-release gnutls-
 
 ## 项目截图
 ### 系统管理
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/文件管理.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/systeminfo.jpg)
 ### 网络配置
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/进程监控-详细.png)
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/进程监控-总览.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/networks.jpg)
 ### UTM防护
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/计划任务.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/utm.jpg)
 ### VPN配置
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/SSH.png)
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/SSH链接.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/vpnserv.jpg)
 ### 日志审计
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/资源监控.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/logaudit.jpg)
 ### 帮助文档
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/资源监控.png)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/help.jpg)
