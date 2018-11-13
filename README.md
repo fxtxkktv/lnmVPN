@@ -1,4 +1,7 @@
-# 安装步骤(本文仅针对centos/redhat发行版，其他版本自行测试)
+# 该项目作用于企业远程维护、远程应用访问、安全连接
+客户端下载：https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ
+
+# 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
 
 1. 安装初始化环境 python >=2.7 ;推荐lnmos定制版本
 [关闭selinux] vim /etc/selinux/config
