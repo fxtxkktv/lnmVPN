@@ -1,0 +1,15 @@
+input[type=checkbox]{
+	opacity : 1;
+	position: static;
+}
+.page-content {
+	display: block;
+	margin-left: 0px;
+	margin-right: 0;
+	margin-top: 0;
+	min-height: 100%;
+	padding: 0;
+}
+.modal-backdrop{
+  	background-color : #0F0E0E;
+}

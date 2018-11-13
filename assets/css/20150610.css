@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+.widget-caption .widget-header>.widget-caption h3{
+	font-weight:600;
+}
+
+.widget-body .tickets-container .col-xs-1{
+	
+}
+.tickets-container .nav-0610{text-indent: 2em;margin-top:5px;}

@@ -1,0 +1,167 @@
+﻿/*#region Spinners*/
+.spinner {
+    position: relative;
+
+    input {
+        float: left;
+        padding-left: 35px;
+    }
+
+    .btn {
+        position: relative;
+        width: 20px;
+        padding-top: 0;
+        padding-right: 9px;
+        padding-left: 9px;
+        font-size: 14px;
+        font-weight: normal;
+        padding: 4px 0;
+        .box-shadow(none);
+        height: 17px;
+        .opacity(.7);
+
+        &:hover {
+            color: @whitesmoke;
+            .opacity(1);
+        }
+
+        &:focus, &:active {
+            color: @whitesmoke;
+            .opacity(1);
+        }
+
+        &.disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    .spinner-buttons {
+        position: absolute;
+        left: 0;
+        float: left;
+        width: 20px;
+        height: 34px;
+        border-left: 1px solid #d5d5d5;
+    }
+
+    .spinner-up {
+        .border-radius(0);
+        top: 0;
+        background-color: @snow;
+        border-left: 1px !important;
+
+        i {
+            position: relative;
+            top: -6px;
+            margin-right: 0;
+        }
+    }
+
+    .spinner-down {
+        .border-radius(0);
+        bottom: 0;
+        background-color: @snow;
+        border-bottom-left-radius: 0 !important;
+        border-left: 1px !important;
+        border-top: 1px solid #d5d5d5;
+
+        i {
+            position: relative;
+            top: -7px;
+            margin-right: 0;
+        }
+    }
+
+    &.spinner-right {
+
+        .spinner-buttons {
+            left: auto;
+            right: 0;
+            border-right: 0;
+        }
+
+        input {
+            padding-left: 10px;
+            padding-right: 35px;
+            margin-left: 0;
+        }
+    }
+
+    &.spinner-horizontal {
+        input {
+            padding-left: 60px;
+        }
+
+        .spinner-buttons {
+            margin: 0;
+            font-size: 0;
+            width: 50px;
+            left: 0;
+            top: 0;
+
+            > .btn {
+                height: 34px;
+                line-height: 32px;
+                font-size: 18px;
+                display: inline-block;
+                vertical-align: sub;
+                margin: 0;
+
+                > i {
+                    vertical-align: middle;
+                    display: inline-block;
+                }
+            }
+        }
+
+        .spinner-down {
+            width: 24px;
+            border-left: 0;
+
+            i {
+                top: -5px;
+            }
+        }
+
+        .spinner-up {
+            width: 24px;
+
+            i {
+                top: -5px;
+            }
+        }
+
+        &.spinner-right {
+            margin-left: 0;
+
+            .spinner-buttons {
+                right: -1px;
+                left: auto;
+            }
+
+            input {
+                padding-left: 10px;
+            }
+        }
+
+        &.spinner-two-sided {
+            .spinner-buttons {
+                width: 25px !important;
+
+                &.spinner-buttons-left {
+                    left: 0;
+                }
+
+                &.spinner-buttons-right {
+                    right: 0;
+                    left: auto;
+                }
+            }
+
+            input {
+                padding-left: 35px !important;
+            }
+        }
+    }
+}
+/*#endregion Spinners*/
