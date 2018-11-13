@@ -84,9 +84,9 @@ def testDB():
         #print e
         logging.debug('数据库连接失败:%s' % e)
         return False
-    finally:
-        cursor.close()
-        conn.close()
+    #finally:
+    #    cursor.close()
+    #    conn.close()
     return True
 
 if __name__ == '__main__':
