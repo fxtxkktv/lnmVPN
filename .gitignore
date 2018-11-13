@@ -1,8 +1,9 @@
 Functions.py
 Network.py
 System.py
-/venv
-/logs/*
+*.swp
+venv/*
+logs/*
 plugins/backupset/* 
 plugins/dnsmasq/*
 plugins/firewall/*  
