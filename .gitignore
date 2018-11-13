@@ -1,0 +1,13 @@
+Functions.py
+Network.py
+System.py
+*.swp
+*.sw
+*.log
+venv/*
+logs/*
+plugins/backupset/* 
+plugins/dnsmasq/*
+plugins/firewall/*  
+plugins/networks/*
+plugins/ocserv/*   
