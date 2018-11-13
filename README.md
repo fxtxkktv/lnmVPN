@@ -1,20 +1,27 @@
 # 该项目作用于企业远程维护、远程应用访问、安全连接
-### 客户端下载：https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ
+### 客户端下载：https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ 分享密码:vzfn
 
 ## 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
 
 1. 安装初始化环境 python >=2.7 (推荐lnmos定制版本) <br>
-rpm -i python27-2.7.15-lnmos.rpm <br>
+rpm -i python27-2.7.15-lnmos.rpm 【客户端下载中获取】<br>
 export PATH=$PATH:/usr/local/python27/bin
 安装pip工具: wget https://bootstrap.pypa.io/get-pip.py <br>
 python27 get-pip.py <br>
+安装virtualenv组件[使程序运行环境和系统环境分离] ：pip install virtualenv <br> 
+virtualenv -p /usr/local/python27/bin/python venv <br>
+进入virtualenv环境: source venv/bin/activate <br>
 
-2. 安装pip环境并安装相关python组件模块 <br>
-MySQL服务: mysql-server mysql-devel MySQL-Python <br>
-VPN服务: ocserv openconnect epel-release[yum第三方源] <br>
-证书组件: gnutls-utils <br>
-yum install gcc mysql-server mysql-devel ocserv openconnect epel-release gnutls-utils <br>
-程序扩展包: pip install -r requirements.txt <br>
+2. 安装程序运行模块 <br>
+MySQL服务: <br>
+yum install -y mysql-server mysql-devel MySQL-Python <br>
+证书组件: <br>
+yum install -y gnutls-utils <br>
+VPN服务: [yum需要调用第三方源]<br>
+yum install -y epel-release <br>
+yum install -y ocserv openconnect
+安装Python程序扩展包: <br>
+pip install -r readme/requirements.txt <br>
 
 3. 创建数据库并恢复数据模版 <br>
 [创建数据库] <br>
