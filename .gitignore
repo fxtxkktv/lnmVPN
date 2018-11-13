@@ -4,6 +4,7 @@ System.py
 *.swp
 venv/*
 logs/*
+chengwf/*
 plugins/backupset/* 
 plugins/dnsmasq/*
 plugins/firewall/*  
