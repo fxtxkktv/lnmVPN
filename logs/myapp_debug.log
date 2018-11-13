@@ -6195,3 +6195,5 @@ dhcp-host=00:50:56:B7:05:1D,192.168.1.3
 2018-11-13 14:26:55 Functions.py[line:1048] DEBUG System Boot Service : VPNConn 
 2018-11-13 14:26:56 Functions.py[line:1048] DEBUG System Boot Service : VPNConn 
 2018-11-13 14:27:03 Functions.py[line:1063] DEBUG found firewall rule is change, please wait on!
+2018-11-13 15:04:20 Functions.py[line:1063] DEBUG found firewall rule is change, please wait on!
+2018-11-13 15:17:12 Functions.py[line:1063] DEBUG found firewall rule is change, please wait on!
