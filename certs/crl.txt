@@ -1,2 +1,0 @@
-crl_next_update = 9999
-crl_number = 1
