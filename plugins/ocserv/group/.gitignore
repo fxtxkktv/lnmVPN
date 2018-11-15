@@ -2,5 +2,3 @@
 *
 # Except this file
 !.gitignore
-!ocserv/run/.gitignore
-!ocserv/group/.gitignore
