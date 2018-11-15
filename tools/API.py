@@ -5,6 +5,8 @@
 +-----------------------------------------------------------------------+
 '''
 import os,sys
+pro_path = os.path.split(os.path.realpath(__file__))[0]
+sys.path.append('%s/../libs' % pro_path)
 from Functions import getAPIData,netModule
 
 netmod=netModule()

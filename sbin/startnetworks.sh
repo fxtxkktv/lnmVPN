@@ -7,6 +7,9 @@ wkdir=$(cd $(dirname $0); pwd)
 if [ ! -f $wkdir/main.py ] ;then
    wkdir=$(cd $(dirname $0)/../; pwd)
 fi
+
+source $wkdir/venv/bin/activate
+
 PATH=$PATH:$wkdir/sbin
 iconf="$wkdir/plugins/networks"
 pytools=$(which python27)

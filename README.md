@@ -11,7 +11,7 @@ wget https://bootstrap.pypa.io/get-pip.py <br>
 python27 get-pip.py <br>
 安装virtualenv组件[使程序运行环境和系统环境分离] <br>
 pip install virtualenv <br> 
-virtualenv -p /usr/local/python27/bin/python venv <br>
+virtualenv -p /usr/local/python27/bin/python --no-site-packages venv <br>
 进入virtualenv环境 <br>
 source venv/bin/activate <br>
 
