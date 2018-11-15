@@ -32,7 +32,7 @@
                             <a id="delcert" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除&吊销证书
                             </a>
-			    %if msg.get('message'):
+                            %if msg.get('message'):
                                 <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                             %end
                         </div>
@@ -231,7 +231,8 @@ $(function(){
                   }else if(data==-1){
                     message.message_show(200,200,'失败','操作失败');
                   }else{
-                        console.log(data);return false;
+                        message.message_show(200,200,'失败','填写选项不符合要求');
+                        //console.log(data);return false;
                 }
             },'html');
     });

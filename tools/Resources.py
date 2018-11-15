@@ -4,18 +4,18 @@ import os,sys,json,re,logging
 from bottle import request,route,error,run,default_app
 from bottle import template,static_file,redirect,abort,TEMPLATE_PATH
 
-pro_path = os.path.split(os.path.realpath(__file__))[0]
+import Global as gl
 
 #定义assets路径，即静态资源路径，如css,js,及样式中用到的图片等
-assets_path = '/'.join((pro_path,'../assets'))
+assets_path = gl.get_value('assets')
 #定义模板路径
-TEMPLATE_PATH.append('/'.join((pro_path,'../views')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/base')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/networks')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/firewall')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/system')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/user')))
-TEMPLATE_PATH.append('/'.join((pro_path,'../views/vpnserv')))
+TEMPLATE_PATH.append(gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/base' % gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/networks' % gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/firewall' % gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/system' % gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/user' % gl.get_value('vwdir'))
+TEMPLATE_PATH.append('%s/vpnserv' % gl.get_value('vwdir'))
 
 @route('/assets/<filename:re:.*\.css|.*\.js|.*\.png|.*\.jpg|.*\.gif>')
 #@checkAccess

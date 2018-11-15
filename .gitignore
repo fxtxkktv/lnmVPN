@@ -6,4 +6,5 @@ System.py
 *.log
 *.pid
 *.sock
+srcpy/*
 venv/*

@@ -9,6 +9,7 @@ if [ ! -f $wkdir/main.py ] ;then
 fi
 PATH=$PATH:$wkdir/sbin
 iconf="$wkdir/plugins/networks"
+pytools=$(which python27)
 
 declare -A uDict
 declare -A nDict
@@ -67,6 +68,9 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
          fi
       fi
    done
+   #普通路由模式修改为高级路由模式
+   ip rule del prio 50 table main >/dev/null 2>&1
+   ip rule add prio 50 table main >/dev/null 2>&1
    # 增加接口路由
    if [ "${uDict["gateway"]}" != "" ];then
       ip rule del prio $inum
@@ -93,7 +97,7 @@ done
 
 #加载用户定义高级路由[配合IPTABLES+IPSET]
 #清理旧的
-for i in $(ip rule |awk -F: '$1<32766 && $1>95 {print $1}');do
+for i in $(ip rule |awk -F: '$1<32766 && $1>90 {print $1}');do
         ip rule del prio $i
 done
 
@@ -101,7 +105,7 @@ done
 advdesc=$(awk -F= '/^advroute_[0-9]/{print $1}' $iconf/route.conf)
 if [ "$advdesc" != "" ];then
    # 默认网关修改为高级路由模式
-   for gw in $(python $wkdir/tools/Functions.pyc API getgw defaultgw);do
+   for gw in $($pytools $wkdir/tools/API.py API getgw defaultgw);do
        gws+="nexthop via $gw weight 1 "
    done
    ip route replace default table default equalize $gws >/dev/null 2>&1  
@@ -113,24 +117,27 @@ if [ "$advdesc" != "" ];then
        break
      fi
    done
-   ip rule del prio 50 table main >/dev/null 2>&1
-   ip rule add prio 50 table main >/dev/null 2>&1
+
+   #ip rule del prio 50 table main >/dev/null 2>&1
+   #ip rule add prio 50 table main >/dev/null 2>&1
    for servID in $(awk -F= '/^advroute_[0-9]/{print $1}' $iconf/route.conf);do
       id=$(echo $servID|awk -F_ '{print $2}')
       toDict $iconf/route.conf $servID
       #判断下如果接口的IP地址无法获取，自动忽略该接口
-      ifaceaddr=$(python $wkdir/tools/Functions.pyc API getniaddr "${uDict["iface"]}")
+      ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iface"]}")
       if [ "$ifaceaddr" = "False" ];then
          continue
       fi
       if [ ${uDict["iface"]} = "tun1000" ];then
          if [ ${uDict["pronum"]} = "99" ];then
-	    for dnsserv in $(echo ${uDict["dnsserver"]}|sed 's/-/ /g');do
-	        ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
-	    done
+	        for dnsserv in $(echo ${uDict["dnsserver"]}|sed 's/-/ /g');do
+	            ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
+	        done
          else
             ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
          fi
+         ip rule del prio 91 >/dev/null 2>&1
+         ip rule add prio 91 from $ifaceaddr table 1000 >/dev/null 2>&1
       else
          getifaceID $iconf/netiface.conf "ifacename=${uDict["iface"]}"
          ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${nDict["id"]} >/dev/null 2>&1
@@ -143,7 +150,7 @@ fi
 case "$1" in
   start)
         echo -en "Starting NetworksServer:\t\t"
-	Networks
+        Networks
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then

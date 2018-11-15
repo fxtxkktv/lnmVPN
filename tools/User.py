@@ -6,11 +6,12 @@ from bottle import template,static_file,redirect,abort
 import bottle,hashlib
 
 from MySQL import writeDb,readDb
-from Functions import AppServer,writeVPNconf,wrtlog
+from Functions import AppServer,LoginCls,writeVPNconf,wrtlog
 from Login import checkLogin,checkAccess
 import Login
 
 keys = AppServer().getConfValue('keys','passkey')
+
 
 policylist_sql = " select id,name from vpnpolicy "
 plylist_result = readDb(policylist_sql,)
@@ -31,13 +32,13 @@ def user():
     newpwds = request.forms.get("newpwds")
     sql = " select passwd from user where username=%s "
     result = readDb(sql,(username,))
-    if result[0].get('passwd') != AppServer().encode(keys,oldpwd) :
+    if result[0].get('passwd') != LoginCls().encode(keys,oldpwd) :
        msg = {'color':'red','message':u'旧密码验证失败，请重新输入'}
        return template('changepasswd',session=s,msg=msg,info={})
     if newpwd != newpwds :
        msg = {'color':'red','message':u'密码两次输入不一致，请重新输入'}
        return template('changepasswd',session=s,msg=msg,info={})
-    m_encrypt = AppServer().encode(keys,newpwd)
+    m_encrypt = LoginCls().encode(keys,newpwd)
     sql2 = " update user set passwd=%s where username=%s "
     result = writeDb(sql2,(m_encrypt,username))
     if result == True :
@@ -71,7 +72,7 @@ def adduser():
     access = request.forms.get("access")
     comment = request.forms.get("comment")
     #把密码进行md5加密码处理后再保存到数据库中
-    m_encrypt = AppServer().encode(keys,passwd)
+    m_encrypt = LoginCls().encode(keys,passwd)
     #检查表单长度
     if len(username) < 4 or (len(passwd) > 0 and len(passwd) < 8) :
        message = "用户名或密码长度不符要求！"
@@ -116,7 +117,7 @@ def do_changeuser(id):
        sql = "select passwd from user where id = %s"
        m_encrypt = readDb(sql,(id,))[0].get('passwd')
     else:
-       m_encrypt = AppServer().encode(keys,passwd)
+       m_encrypt = LoginCls().encode(keys,passwd)
     # 判断用户表单跳转
     if int(access) == 0:
        formaddr='user'
@@ -128,7 +129,7 @@ def do_changeuser(id):
         return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
     if not (username and policy):
         msg = {'color':'red','message':'必填字段为空，提交失败!'}
-    return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
+        return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
     sql = """
             UPDATE user SET
             username=%s,passwd=%s,policy=%s,access=%s,comment=%s

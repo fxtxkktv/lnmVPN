@@ -16,6 +16,9 @@ iptablesconf="$wkdir/plugins/firewall/iptables.conf"
 
 # kernel
 sysctl -w "net.ipv4.ip_forward=1" >/dev/null 2>&1
+sysctl -w "net.ipv4.conf.default.rp_filter=0" >/dev/null 2>&1
+sysctl -w "net.ipv4.conf.default.accept_source_route=1" >/dev/null 2>&1
+sysctl -w "net.netfilter.nf_conntrack_acct=1" >/dev/null 2>&1
 sysctl -w "net.ipv4.tcp_syncookies=1" >/dev/null 2>&1
 sysctl -w "net.ipv4.tcp_tw_reuse=1" >/dev/null 2>&1
 sysctl -w "net.ipv4.tcp_tw_recycle=1" >/dev/null 2>&1
@@ -49,18 +52,18 @@ case "$1" in
         echo -en "Starting FireWallServer:\t\t"
         ipset_start
         $wkdir/sbin/start-stop-daemon --start --background -m -p $pidfile --exec iptables-restore -- $iptablesconf
-	#$wkdir/sbin/start-stop-daemon --start --background -m -p /tmp/firewall.pid --exec tcpsvd -- 127.0.0.1:50001 -l firewall
+        #$wkdir/sbin/start-stop-daemon --start --background -m -p /tmp/firewall.pid --exec tcpsvd -- 127.0.0.1:50001 -l firewall
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           echo "Done..."
+	    else
+           echo "Failed"
+	    fi
         ;;
   stop)
-	echo -en "Stoping FireWallServer:\t\t"
-	#$wkdir/sbin/start-stop-daemon --stop -p /tmp/firewall.pid >/dev/null 2>&1
+	    echo -en "Stoping FireWallServer:\t\t"
+        #$wkdir/sbin/start-stop-daemon --stop -p /tmp/firewall.pid >/dev/null 2>&1
         for tab in $(echo "mangle filter nat raw") ;do
 	    #echo $tab
 	    if [ "$tab"="filter" ];then
@@ -75,15 +78,15 @@ case "$1" in
 	RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           echo "Done..."
+	    else
+           echo "Failed"
+	    fi
         ;;
   status)
         for pid in  $( ps ax|grep iptables |grep -v 'grep'|awk '{print $1}');do
-	   echo $pid
-	done
+            echo $pid
+       done
         ;;
   restart)
         $0 stop
