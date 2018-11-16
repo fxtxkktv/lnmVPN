@@ -12,11 +12,12 @@ source $wkdir/venv/bin/activate
 
 pidfile="$wkdir/logs/myapp.pid"
 myapp="$wkdir/main.py"
+logfile="$wkdir/logs/myapp_run.log"
 
 case "$1" in
   start)
         echo -en "Starting WebServer:\t\t"
-        $wkdir/sbin/start-stop-daemon --start --background -m --pidfile $pidfile --exec $wkdir/venv/bin/python -- $myapp
+        $wkdir/sbin/start-stop-daemon --start --background --no-close -m --pidfile $pidfile --exec $wkdir/venv/bin/python -- $myapp 2>$logfile
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
