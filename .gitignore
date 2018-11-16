@@ -4,5 +4,8 @@
 *.pid
 *.sock
 *.pyc
+certs/*.crt
+certs/*.pem
+certs/*.txt
 DevelPython/*
 venv/*

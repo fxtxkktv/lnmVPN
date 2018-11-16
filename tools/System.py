@@ -276,7 +276,7 @@ def servtools():
     try:
         info = json.loads(result[0].get('value'))
     except:
-        return(template('resconfig',session=s,msg={}))
+        return(template('resconfig',session=s,msg={},info={}))
     return template('resconfig',session=s,msg={},info=info)
 
 @route('/resconfig',method="POST")
@@ -287,6 +287,13 @@ def do_servtools():
     ResSaveDay = request.forms.get("ResSaveDay")
     ResInv = request.forms.get("ResInv")
     visitDay = request.forms.get("visitDay")
+    try:
+       int(ResSaveDay)
+       int(visitDay)
+       int(ResInv)
+    except:
+       msg = {'color':'red','message':'配置保存失败,参数不符合要求'}
+       return redirect('/resconfig')
     if int(ResSaveDay) < 1 or int(visitDay) < 1 or int(ResInv) < 60 :
        msg = {'color':'red','message':'配置保存失败,参数不符合要求'}
        return redirect('/resconfig')
