@@ -28,7 +28,7 @@
             <div class="navbar-account">
 		 <ul class="account-area">
             <li>
-               <a class="login-area dropdown-toggle" title="Lnm工作室" href="https://github.com/fxtxkktv/lnmVPN" target="_bank">
+               <a class="login-area dropdown-toggle" title="Lnm工作室" href="https://github.com/fxtxkktv" target="_bank">
                  <i class='lnmosicon'></i>
                </a>
             </li>
