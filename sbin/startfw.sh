@@ -51,7 +51,7 @@ case "$1" in
   start)
         echo -en "Starting FireWallServer:\t\t"
         ipset_start
-        $wkdir/sbin/start-stop-daemon --start --background -m -p $pidfile --exec iptables-restore -- $iptablesconf
+        $wkdir/sbin/start-stop-daemon --start --background -m -p $pidfile --exec /sbin/iptables-restore -- $iptablesconf
         #$wkdir/sbin/start-stop-daemon --start --background -m -p /tmp/firewall.pid --exec tcpsvd -- 127.0.0.1:50001 -l firewall
         RETVAL=$?
         #echo

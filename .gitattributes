@@ -1,0 +1,3 @@
+*.css linguist-language=python
+*.js linguist-language=python
+*.tpl linguist-language=python
