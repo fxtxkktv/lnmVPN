@@ -27,14 +27,14 @@ yum install -y ocserv openconnect <br>
 pip install -r readme/requirements.txt <br>
 
 3. 创建数据库并恢复数据模版 <br>
-[创建数据库] <br>
-[恢复数据模版] <br>
-[配置数据库连接] vim config/config.ini <br>
+[创建数据库]: # mysql -u root -p -e "create database vpndb" <br>
+[恢复数据模版]: # mysql -u root -p vpndb < readme/xxxxxx_Init.sql <br>
+[配置数据库连接及其他]: # vim config/config.ini <br>
 
 4. 正式运行程序 <br>
 [程序调试]：python27 main.py <br>
 [后台运行]: startweb.sh restart <br>
-[前段访问]：https://IP地址:端口号 <br>
+[前段访问]：https://IP地址:端口号 认用户名：admin 密码: admin<br>
 
 备注：程序启动将自动接管网络接口配置、DNS服务、DHCP服务等相关，建议关闭系统中涉及到的相关程序，以免相互冲突。<br>
 
