@@ -17,36 +17,36 @@ logfile="$wkdir/logs/myapp_run.log"
 case "$1" in
   start)
         echo -en "Starting WebServer:\t\t"
-        $wkdir/sbin/start-stop-daemon --start --background --no-close -m --pidfile $pidfile --exec $wkdir/venv/bin/python -- $myapp 2>$logfile
+        $wkdir/sbin/start-stop-daemon --start --background --no-close -m --pidfile $pidfile --exec $wkdir/venv/bin/python -- $myapp 2>>$logfile
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           echo "Done..."
+        else
+           echo "Failed"
+        fi
         ;;
   stop)
-	echo -en "Stoping WebServer:\t\t"
-	$wkdir/sbin/start-stop-daemon --stop --name $myapp >/dev/null 2>&1
-	if [ -f $pidfile ];then
-	   kill -9 $(cat $pidfile) >/dev/null 2>&1
-	fi
+        echo -en "Stoping WebServer:\t\t"
+        $wkdir/sbin/start-stop-daemon --stop --exec $wkdir/venv/bin/python >/dev/null 2>&1
+        if [ -f $pidfile ];then
+           kill -9 $(cat $pidfile) >/dev/null 2>&1
+        fi
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   rm -f $pidfile
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           rm -f $pidfile
+           echo "Done..."
+        else
+           echo "Failed"
+        fi
         ;;
   status)
         if [ -f $pidfile ] && [ x"$(cat $pidfile)" != x"" ];then
-	   cat $pidfile
-	else
-	   echo "WebServer checking Failed..."
-	fi
+           cat $pidfile
+        else
+           echo "WebServer checking Failed..."
+        fi
         ;;
   restart)
         $0 stop
