@@ -604,7 +604,8 @@ def delvpnservconf(id):
 @route('/api/getutmruleinfo',method=['GET', 'POST'])
 @checkAccess
 def getifaceinfo():
-    sql = " SELECT id,rulename,actzone,left(srcaddr,100) as srcaddr,left(dstaddr,100) as dstaddr,concat(sproto,':',sport) as sport,concat(dproto,':',dport) as dport,runaction,pronum FROM ruleconfutm "
+    sql = """ SELECT id,rulename,actzone,left(srcaddr,100) as srcaddr,left(dstaddr,100) as dstaddr,concat(sproto,':',sport) as sport,concat(dproto,':',dport) as dport,runaction,pronum 
+              FROM ruleconfutm order by pronum """
     result = readDb(sql,)
     return json.dumps(result)
 
