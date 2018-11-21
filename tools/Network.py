@@ -17,6 +17,9 @@ netmod = netModule()
 @checkAccess
 def networkconf():
     s = request.environ.get('beaker.session')
+    #清理所有网卡信息，重新获取最新的系统网卡信息
+    sql = "delete from sysattr where servattr='netiface'"
+    writeDb(sql,)
     netmod.InitNIinfo()
     netmod.getifaceData('getni')
     return template('networkconf',session=s,msg={})
@@ -32,8 +35,22 @@ def getifaceinfo():
 @checkAccess
 def addinterface():
     s = request.environ.get('beaker.session')
-    sql = " SELECT attr as ifacename,concat(attr,'|',value) as value FROM sysattr where servattr='netiface' and status='1' order by attr desc"
-    ifacelist_result = readDb(sql,)
+    # 初始化网卡添加状态，已经被配置的网卡，无法再次配置
+    sqla = " select attr from sysattr where status='1' and servattr='netiface' and attr not in (select ifacename from netiface) "
+    erriface = readDb(sqla,)
+    if len(erriface) > 0 :
+       for x in erriface:
+           sqlb = "update sysattr set status='1' where attr=%s and servattr='netiface'"
+           writeDb(sqlb,(x.get('attr'),))
+    sqlc = " select attr from sysattr where status='1' and servattr='netiface' and attr in (select ifacename from netiface) "
+    erriface2 = readDb(sqlc,)
+    if len(erriface2) > 0 :
+       for y in erriface2:
+           sqld = "update sysattr set status='0' where attr=%s and servattr='netiface'"
+           writeDb(sqld,(y.get('attr'),))
+    # 判断接口是否被锁定或已配置
+    sqld = " SELECT attr as ifacename,concat(attr,'|',value) as value FROM sysattr where servattr='netiface' and status='1' order by attr desc"
+    ifacelist_result = readDb(sqld,)
     if len(ifacelist_result) == 0 :
        msg = {'color':'red','message':u'无可用物理接口,添加失败'}
        return(template('networkconf',session=s,msg=msg))

@@ -95,14 +95,6 @@ def adduser():
        wrtlog('User','新增用户失败:%s' % username,s['username'],s.get('clientip'))
        return '-1'
 
-@route('/changeuser/<id>')
-@checkAccess
-def changeuser(id):
-    s = request.environ.get('beaker.session')
-    sql = "select username,policy,access,status,comment from user where id = %s"
-    result = readDb(sql,(id,))
-    return template('changeuser',session=s,info=result[0],plylist_result=plylist_result)
-
 @route('/changeuser/<id>',method="POST")
 @checkAccess
 def do_changeuser(id):
@@ -118,18 +110,16 @@ def do_changeuser(id):
        m_encrypt = readDb(sql,(id,))[0].get('passwd')
     else:
        m_encrypt = LoginCls().encode(keys,passwd)
-    # 判断用户表单跳转
-    if int(access) == 0:
-       formaddr='user'
-    else :
-       formaddr='admin'
+    # 判断用户表单跳转[弃用]
+    #if int(access) == 0:
+    #   formaddr='user'
+    #else :
+    #   formaddr='admin'
     #检查表单长度
     if len(username) < 4 or (len(passwd) > 0 and len(passwd) < 8) :
-        msg = {'color':'red','message':'用户名或密码长度错误，提交失败!'}
-        return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
+        return -1
     if not (username and policy):
-        msg = {'color':'red','message':'必填字段为空，提交失败!'}
-        return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
+        return -2
     sql = """
             UPDATE user SET
             username=%s,passwd=%s,policy=%s,access=%s,comment=%s
@@ -139,13 +129,11 @@ def do_changeuser(id):
     result = writeDb(sql,data)
     if result == True:
        wrtlog('User','更新用户成功:%s' % username,s['username'],s.get('clientip'))
-       msg = {'color':'green','message':'更新成功!'}
        writeVPNconf(action='uptuser')
-       return template(formaddr,session=s,msg=msg,plylist_result=plylist_result)
+       return 0
     else:
        wrtlog('User','更新用户失败:%s' % username,s['username'],s.get('clientip'))
-       msg = {'color':'red','message':'更新失败!'}
-    return template(formaddr,session=s,msg=msg)
+       return -1
 
 @route('/deluser',method="POST")
 @checkAccess
@@ -158,7 +146,7 @@ def deluser():
     if id == '1':
        return '-1'
     for i in id.split(','):
-        if id == '1':
+        if i == '1':
            return '-1'
         sql = "delete from user where id in (%s) "
         result = writeDb(sql,(i,))
@@ -176,7 +164,8 @@ def getuser():
     SELECT
     U.id,
     U.username,
-    D.name as policy,
+    U.policy,
+    D.name as policyname,
     U.access,
     U.comment,
     date_format(U.adddate,'%%Y-%%m-%%d') as adddate
@@ -196,7 +185,8 @@ def getuser():
     SELECT
     U.id,
     U.username,
-    D.name as policy,
+    U.policy,
+    D.name as policyname,
     U.access,
     U.comment,
     date_format(U.adddate,'%%Y-%%m-%%d') as adddate

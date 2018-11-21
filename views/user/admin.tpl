@@ -26,14 +26,14 @@
                             <a id="adduser" href="javascript:void(0);" class="btn  btn-primary ">
                                 <i class="btn-label fa fa-plus"></i>添加用户
                             </a>
-                            <!--a id="changeuser" href="/changeuser" class="btn btn-warning shiny">
+                            <a id="changeuser" href="javascript:void(0);" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-cog"></i>修改用户
-                            </a-->
+                            </a>
                             <a id="deluser" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除用户
                             </a>
-			    %if msg.get('message'):
-                      		<span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
+                		    %if msg.get('message'):
+                              <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     	    %end
                         </div>
                        <table id="myLoadTable" class="table table-bordered table-hover"></table>
@@ -65,15 +65,15 @@
                 </div>
 		<div class="form-group">
                   <label class="control-label" for="inputSuccess1">关联策略：</label>
-		  <select id="policy" style="width:100%;" name="policy">
+		          <select id="policy" style="width:100%;" name="policy">
                     <option value=''>请选择策略</option>
                     %for name in plylist_result:
                         <option 
-				%if name.get('policy',''): 
-                                    selected 
-                                %end
-				value='{{name.get('id','')}}'>{{name.get('name','')}}
-			</option>
+				        %if name.get('policy',''): 
+                            selected 
+                        %end
+                        value='{{name.get('id','')}}'>{{name.get('name','')}}
+                    </option>
                     %end
                  </select>
                 </div>
@@ -87,12 +87,12 @@
 		<div class="form-group">
                   <label class="control-label" for="inputSuccess1">备注信息：</label>
                   <textarea id="comment" name="comment" style="height:70px;width:100%;" ></textarea>
-                </div>
+        </div>
 		<div class="form-group">
                   <input type="hidden" id="hidInput" value="">
                   <button type="button" id="subBtn" class="btn btn-primary  btn-sm">提交</button>
                   <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">关闭</button> 
-	        </div>
+	    </div>
              </form>
             </div>
          </div>
@@ -148,42 +148,42 @@ $(function(){
               valign: 'middle',
               sortable: false
           },{ 
-              field: 'policy',
+              field: 'policyname',
               title: '关联策略',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{ 
+          },{ 
               field: 'comment',
               title: '备注信息',
               align: 'center',
               valign: 'middle',
               sortable: false
           },{
-	      field: 'adddate',
+	          field: 'adddate',
               title: '创建日期',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{
+          },{
               field: 'access',
               title: '权限',
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
+              formatter: function(value,row,index){
                         if( value == '0' ){
                                 return '普通用户';
                         }else{  return '管理员';
                         }
             }
-	  },{
-	      field: '',
+          /*},{
+	          field: '',
               title: '操作',
               align: 'center',
               valign: 'middle',
               width:220,
-              formatter:getinfo
+              formatter:getinfo */
           }]
       });
 
@@ -252,7 +252,7 @@ $(function(){
                 $('#changeuser').popover('hide');
                 $('#username').val(result[0]['username']);
                 $('#passwd').val(result[0]['passwd']);
-		$('#policy').val(result[0]['policy']);
+		        $('#policy').val(result[0]['policy']);
                 $('#comment').val(result[0]['comment']);
                 $('#access').val(result[0]['access']);
                 $('#modalTitle').html('修改用户');     //头部修改

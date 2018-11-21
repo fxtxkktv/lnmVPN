@@ -26,9 +26,9 @@
                             <a id="adduser" href="javascript:void(0);" class="btn  btn-primary ">
                                 <i class="btn-label fa fa-plus"></i>添加用户
                             </a>
-                            <!--a id="changeuser" href="/changeuser" class="btn btn-warning shiny">
+                            <a id="changeuser" href="javascript:void(0);" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-cog"></i>修改用户
-                            </a-->
+                            </a>
                             <a id="deluser" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除用户
                             </a>
@@ -137,7 +137,7 @@ $(function(){
               valign: 'middle',
               width:25,
               //sortable: false,
-	      formatter:function(value,row,index){
+	          formatter:function(value,row,index){
                 return index+1;
               }
           },{
@@ -148,43 +148,44 @@ $(function(){
               valign: 'middle',
               sortable: false
           },{ 
-              field: 'policy',
+              field: 'policyname',
               title: '关联策略',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{ 
+	      },{ 
               field: 'comment',
               title: '备注信息',
               align: 'center',
               valign: 'middle',
               sortable: false
           },{
-	      field: 'adddate',
+	          field: 'adddate',
               title: '创建日期',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{
+	      },{
               field: 'access',
               title: '权限',
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
+	          formatter: function(value,row,index){
                         if( value == '0' ){
                                 return '普通用户';
                         }else{  return '管理员';
                         }
             }
-	  },{
-	      field: '',
+	      /*},{
+	          field: '',
               title: '操作',
               align: 'center',
               valign: 'middle',
               width:220,
               formatter:getinfo
-          }]
+          */
+        }]
       });
 
     function getinfo(value,row,index){
@@ -252,7 +253,7 @@ $(function(){
                 $('#changeuser').popover('hide');
                 $('#username').val(result[0]['username']);
                 $('#passwd').val(result[0]['passwd']);
-		$('#policy').val(result[0]['policy']);
+		        $('#policy').val(result[0]['policy']);
                 $('#comment').val(result[0]['comment']);
                 $('#access').val(result[0]['access']);
                 $('#modalTitle').html('修改用户');     //头部修改
