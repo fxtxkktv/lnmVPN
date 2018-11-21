@@ -76,7 +76,7 @@
                                         value="UDP">UDP
                                </option>
                             </select>
-                            <input type="text" style="width:270px" class="form-control" id="" name="sport" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 53 or 23,25,100:110" aria-describedby="inputGroupSuccess4Status" value="{{info.get('sport','')}}">
+                            <input type="text" style="width:270px" class="form-control" id="" name="sport" onkeyup="this.value=this.value.replace(/[^\d,:]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" placeholder="eg: 53 or 23,25,100:110" aria-describedby="inputGroupSuccess4Status" value="{{info.get('sport','')}}">
                         </div>
                     </div>
 		    <div class="modal-body">
@@ -96,7 +96,7 @@
                                         value="UDP">UDP
                               </option>
                             </select>
-                            <input type="text" style="width:270px" class="form-control" id="" name="dport" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.
+                            <input type="text" style="width:270px" class="form-control" id="" name="dport" onkeyup="this.value=this.value.replace(/[^\d,:]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.
 ]/g,'')" placeholder="eg: 53 or 23,25,100:110" aria-describedby="inputGroupSuccess4Status" value="{{info.get('dport','')}}">
                         </div>
                     </div>
