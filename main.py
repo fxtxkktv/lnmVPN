@@ -39,7 +39,7 @@ logging.basicConfig(level=logging.DEBUG,format = '%(asctime)s %(filename)s[line:
 session_opts = {
     'session.type':'file',
     'session.cookei_expires':3600,
-    'session.data_dir':'/tmp/sessions',
+    'session.data_dir':'/tmp/lnmVPNsessions',
     'session.auto':True
     }
 

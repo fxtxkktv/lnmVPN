@@ -65,19 +65,19 @@
                 </div>
 		<div class="form-group">
                   <label class="control-label" for="inputSuccess1">关联策略：</label>
-		  <select id="policy" style="width:100%;" name="policy">
+		          <select id="policy" style="width:100%;" name="policy">
                     <option value=''>请选择策略</option>
                     %for name in plylist_result:
                         <option 
-				%if name.get('policy',''): 
+				                %if name.get('policy',''): 
                                     selected 
                                 %end
-				value='{{name.get('id','')}}'>{{name.get('name','')}}
-			</option>
+				        value='{{name.get('id','')}}'>{{name.get('name','')}}
+			            </option>
                     %end
                  </select>
-                </div>
-                <div class="form-group">
+        </div>
+        <div class="form-group">
                   <label class="control-label" for="inputSuccess1">权限：</label>
                   <select id="access" style="width:100%;" name="access">
                     <option value='0'>普通</option>
