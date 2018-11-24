@@ -430,6 +430,19 @@ def do_addutmrule():
         if netmod.checkipmask(ipmask) == False and ipmask != '':
            msg = {'color':'red','message':u'源地址或目标地址格式错误，添加失败'}
            return(template('utmruleconf',msg=msg,session=s))
+    if len(sport.split(',')) > 10 or len(dport.split(',')) > 10 :
+       msg = {'color':'red','message':u'端口组总数量超过最大值10，添加失败'}
+       return(template('utmruleconf',msg=msg,session=s))
+    allport = sport.split(',')+dport.split(',')
+    for port in allport :
+        if ':' in port:
+           if len(port.split(':')) != 2 or port.split(':')[0] >= port.split(':')[1]:
+              msg = {'color':'red','message':u'连续端口格式错误，添加失败'}
+              return(template('utmruleconf',msg=msg,session=s))
+        else :
+           if netmod.is_port(port) == False and port != '' :
+              msg = {'color':'red','message':u'源端口或目标端口格式错误，添加失败'}
+              return(template('utmruleconf',msg=msg,session=s))
     result = writeDb(sql,data)
     if result == True:
        msg = {'color':'green','message':u'添加成功'}
