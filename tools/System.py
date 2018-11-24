@@ -479,10 +479,10 @@ def do_editutmrule(id):
            if len(port.split(':')) != 2 or port.split(':')[0] >= port.split(':')[1]:
               msg = {'color':'red','message':u'连续端口格式错误，添加失败'}
               return(template('utmruleconf',msg=msg,session=s))
-    else :
-       if netmod.is_port(port) == False and port != '' :
-          msg = {'color':'red','message':u'源端口或目标端口格式错误，添加失败'}
-          return(template('utmruleconf',msg=msg,session=s))
+        else :
+           if netmod.is_port(port) == False and port != '' :
+              msg = {'color':'red','message':u'源端口或目标端口格式错误，添加失败'}
+              return(template('utmruleconf',msg=msg,session=s))
     result = writeDb(sql,data)
     if result == True:
        msg = {'color':'green','message':u'更新成功'}

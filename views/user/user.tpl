@@ -69,9 +69,6 @@
                     <option value=''>请选择策略</option>
                     %for name in plylist_result:
                         <option 
-				                %if name.get('policy',''): 
-                                    selected 
-                                %end
 				        value='{{name.get('id','')}}'>{{name.get('name','')}}
 			            </option>
                     %end
