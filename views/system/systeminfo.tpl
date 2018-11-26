@@ -22,8 +22,8 @@
 		<!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
             </div>
 	
-            <div class="box-content">
-		<div style="display: block;">
+        <div class="box-content" style="height:300px;">
+		  <div style="display: block;">
                     <table class="table">
                         <tbody>
                         <tr>
@@ -46,17 +46,17 @@
                             <td>Python版本:</td>
                             <td class="center">{{info.get('pyversion','')}}</td>
                         </tr>
-			<tr>
+			            <tr>
                             <td>CPU型号:</td>
                             <td class="center">{{info.get('cpumode','')}}</td>
                         </tr>
-			<tr>
+			            <tr>
                             <td>MEM容量:</td>
                             <td class="center">{{info.get('memsize','')}}</td>
                         </tr>
-			<tr>
+			            <tr>
                             <td>APP版本:</td>
-			    <td class="center">{{info.get('appversion','')}}</td>
+			                <td class="center">{{info.get('appversion','')}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -72,26 +72,26 @@
                 <span class="widget-caption themesecondary">管理日志</span>
 		<a href="/applog" style="float:right;" ><i class="fa fa-sliders"></i></a>
             </div>
-            <div class="box-content">
-		<div style="display: block;">
-                    <table class="table">
+        <div class="box-content" style="height:300px;">
+		  <div style="display: block;">
+                  <table class="table">
                         <tbody>
-			<tr>
+			        <tr>
                         <td>用户</td>
                         <td class="center">操作信息</td>
                         <td class="center">远程主机</td>
                         <td class="center">操作时间</td>
-			</tr>
-			%for log in logdict:
-			<tr>
-			<td>{{log.get('objtext','')}}</td>
-			<td class="center">{{log.get('objact','')}}</td>
-			<td class="center">{{log.get('objhost','')}}</td>
-			<td class="center">{{log.get('objtime','')}}</td>		
-			</tr>
-                        %end
-                        </tbody>
-                    </table>
+			        </tr>
+			        %for log in logdict:
+			        <tr>
+			        <td>{{log.get('objtext','')}}</td>
+			        <td class="center">{{log.get('objact','')}}</td>
+			        <td class="center">{{log.get('objhost','')}}</td>
+			        <td class="center">{{log.get('objtime','')}}</td>		
+			        </tr>
+                    %end
+                    </tbody>
+                  </table>
                 </div>
             </div>
         </div>
