@@ -12,7 +12,7 @@ source $wkdir/venv/bin/activate
 
 PATH=$PATH:$wkdir/sbin
 iconf="$wkdir/plugins/networks"
-pytools=$(which python27)
+pytools="$wkdir/venv/bin/python"
 
 declare -A uDict
 declare -A nDict
