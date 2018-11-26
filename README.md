@@ -18,7 +18,7 @@ source venv/bin/activate <br>
 
 2. 安装程序运行模块 <br>
 MySQL服务 <br>
-yum install -y mysql-server mysql-devel MySQL-python <br>
+yum install -y gcc mysql-server mysql-devel MySQL-python <br>
 证书组件 <br>
 yum install -y gnutls-utils <br>
 VPN服务: [yum需要调用第三方源] <br>
