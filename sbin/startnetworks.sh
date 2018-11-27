@@ -143,7 +143,12 @@ if [ "$advdesc" != "" ];then
          ip rule add prio 91 from $ifaceaddr table 1000 >/dev/null 2>&1
       else
          getifaceID $iconf/netiface.conf "ifacename=${uDict["iface"]}"
-         ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${nDict["id"]} >/dev/null 2>&1
+         #判断高级路由是不是包含本机网络的默认路由 rtattr=sys
+         if [ ${uDict["rtattr"]} = "sys" ];then
+            ip rule add prio ${uDict["pronum"]} table ${nDict["id"]} >/dev/null 2>&1
+         else
+            ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${nDict["id"]} >/dev/null 2>&1
+         fi
       fi
       ip route flush cache >/dev/null 2>&1
    done
