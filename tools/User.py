@@ -39,6 +39,7 @@ def user():
     result = writeDb(sql2,(m_encrypt,username))
     if result == True :
        wrtlog('User','更改密码成功',username,s.get('clientip'))
+       writeVPNconf(action='uptuser')
        msg = {'color':'green','message':u'密码更新成功,后续请以新密码登录系统'}
        return template('changepasswd',session=s,msg=msg,info={})
     else:
@@ -90,6 +91,7 @@ def adduser():
     result = writeDb(sql,data)
     if result:
        wrtlog('User','新增用户成功:%s' % username,s['username'],s.get('clientip'))
+       writeVPNconf(action='uptuser')
        return '0'
     else:
        wrtlog('User','新增用户失败:%s' % username,s['username'],s.get('clientip'))
@@ -152,6 +154,7 @@ def deluser():
         result = writeDb(sql,(i,))
     if result:
        wrtlog('User','删除用户成功',s['username'],s.get('clientip'))
+       writeVPNconf(action='uptuser')
        return '0'
     else:
        wrtlog('User','删除用户失败',s['username'],s.get('clientip'))
