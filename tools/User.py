@@ -12,10 +12,6 @@ import Login
 
 keys = AppServer().getConfValue('keys','passkey')
 
-
-policylist_sql = " select id,name from vpnpolicy "
-plylist_result = readDb(policylist_sql,)
-
 @route('/changepasswd')
 @checkLogin
 def user():
@@ -54,12 +50,16 @@ def user():
 @checkAccess
 def user():
     s = request.environ.get('beaker.session')
+    policylist_sql = " select id,name from vpnpolicy "
+    plylist_result = readDb(policylist_sql,)
     return template('admin',session=s,msg={},plylist_result=plylist_result)
 
 @route('/user')
 @checkAccess
 def user():
     s = request.environ.get('beaker.session')
+    policylist_sql = " select id,name from vpnpolicy "
+    plylist_result = readDb(policylist_sql,)
     return template('user',session=s,msg={},plylist_result=plylist_result)
 
 @route('/adduser',method="POST")

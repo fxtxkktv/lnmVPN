@@ -32,8 +32,8 @@
                             <a id="deluser" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除用户
                             </a>
-			    %if msg.get('message'):
-                      		<span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
+                            %if msg.get('message'):
+                      		    <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     	    %end
                         </div>
                        <table id="myLoadTable" class="table table-bordered table-hover"></table>
