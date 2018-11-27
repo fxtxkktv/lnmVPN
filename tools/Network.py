@@ -407,15 +407,20 @@ def do_editdhcpserv():
     if netmod.checkip(startip) == False or netmod.checkip(stopip) == False or netmod.checkip(getgw) == False or netmod.checkip(getdns1) == False:
        msg = {'color':'red','message':'参数配置异常，保存失败'}
        return(template('editdhcpserv',session=s,msg=msg,info=idata))
-    for i in dhcplist.split('\n'):
-        xmac = i.split(',')[0]
-        xip = i.split(',')[1]
-        if (netmod.is_ValidMac(xmac) == False or netmod.checkip(xip) == False) and xmac != "":
-           msg = {'color':'red','message':'配置保存失败,固定分配记录异常'}
-           return(template('editdhcpserv',session=s,msg=msg,info=idata))
-        else:
-           idata['dhcplist']=dhcplist
-           #idata['dhcpstatus']=dhcpstatus
+    #判断dhcp固定分配是否为空
+    if dhcplist != "":
+       for i in dhcplist.split('\n'):
+           try:
+              xmac = i.split(',')[0]
+              xip = i.split(',')[1]
+              if (netmod.is_ValidMac(xmac) == False or netmod.checkip(xip) == False) and xmac != "":
+                 msg = {'color':'red','message':'配置保存失败,固定分配记录异常'}
+                 return(template('editdhcpserv',session=s,msg=msg,info=idata))
+              else:
+                 idata['dhcplist']=dhcplist
+           except:
+              msg = {'color':'red','message':'配置保存失败,固定分配记录异常'}
+              return(template('editdhcpserv',session=s,msg=msg,info=idata))
     sql = " update sysattr set value=%s where attr='dhcpconf' "
     iidata=json.dumps(idata)
     result = writeDb(sql,(iidata,))

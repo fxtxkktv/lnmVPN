@@ -73,10 +73,10 @@
 			<select style="width:270px" class="form-control" id="runobject2" name="runobject2">
                         %for infos in ifacelist_result:
                             <option
-			    %if info.get('runobject2','')== infos.get('ifacename','') : 
+			                %if info.get('runobject2','')==infos.get('ifacename','') : 
                                 selected 
                             %end 
-                            value='{{infos.get('ifacename','')}}'> {{infos.get('ifacename','')}}
+                            value='{{infos.get('ifacename','')}}'>{{infos.get('ifacename','')}}
                             </option>
                         %end
                         </select>

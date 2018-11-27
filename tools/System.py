@@ -106,7 +106,7 @@ def do_addroute():
 def addroute():
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select attr as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     return template('addadvroute',session=s,info={},ifacelist_result=ifacelist_result)
 
@@ -131,8 +131,6 @@ def do_addroute():
         if netmod.checkipmask(ipmask) == False and ipmask != '':
            msg = {'color':'red','message':u'地址格式错误，添加失败'}
            return(template('advroute',msg=msg,session=s))
-    if outdev == "vpnrelay":
-       outdev = 'tun1000'
     cmdDict=cmds.getdictrst('ip rule add prio %s fwmark 1000 dev %s' % (pronum,outdev))
     if cmdDict.get('status') == 0:
        sql = """ insert into sysrouteadv(rulename,srcaddr,destaddr,pronum,iface) VALUES(%s,%s,%s,%s,%s) """
@@ -152,12 +150,10 @@ def do_addroute():
 @checkAccess
 def editadvroute(id):
     s = request.environ.get('beaker.session')
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select attr as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     sql2 = """ SELECT rulename,srcaddr,destaddr,pronum,iface FROM sysrouteadv WHERE id=%s """
     result = readDb(sql2,(id,))
-    if result[0].get('iface') == "tun1000":
-       result[0].update(iface="vpnrelay")
     return template('addadvroute',session=s,info=result[0],ifacelist_result=ifacelist_result)
 
 @route('/editadvroute/<id>',method="POST")
@@ -181,8 +177,6 @@ def do_editadvroute(id):
         if netmod.checkipmask(ipmask) == False and ipmask != '':
            msg = {'color':'red','message':u'地址格式错误(%s)，添加失败' % ipmask}
            return(template('advroute',msg=msg,session=s))
-    if outdev == "vpnrelay":
-       outdev = 'tun1000'
     cmdDict=cmds.getdictrst('ip rule add prio %s fwmark 1000%s dev %s' % (pronum,id,outdev))
     if cmdDict.get('status') == 0:
        sql = """ UPDATE sysrouteadv SET rulename=%s,srcaddr=%s,destaddr=%s,pronum=%s,iface=%s WHERE id=%s """
@@ -508,7 +502,7 @@ def addutmrule():
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select attr as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     return template('addnatrule',session=s,msg={},info={},ifacelist_result=ifacelist_result)
 
@@ -549,9 +543,9 @@ def editutmrule(id):
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select attr as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
-    sql2 = " SELECT rulename,srcaddr,dstmatch,dstaddr,runaction,runobject from ruleconfnat where status='1' and id=%s"
+    sql2 = " SELECT rulename,srcaddr,dstmatch,dstaddr,runaction,runobject,runobject as runobject2 from ruleconfnat where status='1' and id=%s"
     result = readDb(sql2,(id,))
     return template('addnatrule',session=s,msg={},info=result[0],ifacelist_result=ifacelist_result)
 
@@ -859,6 +853,7 @@ def addclientconf():
     idata['authtype'] = request.forms.get("authtype")
     idata['ipaddr'] = request.forms.get("ipaddr")
     idata['servport'] = request.forms.get("servport")
+    idata['tunid'] = 'tun1000'
     idata['chkconn'] = request.forms.get("chkconn")
     sql = " update sysattr set value=%s where attr='vpnclient' "
     iidata=json.dumps(idata)

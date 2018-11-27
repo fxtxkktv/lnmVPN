@@ -109,7 +109,7 @@
                         <textarea id="certinfo" name="certinfo" style="width:520px;height:100px;">{{info.get('certinfo','')}}</textarea>
              </div>
 		     <div class="modal-body" id="signd">
-                        <span style="color:#666666;">备注:&emsp;当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.</span>
+                        <span style="color:#666666;">备注:<br/>1.当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.<br/>2.VPN网络接口ID默认为1000,即tun1000表示</span>
              </div>
              <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
