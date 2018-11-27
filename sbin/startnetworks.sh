@@ -137,7 +137,11 @@ if [ "$advdesc" != "" ];then
 	            ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
 	        done
          else
-            ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
+            if [ ${uDict["rtattr"]} = "sys" ];then
+               ip rule add prio ${uDict["pronum"]} table 1000 >/dev/null 2>&1
+            else
+               ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
+            fi
          fi
          ip rule del prio 91 >/dev/null 2>&1
          ip rule add prio 91 from $ifaceaddr table 1000 >/dev/null 2>&1
