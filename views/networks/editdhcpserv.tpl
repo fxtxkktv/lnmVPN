@@ -27,7 +27,7 @@
 		    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon" style="width:100px">DHCP服务开关</span>
-                                <select style="width:380px" class="form-control" id="sel" name="dhcpenable">
+                                <select style="width:420px" class="form-control" id="sel" name="dhcpenable">
                                 <option 
                                 %if info.get('dhcpenable','') == '1':
                                     selected
