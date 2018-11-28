@@ -28,7 +28,7 @@ case "$1" in
         ;;
   stop)
         echo -en "Stoping WebServer:\t\t"
-        $wkdir/sbin/start-stop-daemon --stop --exec $wkdir/venv/bin/python >/dev/null 2>&1
+        $wkdir/sbin/start-stop-daemon --stop --exec $myapp >/dev/null 2>&1
         if [ -f $pidfile ];then
            kill -9 $(cat $pidfile) >/dev/null 2>&1
         fi
