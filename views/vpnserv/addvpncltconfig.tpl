@@ -66,6 +66,21 @@
 			          >
                  </div>
             </div>
+             <div class="modal-body" id="servopts">
+                 <div class="input-group">
+                      <span class="input-group-addon">连接参数&emsp;</span>
+                      <input type="text" style="width:210px" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="tunid" name="tunid" placeholder="虚拟接口ID" aria-describedby="inputGroupSuccess4Status"
+                            %if info.get('tunid',''): 
+                                value="{{info.get('tunid','')}}"
+                            %end 
+                      readonly>
+                      <input type="text" style="width:210px" class="form-control" id="vmtu" name="vmtu" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" placeholder="MTU值" aria-describedby="inputGroupSuccess4Status" 
+                             %if info.get('vmtu',''): 
+                                 value="{{info.get('vmtu','')}}"
+                             %end 
+                      >
+                 </div>
+            </div>
 		    <div class="modal-body" id="chkconn">
                  <div class="input-group">
                       <span class="input-group-addon" hidden>连接检测&emsp;</span>
@@ -109,7 +124,7 @@
                         <textarea id="certinfo" name="certinfo" style="width:520px;height:100px;">{{info.get('certinfo','')}}</textarea>
              </div>
 		     <div class="modal-body" id="signd">
-                        <span style="color:#666666;">备注:<br/>1.当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.<br/>2.VPN网络接口ID默认为1000,即tun1000表示</span>
+                        <span style="color:#666666;">备注:<br/>1.当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.<br/>2.VPN网络接口ID默认为1000,即tun1000表示<br/>3.MTU值1000~1500(须整除4) </span>
              </div>
              <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>

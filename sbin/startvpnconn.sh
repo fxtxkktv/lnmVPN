@@ -12,8 +12,6 @@ myapp=$(which openconnect)
 confdir="$wkdir/plugins/ocserv"
 pidfile="$wkdir/plugins/ocserv/run/openconn.pid"
 
-devname="tun1000"
-
 declare -A uDict
 function toDict() {
    uDict=()
@@ -31,6 +29,8 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
     if [ ${uDict["authtype"]} = "1" ];then
        server=${uDict["ipaddr"]}
        servport=${uDict["servport"]}
+       tunid=${uDict["tunid"]}
+       vmtu=${uDict["vmtu"]} 
        vpnuser=${uDict["vpnuser"]}
        vpnpass=${uDict["vpnpass"]}
    fi
@@ -40,7 +40,7 @@ if [ -x $wkdir/sbin/vpnc-script ];then
    script="-s $wkdir/sbin/vpnc-script"
 fi
 
-OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=$devname $script --reconnect-timeout 10 --no-cert-check --syslog"
+OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
 
 case "$1" in
   start)

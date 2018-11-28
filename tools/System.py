@@ -853,8 +853,18 @@ def addclientconf():
     idata['authtype'] = request.forms.get("authtype")
     idata['ipaddr'] = request.forms.get("ipaddr")
     idata['servport'] = request.forms.get("servport")
-    idata['tunid'] = 'tun1000'
+    idata['tunid'] = request.forms.get("tunid")
+    idata['vmtu'] = request.forms.get("vmtu")
     idata['chkconn'] = request.forms.get("chkconn")
+    if not (idata['ipaddr'] and idata['servport'] and idata['tunid'] and idata['vmtu']):
+       msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
+       sql = " select value from sysattr where attr='vpnclient' "
+       idata = readDb(sql,)
+       try:
+          info = json.loads(idata[0].get('value'))
+       except:
+          return template('addvpncltconfig',session=s,msg=msg,info={})
+       return template('addvpncltconfig',session=s,msg=msg,info=info)
     sql = " update sysattr set value=%s where attr='vpnclient' "
     iidata=json.dumps(idata)
     result = writeDb(sql,(iidata,))
