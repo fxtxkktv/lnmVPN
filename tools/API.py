@@ -7,7 +7,19 @@
 import os,sys
 pro_path = os.path.split(os.path.realpath(__file__))[0]
 sys.path.append('%s/../libs' % pro_path)
-from Functions import getAPIData,netModule
+
+import Global as gl
+#定义初始目录
+gl._init()
+gl.set_value('wkdir',pro_path)
+gl.set_value('confdir','%s/../config' % pro_path)
+gl.set_value('certdir','%s/../certs' % pro_path)
+gl.set_value('plgdir','%s/../plugins' % pro_path)
+gl.set_value('tempdir','%s/../template' % pro_path)
+gl.set_value('assets','%s/../assets' % pro_path)
+gl.set_value('vwdir','%s/../views' % pro_path)
+
+from Functions import getAPIData,netModule,wrtlog
 
 netmod=netModule()
 API=getAPIData()
