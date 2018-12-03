@@ -23,7 +23,7 @@
                   <!--form action="" method="post"-->
                     <div class="modal-body">
                         <div class="">
-                          <textarea id="result" name="result" style="width:100%;height:600px;" readonly>{{info.get('result','')}}</textarea>
+                          <textarea id="result" name="result" style="width:100%;height:600px;resize:vertical;" readonly>{{info.get('result','')}}</textarea>
                         </div>
                     </div>
                 </div>

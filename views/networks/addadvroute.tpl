@@ -29,11 +29,11 @@
                     </div>
 		    <div class="modal-body">
                         <span class="input-group-addon" style="width:500px">源地址</span>
-                        <textarea id="srcaddr" name="srcaddr" placeholder="eg: 192.168.5.0/255.255.255.0 一行一个" style="width:500px;height:100px;">{{info.get('srcaddr','')}}</textarea>
+                        <textarea id="srcaddr" name="srcaddr" placeholder="eg: 192.168.5.0/255.255.255.0 一行一个" style="width:500px;height:100px;resize:vertical;">{{info.get('srcaddr','')}}</textarea>
                     </div>
 		    <div class="modal-body">
 		    	<span class="input-group-addon" style="width:500px">目标地址</span>
-			<textarea id="destaddr" name="destaddr" placeholder="eg: 192.168.5.0/255.255.255.0 一行一个" style="width:500px;height:100px;">{{info.get('destaddr','')}}</textarea>
+			<textarea id="destaddr" name="destaddr" placeholder="eg: 192.168.5.0/255.255.255.0 一行一个" style="width:500px;height:100px;resize:vertical;">{{info.get('destaddr','')}}</textarea>
                     </div>
 		    <div class="modal-body">
                         <div class="input-group">

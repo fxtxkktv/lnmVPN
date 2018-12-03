@@ -60,7 +60,7 @@
 		    </div>
 		    <div class="modal-body">
                         <div class="input-group">
-                            <textarea id="result" name="result" style="width:500px;height:250px;overflow:hidden;background-color:#202020;color:green;" readonly>{{info.get('result','')}}</textarea>
+                            <textarea id="result" name="result" style="width:500px;height:250px;overflow:hidden;background-color:#202020;color:green;resize:vertical;" readonly>{{info.get('result','')}}</textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -68,7 +68,7 @@
                     </div>
 		    <div class="modal-body" id='zone3'>
                       <span class="input-group-addon" style="width:540px">DHCP固定分配</span>
-                      <textarea id="dhcplist" name="dhcplist" onkeyup="this.value=this.value.replace(/[^\w\d.,:\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.,:\\\n]/g,'')" placeholder="格式: F0:79:59:92:C9:92,192.168.0.100" style="width:540px;height:100px;">{{info.get('dhcplist','')}}</textarea>
+                      <textarea id="dhcplist" name="dhcplist" onkeyup="this.value=this.value.replace(/[^\w\d.,:\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.,:\\\n]/g,'')" placeholder="格式: F0:79:59:92:C9:92,192.168.0.100" style="width:540px;height:100px;resize:vertical;">{{info.get('dhcplist','')}}</textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存</button>

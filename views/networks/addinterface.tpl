@@ -97,7 +97,7 @@
                     </div>
 		    <div class="modal-body">
                       <span class="input-group-addon" style="width:500px">扩展属性</span>
-                      <textarea id="extip" name="extip" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: IP地址/子网掩码/网关地址" style="width:500px;height:100px;">{{info.get('extip','')}}</textarea>
+                      <textarea id="extip" name="extip" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: IP地址/子网掩码/网关地址" style="width:500px;height:100px;resize:vertical;">{{info.get('extip','')}}</textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">提交</button>

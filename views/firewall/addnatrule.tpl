@@ -30,7 +30,7 @@
 		    
 		    <div class="modal-body">
                         <span class="input-group-addon" style="width:500px">源地址</span>
-                        <textarea id="srcaddr" name="srcaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;">{{info.get('srcaddr','')}}</textarea>
+                        <textarea id="srcaddr" name="srcaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('srcaddr','')}}</textarea>
                     </div>
 		    <div class="modal-body">
 			<div class="input-group">
@@ -50,7 +50,7 @@
                         </option>
                         </select>
 			</div>
-			<textarea id="dstaddr" name="dstaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;">{{info.get('dstaddr','')}}</textarea>
+			<textarea id="dstaddr" name="dstaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('dstaddr','')}}</textarea>
                     </div>
 		    <div class="modal-body">
 			<div class="input-group">

@@ -92,7 +92,7 @@
                     </div>
 		    <div class="modal-body">
                       <span class="input-group-addon" style="width:350px">DNS中继列表</span>
-                      <textarea id="dnslist" name="dnslist" onkeyup="this.value=this.value.replace(/[^\d.\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: DNS IP地址" style="width:350px;height:100px;">{{info.get('dnslist','')}}</textarea>
+                      <textarea id="dnslist" name="dnslist" onkeyup="this.value=this.value.replace(/[^\d.\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: DNS IP地址" style="width:350px;height:100px;resize:vertical;">{{info.get('dnslist','')}}</textarea>
                     </div>
                     <div class="modal-body">
                         <span style="color:#666666;" id="signc">备注<br/>1.DNS服务默认强制取代本机DNS查询<br/>2.DNS防污染开启时，请确保VPN连接正常，且DNS未被劫持.</span>

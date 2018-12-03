@@ -117,11 +117,11 @@
             </div>
 		    <div class="modal-body" id="signb">
                         <span class="input-group-addon" style="width:520px">CA签名信息</span>
-                        <textarea id="cainfo" name="cainfo" style="width:520px;height:100px;">{{info.get('cainfo','')}}</textarea>
+                        <textarea id="cainfo" name="cainfo" style="width:520px;height:100px;resize:vertical;">{{info.get('cainfo','')}}</textarea>
              </div>
              <div class="modal-body" id="signc">
                         <span class="input-group-addon" style="width:520px">客户端证书信息</span>
-                        <textarea id="certinfo" name="certinfo" style="width:520px;height:100px;">{{info.get('certinfo','')}}</textarea>
+                        <textarea id="certinfo" name="certinfo" style="width:520px;height:100px;resize:vertical;">{{info.get('certinfo','')}}</textarea>
              </div>
 		     <div class="modal-body" id="signd">
                         <span style="color:#666666;">备注:<br/>1.当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.<br/>2.VPN网络接口ID默认为1000,即tun1000表示<br/>3.MTU值1000~1500(须整除4) </span>

@@ -83,7 +83,7 @@
 		</div>
 		<div class="form-group">
                   <label class="control-label" for="inputSuccess1">备注信息：</label>
-                  <textarea id="comment" name="comment" style="height:70px;width:100%;" ></textarea>
+                  <textarea id="comment" name="comment" style="height:70px;width:100%;resize:vertical;"></textarea>
                 </div>
 		<div class="form-group">
                   <input type="hidden" id="hidInput" value="">
