@@ -54,3 +54,5 @@ pip install -r readme/requirements.txt <br>
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/logaudit.jpg)
 ### 帮助文档
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/help.jpg)
+### 支持捐赠
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/pay.jpg)
