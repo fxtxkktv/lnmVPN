@@ -44,13 +44,13 @@
                     </div>
 		    <div class="modal-body">
                       <div class="input-group">
-                        <span class="input-group-addon">数据保存天数</span>
+                        <span class="input-group-addon">默认显示天数</span>
                         <input type="text" style="width:100px" class="form-control" id="" name="ResSaveDay" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('ResSaveDay','')}}">
                         </div>
                     </div>
 		    <div class="modal-body">
                       <div class="input-group">
-                        <span class="input-group-addon">默认显示天数</span>
+                        <span class="input-group-addon">数据保存天数</span>
                         <input type="text" style="width:100px" class="form-control" id="" name="visitDay" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('visitDay','')}}">
                         </div>
                     </div>

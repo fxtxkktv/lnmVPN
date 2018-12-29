@@ -29,9 +29,9 @@
                             <span class="input-group-addon" style="width:100px">DNS服务状态&emsp;&emsp;</span>
 			    <p name='dnsstatus'>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 			    %if info.get('dnsstatus','') == 0 :
-				<img  src="/assets/img/run_1.gif" class="img-rounded" >
+                <input type="text" style="width:210px;color:green;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="正在运行" readonly>
 			    %else :
-				<img  src="/assets/img/run_0.gif" class="img-rounded" >
+                <input type="text" style="width:210px;color:red;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="服务关闭" readonly>
 			    %end
 			    </p>
                         </div>
