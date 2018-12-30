@@ -19,37 +19,37 @@ case "$1" in
         fi
 
         echo -en "Starting VPNServer:\t\t"
-	/sbin/modprobe tun >/dev/null 2>&1
-	for iconf in $(find $confdir -name 'ocserv_*.conf'); do
-	  pid=$(echo $iconf|awk -F/ '{print $NF".pid"}')
-          $wkdir/sbin/start-stop-daemon --start --background -m -p $piddir/$pid --exec $myapp -- -c $iconf
-	done
+        /sbin/modprobe tun >/dev/null 2>&1
+        for iconf in $(find $confdir -name 'ocserv_*.conf'); do
+            pid=$(echo $iconf|awk -F/ '{print $NF".pid"}')
+            $wkdir/sbin/start-stop-daemon --start --background -m -p $piddir/$pid --exec $myapp -- -c $iconf
+        done
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           echo "Done..."
+        else
+           echo "Failed"
+        fi
         ;;
   stop)
-	echo -en "Stoping VPNServer:\t\t"
-	$wkdir/sbin/start-stop-daemon --stop  --name ocserv-main >/dev/null 2>&1
-	RETVAL=$?
+        echo -en "Stoping VPNServer:\t\t"
+        $wkdir/sbin/start-stop-daemon --stop  --name ocserv-main >/dev/null 2>&1
+        RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then
-	   for pid in  $( ps ax|grep ocserv-main |grep -v 'grep'|awk '{print $1}');do
-		kill -9 $pid
-	   done
-	   echo "Done..."
-	else
-	   echo "Failed"
-	fi
+           for pid in  $( ps ax|grep ocserv-main |grep -v 'grep'|awk '{print $1}');do
+             kill -9 $pid
+           done
+           echo "Done..."
+        else
+           echo "Failed"
+        fi
         ;;
   status)
         for pid in  $( ps ax|grep ocserv-main |grep -v 'grep'|awk '{print $1}');do
-	   echo $pid
-	done
+           echo $pid
+        done
         ;;
   restart)
         $0 stop
