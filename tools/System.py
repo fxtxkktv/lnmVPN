@@ -1078,7 +1078,7 @@ def getcertinfo():
     sql = """ SELECT U.id,U.commonname,U.certtype,U.expiration,D.name as organization,U.createdate 
     FROM certmgr as U
     LEFT OUTER JOIN vpnpolicy as D on U.organization=D.id WHERE certtype = 'Client' UNION 
-    SELECT id,commonname,certtype,organization,expiration,createdate FROM certmgr WHERE certtype='caserver'
+    SELECT id,commonname,certtype,expiration,organization,createdate FROM certmgr WHERE certtype='caserver'
     order by id
     """
     certinfo_list = readDb(sql,)
