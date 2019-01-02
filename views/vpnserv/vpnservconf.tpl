@@ -22,8 +22,11 @@
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                     <div class="tickets-container">
                         <div class="table-toolbar" style="float:left">
+                <a id="onlineuser" href="#" class="btn btn-primary ">
+                                <i class="btn-label fa fa-print"></i>在线用户
+                            </a>
 			    <a id="addservconf" href="/addservconf" class="btn btn-primary ">
-                                <i class="btn-label fa fa-plus"></i>添加服务端配置
+                                <i class="btn-label fa fa-cog"></i>服务端配置
                             </a>
 			    <a id="addclientconf" href="/addclientconf" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-cog"></i>客户端配置
@@ -51,7 +54,7 @@ $(function(){
 	var isEdit;
     $('#myLoadTable').bootstrapTable({
           method: 'post',
-          url: '/api/getvpnservinfo',
+          url: '/api/getonlineinfo',
           contentType: "application/json",
           datatype: "json",
           cache: false,
@@ -80,70 +83,48 @@ $(function(){
                 return index+1;
               }
           },{
-              field: 'authtype',
-              title: '验证方式',
+              field: 'user',
+              title: '连接用户',
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
-                        if( value == '0' ){
-                                return '证书认证';
-                        }
-			else if( value == '1' ){
-				return '密码认证';
-			}
-			else{  return '证书+密码认证';
-                        }
-            }
           },{
-	      field: 'servinfo',
-              title: '监听配置',
-              align: 'center',
-              valign: 'middle',
-              sortable: false
-	  },{
-              field: 'virinfo',
-              title: '虚拟网段',
+              field: 'ip',
+              title: '客户端地址',
               align: 'center',
               valign: 'middle',
               sortable: false
           },{
-              field: 'comp',
-              title: '启用压缩',
+              field: 'vpn-ip',
+              title: '分配地址',
               align: 'center',
-	      valign: 'middle',
-              sortable: false,
-	      formatter: function(value,row,index){
-                        if( value == '0' ){
-                                return '启用';
-                        }else{  return '禁用';
-                        }
-            }
+              valign: 'middle',
+              sortable: false
           },{
-              field: 'cisco',
-              title: 'AnyConnect支持',
+              field: 'device',
+              title: '虚拟设备',
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
-                        if( value == '0' ){
-                                return '启用';
-                        }else{  return '禁用';
-                        }
-            }
           },{
-	      field: 'workstatus',
-              title: '工作状态',
+              field: 'since',
+              title: '连接时长',
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
-                        if( value == '1' ){
-                                return '<img  src="/assets/img/run_1.gif" class="img-rounded" >';
-                        }else{  return '<img  src="/assets/img/run_0.gif" class="img-rounded" >';
-                        }
-            }
-	 },{
+          },{
+    	      field: 'dtls-cipher',
+              title: '协商方式',
+              align: 'center',
+              valign: 'middle',
+              sortable: false,
+          },{
+              field: 'status',
+              title: '状态',
+              align: 'center',
+              valign: 'middle',
+              sortable: false,
+          },{
               field: '',
               title: '操作',
               align: 'center',

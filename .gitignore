@@ -6,6 +6,7 @@
 *.sock
 *.pyc
 certs/*.crt
+certs/*.p12
 certs/*.pem
 certs/*.txt
 DevelPython/*

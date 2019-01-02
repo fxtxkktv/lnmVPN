@@ -21,6 +21,16 @@
                 </div><!--Widget Header-->
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                   <form action="" method="post">
+            <div class="modal-body">
+              <div class="input-group">
+                <span class="input-group-addon">OC服务状态</span>
+                %if info.get('servstatus','') == '0' :
+                    <input type="text" style="width:415px;color:green;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="正在运行" readonly>
+                %else :
+                    <input type="text" style="width:415px;color:red;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="服务关闭" readonly>
+                %end
+              </div>
+            </div>
 		    <div class="modal-body">
                         <div class="input-group">
                            <span class="input-group-addon">验证方式&emsp;</span>
@@ -162,7 +172,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" style="float:left" class="btn btn-primary">提交</button>
+                        <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
 			<a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
                     </div>
                 </div>

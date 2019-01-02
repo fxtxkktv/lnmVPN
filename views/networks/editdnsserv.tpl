@@ -25,17 +25,15 @@
                       <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     %end
 		    <div class="modal-body">
-                        <div class="input-group">
-                            <span class="input-group-addon" style="width:100px">DNS服务状态&emsp;&emsp;</span>
-			    <p name='dnsstatus'>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+              <div class="input-group">
+                <span class="input-group-addon" style="width:100px">DNS服务状态&emsp;&emsp;</span>
 			    %if info.get('dnsstatus','') == 0 :
-                <input type="text" style="width:210px;color:green;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="正在运行" readonly>
+                    <input type="text" style="width:210px;color:green;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="正在运行" readonly>
 			    %else :
-                <input type="text" style="width:210px;color:red;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="服务关闭" readonly>
+                    <input type="text" style="width:210px;color:red;font-weight:bold;" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="服务关闭" readonly>
 			    %end
-			    </p>
-                        </div>
-                    </div>
+              </div>
+            </div>
 		    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon" style="width:100px">DNS中继服务&emsp;&emsp;</span>

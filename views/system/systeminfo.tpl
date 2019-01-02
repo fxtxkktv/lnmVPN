@@ -107,7 +107,7 @@
 	    <div id="echartsLine3" class="box-content" style="width: 32%;height: 300px;float: left;margin-top: 0px;margin-left: 10px;"></div>
         </div>
    </div-->
-   <div class="box col-md-4">
+   <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff; height: 300px;">
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
@@ -117,7 +117,7 @@
 	    </div>
         </div>
    </div>
-   <div class="box col-md-4">
+   <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff; height: 300px;">
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
@@ -127,20 +127,31 @@
 	    </div>
 	</div>
    </div>
-   <div class="box col-md-4">
+   <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff;height: 300px;">
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">网络IO</span>
-		<!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
-            <div id="echartsLine3" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
-	    </div>
+		        <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <div id="echartsLine3" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
+	        </div>
         </div>
    </div>
-  </div-->
+   <div class="box col-md-6">
+        <div class="box-inner widget" style="background: #fff;height: 300px;">
+            <div class="box-header well" data-original-title="">
+                <i class="glyphicon glyphicon-list-alt widget-icon"></i>
+                <span class="widget-caption themesecondary">VPN在线</span>
+                <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <div id="echartsLine4" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
+            </div>
+        </div>
+   </div>
+  </div>
 </div>
 
-<script src="https://cdn.staticfile.org/echarts/4.2.0-rc.1/echarts.js"></script>
+<!--script src="https://cdn.staticfile.org/echarts/4.2.0-rc.1/echarts.js"></script-->
+<script src="/assets/js/echarts.js"></script>
 <script type="text/javascript">
     var cpu = {
         'used': [],
@@ -157,6 +168,11 @@
         'send': [],
         time: []
     };
+    var vpn = {
+        'used': [],
+        'free': [],
+        time: []
+    };
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -171,6 +187,7 @@
                 cpu.time.push(item[1]);
                 net.time.push(item[1]);
                 memory.time.push(item[1]);
+                vpn.time.push(item[1])
 
                 itemJson = jQuery.parseJSON(item[0])
                 cpu.used.push(itemJson.cpu.cpuUsed);
@@ -179,6 +196,8 @@
 
                 net.rcvd.push(itemJson.net.rcvd);
                 net.send.push(itemJson.net.send);
+                
+                vpn.used.push(itemJson.vpn.vpnUsed);
             });
             createEcharts();
         }
@@ -325,10 +344,56 @@
         echartsLineFunc = echarts.init(echartsLine2);
         echartsLineFunc.setOption(option);
     };
+    
+    function creatVPNEcharts() {
+        option = {
+            /*title: {
+                text: 'VPN用户在线'
+            },*/
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b}<br/>{a}:{c}",
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                data: vpn.time
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                    name: '拨入数量',
+                    type: 'line',
+                    data: vpn.used
+                },
+
+            ],
+            color: '#0000FF',
+            backgroundColor: '#FFFFFF',
+            dataZoom: [{
+                start: 85,
+                end: 100,
+                type: 'inside',
+            }, {
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            }],
+
+        };　　
+        echartsLineFunc = echarts.init(echartsLine4);
+        echartsLineFunc.setOption(option);
+    };
 
     function createEcharts() {
         creatNetEcharts();
         creatCPUEcharts();
         creatMemoryEcharts();
+        creatVPNEcharts();
     };
 </script>

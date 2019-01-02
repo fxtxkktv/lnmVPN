@@ -786,32 +786,45 @@ def servconf():
 def addservconf():
     """新增服务配置项"""
     s = request.environ.get('beaker.session')
-    return template('addvpnconfig',session=s,info={})
+    sql = " select value from sysattr where attr='vpnserver' "
+    idata = readDb(sql,)
+    try:
+       info = json.loads(idata[0].get('value'))
+       if cmds.servchk(info.get('servport')) == 0:
+          info['servstatus'] = '0'
+       else :
+          info['servstatus'] = '1'
+    except:
+       return template('addvpnconfig',session=s,msg={},info={})
+    return template('addvpnconfig',session=s,info=info)
 
 @route('/addservconf',method="POST")
 @checkAccess
 def do_addservconf():
     """新增服务配置项"""
     s = request.environ.get('beaker.session')
-    authtype = request.forms.get("authtype")
-    ipaddr = request.forms.get("ipaddr")
-    servport = request.forms.get("servport")
-    virip = request.forms.get("virip")
-    virmask = request.forms.get("virmask")
-    maxclient = request.forms.get("maxclient")
-    maxuser = request.forms.get("maxuser")
-    authtimeout = request.forms.get("authtimeout")
-    authnum = request.forms.get("authnum")
-    locktime = request.forms.get("locktime")
-    comp = request.forms.get("comp")
-    cisco = request.forms.get("cisco")
-    if netmod.checkip(virip) == False or netmod.checkmask(virmask) == False :  
+    idata = dict()
+    idata['authtype'] = request.forms.get("authtype")
+    idata['ipaddr'] = request.forms.get("ipaddr")
+    idata['servport'] = request.forms.get("servport")
+    idata['virip'] = request.forms.get("virip")
+    idata['virmask'] = request.forms.get("virmask")
+    idata['maxclient'] = request.forms.get("maxclient")
+    idata['maxuser'] = request.forms.get("maxuser")
+    idata['authtimeout'] = request.forms.get("authtimeout")
+    idata['authnum'] = request.forms.get("authnum")
+    idata['locktime'] = request.forms.get("locktime")
+    idata['comp'] = request.forms.get("comp")
+    idata['cisco'] = request.forms.get("cisco")
+    if netmod.checkip(idata['virip']) == False or netmod.checkmask(idata['virmask']) == False :  
        msg = {'color':'red','message':u'虚拟地址填写不合法，保存失败'}
        return template('vpnservconf',session=s,msg=msg,info={})
-    
-    sql = " INSERT INTO vpnservconf(servmode,authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco) values ('server',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    data = (authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco)
-    result = writeDb(sql,data)
+    sql = " update sysattr set value=%s where attr='vpnserver' "
+    iidata = json.dumps(idata)
+    result = writeDb(sql,(iidata,))
+    #sql = " INSERT INTO vpnservconf(servmode,authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco) values ('server',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    #data = (authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco)
+    #result = writeDb(sql,data)
     if result == True :
        writeVPNconf(action='addconf')
        cmds.servboot('ocserv')
@@ -883,6 +896,30 @@ def getvpnservinfo():
     sql = " SELECT id,servmode,authtype,concat(ipaddr,':',servport) as servinfo,concat(virip,'/',virmask)as virinfo,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco,workstatus FROM vpnservconf "
     certinfo_list = readDb(sql,)
     return json.dumps(certinfo_list)
+
+@route('/api/getonlineinfo',method=['GET', 'POST'])
+@checkAccess
+def getonlineinfo():
+    #cmd = ''' occtl show users | awk '/vpns/{print $2,$4,$5,$6,$7,$8,$9}' '''
+    info=[]
+    status,result=cmds.gettuplerst('occtl show users | awk \'/vpns/{print $2,$4,$5,$6,$7,$8,$9}\'')
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos={}
+           infos['user']=str(i).split()[0]
+           infos['ip']=str(i).split()[1]
+           infos['vpn-ip']=str(i).split()[2]
+           infos['device']=str(i).split()[3]
+           infos['since']=str(i).split()[4]
+           infos['dtls-cipher']=str(i).split()[5]
+           infos['status']=str(i).split()[6]
+           info.append(infos)
+    return json.dumps(info)
+
+    #certinfo_list = readDb(sql,)
+    #return json.dumps()
+
+
 
 @route('/delvpnservconf/<id>')
 @checkAccess

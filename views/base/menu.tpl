@@ -133,7 +133,7 @@
             <ul class="submenu">
 		<li class="">
                     <a href="/vpnservconf">
-                        <span class="menu-text">服务设置</span>
+                        <span class="menu-text">服务管理</span>
                     </a>
                 </li>
                 <li class="">

@@ -20,8 +20,8 @@ case "$1" in
 
         echo -en "Starting VPNServer:\t\t"
         /sbin/modprobe tun >/dev/null 2>&1
-        for iconf in $(find $confdir -name 'ocserv_*.conf'); do
-            pid=$(echo $iconf|awk -F/ '{print $NF".pid"}')
+        for iconf in $(find $confdir -name 'ocserv_server.conf'); do
+            pid=ocserv_server.pid
             $wkdir/sbin/start-stop-daemon --start --background -m -p $piddir/$pid --exec $myapp -- -c $iconf
         done
         RETVAL=$?
