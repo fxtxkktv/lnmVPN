@@ -828,12 +828,6 @@ def do_addservconf():
 def addclientconf():
     """新增服务配置项"""
     s = request.environ.get('beaker.session')
-    sql = " select value from sysattr where attr='vpnclient' "
-    idata = readDb(sql,)
-    try:
-       info = json.loads(idata[0].get('value'))
-    except:
-       return template('addvpncltconfig',session=s,msg={},info={})
     #获取证书选择列表
     conncerts_list=[]
     status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
@@ -842,6 +836,13 @@ def addclientconf():
            infos = {}
            infos['filename']=str(i)
            conncerts_list.append(infos)
+    #加载现有配置
+    sql = " select value from sysattr where attr='vpnclient' "
+    idata = readDb(sql,)
+    try:
+       info = json.loads(idata[0].get('value'))
+    except:
+       return template('addvpncltconfig',session=s,msg={},info={},conncerts_list=conncerts_list)
     return template('addvpncltconfig',session=s,msg={},info=info,conncerts_list=conncerts_list)
 
 @route('/addclientconf',method="POST")
