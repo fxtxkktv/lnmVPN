@@ -23,6 +23,10 @@ function toDict() {
    done
 }
 
+if [ -x $wkdir/sbin/vpnc-script ];then
+   script="-s $wkdir/sbin/vpnc-script"
+fi
+
 #获取客户端配置信息
 for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf);do
     toDict $confdir/ocserv_client.conf $servID
@@ -44,10 +48,6 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
     fi
 done
-
-if [ -x $wkdir/sbin/vpnc-script ];then
-   script="-s $wkdir/sbin/vpnc-script"
-fi
 
 case "$1" in
   start)
