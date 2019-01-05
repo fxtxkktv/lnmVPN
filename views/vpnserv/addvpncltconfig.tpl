@@ -72,6 +72,8 @@
                       <input type="text" style="width:210px" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="tunid" name="tunid" placeholder="虚拟接口ID" aria-describedby="inputGroupSuccess4Status"
                             %if info.get('tunid',''): 
                                 value="{{info.get('tunid','')}}"
+                            %else :
+                                 value="1000"
                             %end 
                       readonly>
                       <input type="text" style="width:210px" class="form-control" id="vmtu" name="vmtu" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" placeholder="MTU值" aria-describedby="inputGroupSuccess4Status" 
@@ -125,9 +127,9 @@
                                     </option>
                                 %end
                         </select>
-                        <input type="password" style="width:210px;" class="form-control" name="vpnpass" placeholder="安全密钥" aria-describedby="inputGroupSuccess4Status"
-                        %if info.get('vpnpass',''): 
-                                value="{{info.get('vpnpass','')}}"
+                        <input type="password" style="width:210px;" class="form-control" name="certpass" placeholder="安全密钥" aria-describedby="inputGroupSuccess4Status"
+                        %if info.get('certpass',''): 
+                                value="{{info.get('certpass','')}}"
                         %end 
                         >
                     </div>

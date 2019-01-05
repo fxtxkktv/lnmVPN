@@ -32,7 +32,7 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        tunid=${uDict["tunid"]}
        vmtu=${uDict["vmtu"]} 
        vpnuser=${uDict["vpnuser"]}
-       vpnpass=${uDict["vpnpass"]}
+       connpass=${uDict["vpnpass"]}
        OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
     elif [ ${uDict["authtype"]} = "0" ];then
        server=${uDict["ipaddr"]}
@@ -40,7 +40,7 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        tunid=${uDict["tunid"]}
        vmtu=${uDict["vmtu"]}
        certinfo=${uDict["certinfo"]}
-       vpnpass=${uDict["vpnpass"]}
+       connpass=${uDict["certpass"]}
        OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
     fi
 done
@@ -53,7 +53,7 @@ case "$1" in
   start)
         echo -en "Starting VPNConnServer:\t\t"
         /sbin/modprobe tun >/dev/null 2>&1
-        $wkdir/sbin/start-stop-daemon --start -m -p $pidfile --exec $myapp -- $OPTIONS <<< $vpnpass -b >/dev/null 2>&1
+        $wkdir/sbin/start-stop-daemon --start -m -p $pidfile --exec $myapp -- $OPTIONS <<< $connpass -b >/dev/null 2>&1
         RETVAL=$?
         #echo
         if [ $RETVAL -eq 0 ] ;then

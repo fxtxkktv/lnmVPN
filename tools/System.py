@@ -854,7 +854,7 @@ def addclientconf():
     idata=dict()
     if authtype == '0' :
        idata['certinfo'] = request.forms.get("certinfo")
-       idata['vpnpass'] = request.forms.get("vpnpass")
+       idata['certpass'] = request.forms.get("certpass")
     elif authtype == '1' :
        idata['vpnuser'] = request.forms.get("vpnuser")
        idata['vpnpass'] = request.forms.get("vpnpass")
@@ -869,6 +869,15 @@ def addclientconf():
     idata['tunid'] = request.forms.get("tunid")
     idata['vmtu'] = request.forms.get("vmtu")
     idata['chkconn'] = request.forms.get("chkconn")
+    #获取证书选择列表
+    conncerts_list=[]
+    status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos = {}
+           infos['filename']=str(i)
+           conncerts_list.append(infos)
+    #加载正常配置
     if not (idata['ipaddr'] and idata['servport'] and idata['tunid'] and idata['vmtu']):
        msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
        sql = " select value from sysattr where attr='vpnclient' "
@@ -876,8 +885,8 @@ def addclientconf():
        try:
           info = json.loads(idata[0].get('value'))
        except:
-          return template('addvpncltconfig',session=s,msg=msg,info={})
-       return template('addvpncltconfig',session=s,msg=msg,info=info)
+          return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+       return template('addvpncltconfig',session=s,msg=msg,info=info,conncerts_list=conncerts_list)
     sql = " update sysattr set value=%s where attr='vpnclient' "
     iidata=json.dumps(idata)
     result = writeDb(sql,(iidata,))
@@ -886,14 +895,6 @@ def addclientconf():
        writeVPNconf(action='uptcltconf')
        cmds.servboot('vpnconn')
        writeUTMconf(action='uptconf')
-       #获取证书选择列表
-       conncerts_list=[]
-       status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
-       for i in result.split('\n'):
-           if str(i) != "":
-              infos = {}
-              infos['filename']=str(i)
-              conncerts_list.append(infos)
        return template('addvpncltconfig',session=s,msg=msg,info=idata,conncerts_list=conncerts_list)
 
 

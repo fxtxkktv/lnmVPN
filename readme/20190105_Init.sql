@@ -172,7 +172,7 @@ CREATE TABLE `sysinfo` (
   `tim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=46845 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=46895 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,14 +220,14 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ç”¨æˆ·ID',
-  `username` varchar(50) NOT NULL DEFAULT '0' COMMENT 'å¸å·',
-  `passwd` varchar(50) NOT NULL DEFAULT '0' COMMENT 'å¯†ç ',
-  `policy` int(11) DEFAULT '0' COMMENT 'æ‰€å±žéƒ¨é—¨ID',
-  `access` tinyint(4) DEFAULT '0' COMMENT 'æƒé™',
-  `adddate` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'ç”¨æˆ·åŠ å…¥æ—¶é—´',
-  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'ç”¨æˆ·çŠ¶æ€ï¼ˆ0=åˆ é™¤ï¼Œ1=æ­£å¸¸ï¼‰',
-  `comment` varchar(20) NOT NULL DEFAULT '0' COMMENT 'å§“å',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(50) NOT NULL DEFAULT '0',
+  `passwd` varchar(50) NOT NULL DEFAULT '0',
+  `policy` int(11) DEFAULT '0',
+  `access` tinyint(4) DEFAULT '0',
+  `adddate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `comment` varchar(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT='ç”¨æˆ·è¡¨';
@@ -259,7 +259,7 @@ CREATE TABLE `vpnpolicy` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-05 22:35:40
+-- Dump completed on 2019-01-05 23:34:40
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -297,7 +297,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-05 22:35:40
+-- Dump completed on 2019-01-05 23:34:40
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -335,4 +335,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-05 22:35:40
+-- Dump completed on 2019-01-05 23:34:40
