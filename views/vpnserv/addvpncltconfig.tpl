@@ -21,7 +21,7 @@
                 </div><!--Widget Header-->
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                   <form action="" method="post">
-		    %if msg.get('message'):
+                    %if msg.get('message'):
                         <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     %end
 		    <div class="modal-body">
@@ -115,24 +115,33 @@
 			              >
                  </div>
             </div>
-		    <div class="modal-body" id="signb">
-                        <span class="input-group-addon" style="width:520px">CA签名信息</span>
-                        <textarea id="cainfo" name="cainfo" style="width:520px;height:100px;resize:vertical;">{{info.get('cainfo','')}}</textarea>
-             </div>
-             <div class="modal-body" id="signc">
-                        <span class="input-group-addon" style="width:520px">客户端证书信息</span>
-                        <textarea id="certinfo" name="certinfo" style="width:520px;height:100px;resize:vertical;">{{info.get('certinfo','')}}</textarea>
-             </div>
-		     <div class="modal-body" id="signd">
+            <div class="modal-body" id="signc">
+                    <div class="input-group">
+                        <span class="input-group-addon">验证证书&emsp;</span>
+                        <select style="width:210px" class="form-control" name="certinfo">
+                                %for name in conncerts_list:
+                                    <option
+                                        value='{{name.get('filename','')}}'>{{name.get('filename','')}}
+                                    </option>
+                                %end
+                        </select>
+                        <input type="password" style="width:210px;" class="form-control" name="vpnpass" placeholder="安全密钥" aria-describedby="inputGroupSuccess4Status"
+                        %if info.get('vpnpass',''): 
+                                value="{{info.get('vpnpass','')}}"
+                        %end 
+                        >
+                    </div>
+            </div>
+		    <div class="modal-body" id="signd">
                         <span style="color:#666666;">备注:<br/>1.当连接检测启用时,务必确保配置信息可连接,否则容易出现网络不稳定.<br/>2.VPN网络接口ID默认为1000,即tun1000表示<br/>3.MTU值1000~1500(须整除4) </span>
-             </div>
-             <div class="modal-footer">
+            </div>
+            <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
 			            <a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
-             </div>
-             </div>
-             </form>
             </div>
+           </div>
+           </form>
+          </div>
         </div>
     </div>
 </div>
@@ -146,7 +155,6 @@ $(function(){
     $('#servinfo').show();
     $('#chkconn').show();
 	$('#signa').hide();
-	$('#signb').show();
     $('#signc').show();
     $('#signd').show();
     //document.getElementById("selInput").readOnly=false ;
@@ -154,14 +162,13 @@ $(function(){
     } else if (this.value == '1'){
     $('#servinfo').show();
     $('#chkconn').show();
-	$('#signb').hide();
 	$('#signc').hide();
 	$('#signa').show();
     $('#signd').show();
     } else {
     $('#servinfo').hide();
+    $('#servopts').hide();
     $('#chkconn').hide();
-    $('#signb').hide();
     $('#signc').hide();
     $('#signa').hide();
     $('#signd').hide();

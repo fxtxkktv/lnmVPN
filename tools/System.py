@@ -834,7 +834,15 @@ def addclientconf():
        info = json.loads(idata[0].get('value'))
     except:
        return template('addvpncltconfig',session=s,msg={},info={})
-    return template('addvpncltconfig',session=s,msg={},info=info)
+    #获取证书选择列表
+    conncerts_list=[]
+    status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos = {}
+           infos['filename']=str(i)
+           conncerts_list.append(infos)
+    return template('addvpncltconfig',session=s,msg={},info=info,conncerts_list=conncerts_list)
 
 @route('/addclientconf',method="POST")
 @checkAccess
@@ -844,8 +852,8 @@ def addclientconf():
     authtype = request.forms.get("authtype")
     idata=dict()
     if authtype == '0' :
-       idata['cainfo'] = request.forms.get("cainfo").replace('\r\n','\n').strip()
-       idata['certinfo'] = request.forms.get("certinfo").replace('\r\n','\n').strip()
+       idata['certinfo'] = request.forms.get("certinfo")
+       idata['vpnpass'] = request.forms.get("vpnpass")
     elif authtype == '1' :
        idata['vpnuser'] = request.forms.get("vpnuser")
        idata['vpnpass'] = request.forms.get("vpnpass")
@@ -877,7 +885,15 @@ def addclientconf():
        writeVPNconf(action='uptcltconf')
        cmds.servboot('vpnconn')
        writeUTMconf(action='uptconf')
-       return template('addvpncltconfig',session=s,msg=msg,info=idata)
+       #获取证书选择列表
+       conncerts_list=[]
+       status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+       for i in result.split('\n'):
+           if str(i) != "":
+              infos = {}
+              infos['filename']=str(i)
+              conncerts_list.append(infos)
+       return template('addvpncltconfig',session=s,msg=msg,info=idata,conncerts_list=conncerts_list)
 
 
 # 策略配置
@@ -1082,7 +1098,38 @@ def delcert():
     else:
         return '-1'
 
-@route('/download/<vdir>/<filename:re:.*\.zip|.*\.bkt>')
+
+@route('/conncerts')
+@checkAccess
+def conncerts():
+    s = request.environ.get('beaker.session')
+    return template('conncerts',session=s,msg={})
+
+@route('/uplconncerts')
+@checkAccess
+def conncerts():
+    s = request.environ.get('beaker.session')
+    return template('uplconncerts',session=s,msg={})
+
+
+@route('/uplconncerts', method='POST')
+def do_upload():
+    s = request.environ.get('beaker.session')
+    category = request.forms.get('category')
+    upload = request.files.get('upload')
+    name, ext = os.path.splitext(upload.filename)
+    if ext not in ('.p12','.jpgsss'):
+       msg = {'color':'red','message':u'文件格式不被允许.请重新上传'}
+       return template('conncerts',session=s,msg=msg)
+    try:
+       upload.save('%s/conncerts' % gl.get_value('certdir'))
+       msg = {'color':'green','message':u'文件上传成功'}
+       return template('conncerts',session=s,msg=msg)
+    except:
+       msg = {'color':'red','message':u'文件上传失败'}
+       return template('conncerts',session=s,msg=msg) 
+
+@route('/download/<vdir>/<filename:re:.*\.zip|.*\.bkt|.*\.p12>')
 def download(vdir,filename):
     if vdir == 'certs' :
        #定义download路径
@@ -1107,6 +1154,8 @@ def download(vdir,filename):
        zp.close()
     elif vdir == 'backupset':
        download_path = '%s/backupset' % gl.get_value('plgdir')
+    elif vdir == 'conncerts':
+       download_path = '%s/conncerts' % gl.get_value('certdir')
     return static_file(filename, root=download_path, download=filename)
 
 # 策略配置
@@ -1146,7 +1195,6 @@ def syscheck():
 def syscheck():
     s = request.environ.get('beaker.session')
     return template('uploadfile',session=s,msg={})
-
 
 @route('/uploadfile', method='POST')
 def do_upload():
@@ -1207,6 +1255,17 @@ def delbackupset(filename):
           msg = {'color':'red','message':u'备份集删除失败'}
     return template('backupset',session=s,msg=msg)
 
+@route('/delconncerts/<filename>')
+@checkAccess
+def delbackupset(filename):
+    s = request.environ.get('beaker.session')
+    if filename != "":
+       x,y=cmds.gettuplerst('rm -rf %s/conncerts/%s' % (gl.get_value('certdir'),filename))
+       if x == 0:
+          msg = {'color':'green','message':u'指定验证证书删除成功'}
+       else:
+          msg = {'color':'red','message':u'指定验证证书删除失败'}
+    return template('conncerts',session=s,msg=msg)
 
 @route('/api/getbackupsetinfo',method=['GET', 'POST'])
 @checkAccess
@@ -1219,6 +1278,21 @@ def getbackupsetinfo():
            infos['filename']=str(i)
            infos['filesize']=os.path.getsize('%s/backupset/%s' % (gl.get_value('plgdir'),i))
            cctime=os.path.getctime('%s/backupset/%s' % (gl.get_value('plgdir'),i))
+           infos['filetime']=time.strftime('%Y%m%d%H%M%S',time.localtime(cctime))
+           info.append(infos)
+    return json.dumps(info)
+
+@route('/api/getconncertsinfo',method=['GET', 'POST'])
+@checkAccess
+def getconncertsinfo():
+    info=[]
+    status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos={}
+           infos['filename']=str(i)
+           infos['filesize']=os.path.getsize('%s/conncerts/%s' % (gl.get_value('certdir'),i))
+           cctime=os.path.getctime('%s/conncerts/%s' % (gl.get_value('certdir'),i))
            infos['filetime']=time.strftime('%Y%m%d%H%M%S',time.localtime(cctime))
            info.append(infos)
     return json.dumps(info)

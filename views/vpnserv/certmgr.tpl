@@ -26,11 +26,14 @@
                             <a id="initca" href="javascript:void(0);" class="btn  btn-primary ">
                                 <i class="btn-label fa fa-plus"></i>初始化服务证书
                             </a>
-			    <a id="addusercerts" href="/addusercerts" class="btn btn-warning shiny">
+                            <a id="addusercerts" href="/addusercerts" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-cog"></i>添加客户端证书
                             </a>
                             <a id="delcert" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除&吊销证书
+                            </a>
+                            <a id="conncert" href="/conncerts" class="btn btn-primary">
+                                <i class="btn-label fa fa-cog"></i>验证证书列表
                             </a>
                             %if msg.get('message'):
                                 <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>

@@ -20,18 +20,18 @@
                     
                 </div><!--Widget Header-->
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
-                  <form action="/uploadfile" method="post" enctype="multipart/form-data">
+                  <form action="/uplconncerts" method="post" enctype="multipart/form-data">
                   %if msg.get('message'):
                         <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                   %end
-		   <div class="modal-body">
+                  <div class="modal-body">
                         <div class="input-group">
-                             <input type="file" name="upload" />
+                             <input type="file" accept="application/x-pkcs12" name="upload" />
                         </div>
                   </div>
-		  <div class="modal-footer">
-			<button type="submit" style="float:left" class="btn btn-primary">保存</button>
-                        <a id="rego" style="float:left" class="btn btn-primary" href="#" onclick="javascript:history.back(-1);">返回</a>
+		         <div class="modal-footer">
+			         <button type="submit" style="float:left" class="btn btn-primary">保存</button>
+                     <a id="rego" style="float:left" class="btn btn-primary" href="#" onclick="javascript:history.back(-1);">返回</a>
                  </div>
                 </div>
               </form>

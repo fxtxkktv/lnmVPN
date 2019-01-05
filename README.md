@@ -7,11 +7,17 @@
 1. 安装初始化环境 python >=2.7 (推荐lnmos定制版本,可以在"客户端下载"中获取) <br>
 rpm -i python27-2.7.15-lnmos.rpm <br>
 export PATH=$PATH:/usr/local/python27/bin <br>
+echo "/usr/local/python27/lib" > /etc/ld.so.conf.d/lnmos.conf [可选操作] <br>
 安装pip工具 <br>
 wget https://bootstrap.pypa.io/get-pip.py <br>
 python27 get-pip.py <br>
 安装virtualenv组件[使程序运行环境和系统环境分离] <br>
 pip install virtualenv <br> 
+获取程序代码 <br>
+git clone https://github.com/fxtxkktv/lnmVPN.git <br>
+进入程序目录
+cd lnmVPN <br>
+创建程序虚拟环境 <br>
 virtualenv -p /usr/local/python27/bin/python --no-site-packages venv <br>
 进入virtualenv环境 <br>
 source venv/bin/activate <br>

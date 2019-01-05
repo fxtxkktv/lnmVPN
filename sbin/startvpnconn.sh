@@ -33,14 +33,21 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        vmtu=${uDict["vmtu"]} 
        vpnuser=${uDict["vpnuser"]}
        vpnpass=${uDict["vpnpass"]}
-   fi
+       OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+    elif [ ${uDict["authtype"]} = "0" ];then
+       server=${uDict["ipaddr"]}
+       servport=${uDict["servport"]}
+       tunid=${uDict["tunid"]}
+       vmtu=${uDict["vmtu"]}
+       certinfo=${uDict["certinfo"]}
+       vpnpass=${uDict["vpnpass"]}
+       OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+    fi
 done
 
 if [ -x $wkdir/sbin/vpnc-script ];then
    script="-s $wkdir/sbin/vpnc-script"
 fi
-
-OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
 
 case "$1" in
   start)
