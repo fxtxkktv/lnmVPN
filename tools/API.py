@@ -25,14 +25,22 @@ netmod=netModule()
 API=getAPIData()
 
 if __name__ == '__main__' :
+   #获取用户策略ID [VPN]
    if sys.argv[1] == 'API' and sys.argv[2] == 'getUserLineID':
       print API.getUserLineID(sys.argv[3])
+   #重置管理员密码接口
+   elif sys.argv[1] == 'API' and sys.argv[2] == 'resetAdminPass':
+      print API.resetAdminPass(sys.argv[3])
+   #操作日志写入接口
    elif sys.argv[1] == 'API' and sys.argv[2] == 'wrtvpnlogin':
       print wrtlog(sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
+   #获取设备接口网关
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getgw':
       print netmod.getIfGW(sys.argv[3])
+   #获取接口网络地址
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getniaddr':
       print netmod.getNiaddr(sys.argv[3])
+   #获取本机外网地址
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getnetip':
       print netmod.NetIP()
    else:
