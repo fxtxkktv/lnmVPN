@@ -177,9 +177,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="modal-body" id="signd">
+                        <span style="color:#666666;">备注:<br/>1.如服务启动失败请检查证书已初始化且配置组策略Profile.xml属性文件.</span>
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
-			<a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
+			            <a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
                     </div>
                 </div>
               </form>
