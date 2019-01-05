@@ -15,7 +15,7 @@ python27 get-pip.py <br>
 pip install virtualenv <br> 
 获取程序代码 <br>
 git clone https://github.com/fxtxkktv/lnmVPN.git <br>
-进入程序目录
+进入程序目录 <br>
 cd lnmVPN <br>
 创建程序虚拟环境 <br>
 virtualenv -p /usr/local/python27/bin/python --no-site-packages venv <br>
