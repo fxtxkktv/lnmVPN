@@ -1119,7 +1119,11 @@ def do_upload():
     s = request.environ.get('beaker.session')
     category = request.forms.get('category')
     upload = request.files.get('upload')
-    name, ext = os.path.splitext(upload.filename)
+    try:
+        name, ext = os.path.splitext(upload.filename)
+    except:
+        msg = {'color':'red','message':u'文件未检测到.上传失败'}
+        return template('backupset',session=s,msg=msg)
     if ext not in ('.p12','.jpgsss'):
        msg = {'color':'red','message':u'文件格式不被允许.请重新上传'}
        return template('conncerts',session=s,msg=msg)
@@ -1203,7 +1207,11 @@ def do_upload():
     s = request.environ.get('beaker.session')
     category = request.forms.get('category')
     upload = request.files.get('upload')
-    name, ext = os.path.splitext(upload.filename)
+    try:
+        name, ext = os.path.splitext(upload.filename)
+    except:
+        msg = {'color':'red','message':u'文件未检测到.上传失败'}
+        return template('backupset',session=s,msg=msg)
     if ext not in ('.bkt','.jpgsss'):
        msg = {'color':'red','message':u'文件格式不被允许.请重新上传'}
        return template('backupset',session=s,msg=msg)
