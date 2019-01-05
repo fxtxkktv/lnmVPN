@@ -31,10 +31,22 @@
                     </div>
 		    <div class="modal-body">
                         <div class="input-group">
-                            <span class="input-group-addon">使用者&emsp;</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="commonname" aria-describedby="inputGroupSuccess4Status" value="{{info.get('netmask','')}}">
+                            <span class="input-group-addon">用户名&emsp;</span>
+                            <input type="text" style="width:420px" class="form-control" id="" name="commonname" aria-describedby="inputGroupSuccess4Status" value="{{info.get('commonname','')}}">
                         </div>
-                    </div>
+            </div>
+            <div class="modal-body">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户描述</span>
+                            <input type="text" style="width:420px" class="form-control" id="" name="comment" placeholder="选填" aria-describedby="inputGroupSuccess4Status" value="{{info.get('comment','')}}">
+                        </div>
+            </div>
+            <div class="modal-body">
+                        <div class="input-group">
+                            <span class="input-group-addon">安全密钥</span>
+                            <input type="text" style="width:420px" class="form-control" id="" name="safekey" aria-describedby="inputGroupSuccess4Status" value="{{info.get('safekey','')}}">
+                        </div>
+            </div>
 		    <div class="modal-body">
                          <div class="input-group">
                                 <span class="input-group-addon">应用策略</span>

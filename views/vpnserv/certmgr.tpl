@@ -163,7 +163,21 @@ $(function(){
               align: 'center',
               valign: 'middle',
               sortable: false,
-	  },{
+          },{
+              field: 'comment',
+              title: '证书描述',
+              align: 'center',
+              valign: 'middle',
+              visible: false,
+              sortable: false,
+          },{
+              field: 'safekey',
+              title: '安全密匙',
+              align: 'center',
+              valign: 'middle',
+              visible: false,
+              sortable: false,
+          },{
               field: '',
               title: '操作',
               align: 'center',

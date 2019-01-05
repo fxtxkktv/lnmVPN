@@ -210,7 +210,7 @@
 
 	<li class="active">
          %end
-            <a href="http://blog.lnmos.com" target="_bank" class="menu-dropdown">
+            <a href="https://github.com/fxtxkktv" target="_bank" class="menu-dropdown">
                 <i class="menu-icon fa fa-address-book-o"></i>
                 <span class="menu-text"> AboutMe </span>
                 <i class="menu-expand"></i>

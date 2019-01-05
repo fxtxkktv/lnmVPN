@@ -582,7 +582,7 @@ def do_editutmrule(id):
 
 @route('/delutmrule/<id>')
 @checkAccess
-def delvpnservconf(id):
+def delutmrule(id):
     s = request.environ.get('beaker.session')
     sql = " DELETE FROM ruleconfutm WHERE id=%s "
     result = writeDb(sql,(id,))
@@ -596,7 +596,7 @@ def delvpnservconf(id):
 
 @route('/delnatrule/<id>')
 @checkAccess
-def delvpnservconf(id):
+def delnatrule(id):
     s = request.environ.get('beaker.session')
     sql = " DELETE FROM ruleconfnat WHERE id=%s "
     result = writeDb(sql,(id,))
@@ -770,15 +770,6 @@ def addprofile():
 def servconf():
     """VPN服务配置项"""
     s = request.environ.get('beaker.session')
-    sql = " select id,servport from vpnservconf "
-    result = readDb(sql,)
-    for data in result :
-        if cmds.servchk(data.get('servport')) == 0 :
-           sql = "update vpnservconf set workstatus='1' where id=%s"
-           writeDb(sql,(data.get('id'),))
-        else :
-           sql = "update vpnservconf set workstatus='0' where id=%s"
-           writeDb(sql,(data.get('id'),))
     return template('vpnservconf',session=s,msg={})
 
 @route('/addservconf')
@@ -900,10 +891,11 @@ def getvpnservinfo():
 @route('/api/getonlineinfo',method=['GET', 'POST'])
 @checkAccess
 def getonlineinfo():
-    #cmd = ''' occtl show users | awk '/vpns/{print $2,$4,$5,$6,$7,$8,$9}' '''
     info=[]
-    status,result=cmds.gettuplerst('occtl show users | awk \'/vpns/{print $2,$4,$5,$6,$7,$8,$9}\'')
-    for i in result.split('\n'):
+    astatus,aresult=cmds.gettuplerst('occtl show users')
+    bstatus,bresult=cmds.gettuplerst('occtl show users | awk \'/vpns/{print $2,$4,$5,$6,$7,$8,$9}\'')
+    if astatus == 0:
+       for i in bresult.split('\n'):
         if str(i) != "":
            infos={}
            infos['user']=str(i).split()[0]
@@ -915,11 +907,6 @@ def getonlineinfo():
            infos['status']=str(i).split()[6]
            info.append(infos)
     return json.dumps(info)
-
-    #certinfo_list = readDb(sql,)
-    #return json.dumps()
-
-
 
 @route('/delvpnservconf/<id>')
 @checkAccess
@@ -1014,6 +1001,7 @@ def initca():
     organization = request.forms.get("organization")
     expiration = request.forms.get("expiration")
     createdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    comment = 'CA*Server'
     #检测表单各项值，如果出现为空的表单，则返回提示
     if not (commonname and organization and expiration):
         message = "表单不允许为空！"
@@ -1023,8 +1011,9 @@ def initca():
        message = "有效期不是一个整数"
        return '-2'
 
-    result = mkcert(ct=certtype,cn=commonname,ou=organization,ex=expiration)
+    result = mkcert(ct=certtype,cn=commonname,ou=organization,ex=expiration,comment=comment)
     if result == 0:
+       cmds.servboot('ocserv')
        return 0
     else:
        return '-1'
@@ -1047,13 +1036,16 @@ def addusercerts():
     expiration = request.forms.get("expiration")
     createdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     organization = request.forms.get("organization")
+    safekey = request.forms.get("safekey")
+    comment = request.forms.get("comment")
     #检测表单各项值，如果出现为空的表单，则返回提示
-    if not (commonname and expiration and organization):
+    if not (commonname and expiration and organization and safekey):
        msg = {'color':'red','message':u'表单不允许为空！'}
        return(template('certmgr',session=s,msg=msg))
 
-    result = mkcert(ct=certtype,cn=commonname,ou=organization,ex=expiration)
+    result = mkcert(ct=certtype,cn=commonname,ou=organization,ex=expiration,safekey=safekey,comment=comment)
     if result == 0:
+       writeVPNconf(action='uptuser')
        msg = {'color':'green','message':u'添加成功'}
        return(template('certmgr',session=s,msg=msg))
     else:
@@ -1065,22 +1057,27 @@ def delcert():
     id = request.forms.get('str').rstrip(',')
     if not id:
         return '-1'
-    sql2 = " select commonname from certmgr where id=%s "
-    result = readDb(sql2,(id,))
-    if result[0].get('commonname') == 'CA' or result[0].get('commonname') == 'Server':
-       cmds.gettuplerst('rm -rf %s/*.crt %s/*.pem %s/*.txt %s/*.p12' % (gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir')))
-       writeDb('TRUNCATE TABLE certmgr')
-    else:
-       commonname = result[0].get('commonname')
-       # 吊销证书
-       cmds.gettuplerst('cat %s/%s.crt >> %s/revoke.pem' % (gl.get_value('certdir'),commonname,gl.get_value('certdir')))
-       cmds.gettuplerst('certtool --generate-crl --load-ca-privkey %s/ca-key.pem --load-ca-certificate %s/ca.crt --load-certificate %s/revoke.pem --template %s/crl.txt --outfile %s/crl.pem' % (gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir')))
-       # 删除用户证书文件
-       cmds.gettuplerst('/bin/rm -rf %s/%s.crt %s/%s.pem %s/%s.p12' % (gl.get_value('certdir'),commonname,gl.get_value('certdir'),commonname,gl.get_value('certdir'),commonname))
-
-    sql = "delete from certmgr where id in (%s)"
-    result = writeDb(sql % id)
+    for xid in id.split(',') :
+        sql2 = " select commonname from certmgr where id=%s "
+        result = readDb(sql2,(xid,))
+        if result[0].get('commonname') == 'CA' or result[0].get('commonname') == 'Server':
+           cmds.gettuplerst('rm -rf %s/*.crt %s/*.pem %s/*.txt %s/*.p12' % (gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir')))
+           writeDb('TRUNCATE TABLE certmgr')
+           writeVPNconf(action='uptuser')
+           return '0'
+        else:
+           commonname = result[0].get('commonname')
+           # 吊销证书
+           cmds.gettuplerst('cat %s/%s.crt >> %s/revoke.pem' % (gl.get_value('certdir'),commonname,gl.get_value('certdir')))
+           cmds.gettuplerst('certtool --generate-crl --load-ca-privkey %s/ca-key.pem --load-ca-certificate %s/ca.crt --load-certificate %s/revoke.pem --template %s/crl.txt --outfile %s/crl.pem' % (gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir'),gl.get_value('certdir')))
+           # 删除用户证书文件
+           cmds.gettuplerst('/bin/rm -rf %s/%s.crt %s/%s.pem %s/%s.p12' % (gl.get_value('certdir'),commonname,gl.get_value('certdir'),commonname,gl.get_value('certdir'),commonname))
+           # 删除数据库条目
+           sql = "delete from certmgr where id in (%s)"
+           result = writeDb(sql % xid)
     if result:
+        writeVPNconf(action='uptuser')
+        cmds.servboot('ocserv')
         return '0'
     else:
         return '-1'
@@ -1096,11 +1093,15 @@ def download(vdir,filename):
        if filenames == 'CA' or filenames == 'Server' :
           zp.write('%s/ca.crt' % gl.get_value('certdir'),'ca.crt')
           zp.write('%s/server.crt' % gl.get_value('certdir'),'server.crt')
-       else :  
-          zp.write('%s/ca.crt' % gl.get_value('certdir'),'ca.crt')
-          zp.write('%s/%s.crt' %  (gl.get_value('certdir'),filenames),'%s.crt' % filenames)
-          zp.write('%s/%s.pem' %  (gl.get_value('certdir'),filenames),'%s.pem' % filenames)
-          status,result = cmds.gettuplerst('openssl pkcs12 -export -passout pass:%s -inkey %s/%s.pem -in %s/%s.crt -name "%s VPN Client Cert" -certfile %s/ca.crt -out %s/%s.p12' % (filenames,gl.get_value('certdir'),filenames,gl.get_value('certdir'),filenames,filenames,gl.get_value('certdir'),gl.get_value('certdir'),filenames))
+       else : 
+          sql = 'select safekey from certmgr where commonname=%s'
+          result = readDb(sql,(filenames,))
+          safekey = result[0].get('safekey')
+          #20190104禁止下载CA、PEM 
+          #zp.write('%s/ca.crt' % gl.get_value('certdir'),'ca.crt')
+          #zp.write('%s/%s.crt' %  (gl.get_value('certdir'),filenames),'%s.crt' % filenames)
+          #zp.write('%s/%s.pem' %  (gl.get_value('certdir'),filenames),'%s.pem' % filenames)
+          status,result = cmds.gettuplerst('openssl pkcs12 -export -passout pass:%s -inkey %s/%s.pem -in %s/%s.crt -name "%s VPN Client Cert" -certfile %s/ca.crt -out %s/%s.p12' % (safekey,gl.get_value('certdir'),filenames,gl.get_value('certdir'),filenames,filenames,gl.get_value('certdir'),gl.get_value('certdir'),filenames))
           if status == 0 :
              zp.write('%s/%s.p12' %  (gl.get_value('certdir'),filenames),'%s.p12' % filenames)
        zp.close()
@@ -1112,10 +1113,10 @@ def download(vdir,filename):
 @route('/api/getcertinfo',method=['GET', 'POST'])
 @checkAccess
 def getcertinfo():
-    sql = """ SELECT U.id,U.commonname,U.certtype,U.expiration,D.name as organization,U.createdate 
+    sql = """ SELECT U.id,U.commonname,U.certtype,U.expiration,D.name as organization,U.createdate,U.safekey,U.comment 
     FROM certmgr as U
     LEFT OUTER JOIN vpnpolicy as D on U.organization=D.id WHERE certtype = 'Client' UNION 
-    SELECT id,commonname,certtype,expiration,organization,createdate FROM certmgr WHERE certtype='caserver'
+    SELECT id,commonname,certtype,expiration,organization,createdate,safekey,comment FROM certmgr WHERE certtype='caserver'
     order by id
     """
     certinfo_list = readDb(sql,)

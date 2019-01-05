@@ -35,37 +35,37 @@
                         <div class="input-group">
                            <span class="input-group-addon">验证方式&emsp;</span>
                            <select style="width:420px" class="form-control" name="authtype">
-				<option 
-                                %if info.get('authtype','') == 2:
-                                        selected
-                                %end 
+             <option 
+                %if info.get('authtype','') == '2':
+                    selected
+                %end 
                                 value="2">支持证书+密码认证          
                                 </option>
                                 <option 
-				%if info.get('authtype','') == 0:
-					selected
-				%end 
+                %if info.get('authtype','') == '0':
+                    selected
+                %end 
                                         value="0">证书认证
                                 </option>
                                 <option 
-				%if info.get('authtype','') == 1:
-                                        selected
-                                %end 
+                %if info.get('authtype','') == '1':
+                    selected
+                %end 
                                         value="1">密码认证
                                 </option>
                             </select>
                         </div>
                    </div>
-		    <div class="modal-body">
+            <div class="modal-body">
                         <div class="input-group">
                           <span class="input-group-addon">监听信息&emsp;</span>
-			  <input type="text" style="width:210px" class="form-control" id="" name="ipaddr" onkeyup="this.value=this.value.replace(/[^\d.*]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="IP地址" aria-describedby="inputGroupSuccess4Status"
-			   %if info.get('ipaddr',''): 
+                          <input type="text" style="width:210px" class="form-control" id="" name="ipaddr" onkeyup="this.value=this.value.replace(/[^\d.*]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="IP地址" aria-describedby="inputGroupSuccess4Status"
+                           %if info.get('ipaddr',''): 
                                 value="{{info.get('ipaddr','')}}"
                            %else :
                                 value="*"
                            %end 
-			  >
+             >
 			  <input type="text" style="width:210px" class="form-control" id="" name="servport" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="监听端口" aria-describedby="inputGroupSuccess4Status" 
 			   %if info.get('servport',''): 
 			   	value="{{info.get('servport','')}}"
@@ -144,13 +144,13 @@
 			   <span class="input-group-addon">启用压缩&emsp;</span>
 			   <select style="width:420px" class="form-control" name="comp">
                                 <option 
-				%if info.get('comp','')==0 : 
+				%if info.get('comp','')=='0' : 
                                     selected    
 				%end 
 				value="0">启用 
                                 </option>
                                 <option 
-				%if info.get('comp','')==1 : 
+				%if info.get('comp','')=='1' : 
                                     selected    
                                 %end 
                                         value="1">禁用
@@ -162,10 +162,16 @@
 			 <div class="input-group">
                            <span class="input-group-addon">AnyConnect支持</span>
 			   <select style="width:387px" class="form-control" name="cisco">
-                                <option 
-                                    selected    value="0">启用                 
+                                <option
+                                %if info.get('cisco','')=='0' : 
+                                    selected
+                                %end 
+                                value="0">启用                   
                                 </option>
                                 <option 
+                                %if info.get('cisco','')=='1' : 
+                                    selected
+                                %end 
                                         value="1">禁用
                                 </option>
                             </select>
