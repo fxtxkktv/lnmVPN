@@ -8,7 +8,9 @@ if [ ! -f $wkdir/main.py ] ;then
    wkdir=$(cd $(dirname $0)/../; pwd)
 fi
 ipset=$(which ipset)
-pytools=$(which python27)
+
+source $wkdir/venv/bin/activate
+pytools="$wkdir/venv/bin/python"
 
 getid=$($pytools $wkdir/tools/API.py API getUserLineID $USERNAME)
 
