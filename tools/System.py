@@ -810,15 +810,15 @@ def do_addservconf():
     if netmod.checkip(idata['virip']) == False or netmod.checkmask(idata['virmask']) == False :  
        msg = {'color':'red','message':u'虚拟地址填写不合法，保存失败'}
        return template('vpnservconf',session=s,msg=msg,info={})
+    if idata['authtype'] == '3':
+       idata = {"authtype": "3", "service": "off"}
     sql = " update sysattr set value=%s where attr='vpnserver' "
     iidata = json.dumps(idata)
     result = writeDb(sql,(iidata,))
-    #sql = " INSERT INTO vpnservconf(servmode,authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco) values ('server',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    #data = (authtype,ipaddr,servport,virip,virmask,maxclient,maxuser,authtimeout,authnum,locktime,comp,cisco)
-    #result = writeDb(sql,data)
     if result == True :
        writeVPNconf(action='addconf')
-       cmds.servboot('ocserv')
+       if idata['authtype'] != '3':
+          cmds.servboot('ocserv')
        writeUTMconf(action='uptconf')
        msg = {'color':'green','message':u'配置保存成功'}
        return template('vpnservconf',session=s,msg=msg,info={})
@@ -877,16 +877,20 @@ def addclientconf():
            infos = {}
            infos['filename']=str(i)
            conncerts_list.append(infos)
-    #加载正常配置
-    if not (idata['ipaddr'] and idata['servport'] and idata['tunid'] and idata['vmtu']):
-       msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
-       sql = " select value from sysattr where attr='vpnclient' "
-       idata = readDb(sql,)
-       try:
-          info = json.loads(idata[0].get('value'))
-       except:
-          return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
-       return template('addvpncltconfig',session=s,msg=msg,info=info,conncerts_list=conncerts_list)
+    #加载正常配置判断
+    if not (idata['ipaddr'] and idata['servport'] and idata['tunid'] and idata['vmtu']) :
+       #处理特殊情况，关闭服务时
+       if idata['authtype'] != '2' :
+          msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
+          sql = " select value from sysattr where attr='vpnclient' "
+          idata = readDb(sql,)
+          try:
+             info = json.loads(idata[0].get('value'))
+          except:
+             return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+          return template('addvpncltconfig',session=s,msg=msg,info=info,conncerts_list=conncerts_list)
+       else :
+          idata={"authtype": "2", "service": "off"}
     sql = " update sysattr set value=%s where attr='vpnclient' "
     iidata=json.dumps(idata)
     result = writeDb(sql,(iidata,))

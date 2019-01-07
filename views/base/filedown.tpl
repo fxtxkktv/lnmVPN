@@ -20,14 +20,11 @@
                 </div><!--Widget Header-->
 		<div style="padding:-10px 0px;" class="widget-body no-padding">
 		  <p style="line-height: 5px;">&emsp;</p>
-		  <p><span>&emsp;Windows anyconnect客户端：(链接分享密码:vzfn)</span></p>
-		  <p><span>&emsp;Win7/Win8/Win10:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
-		  <p><span>&emsp;Winxp :&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
+		  <p><span>&emsp;Anyconnect、OpenConnect客户端：(链接分享密码:vzfn)</span></p>
+		  <p><span>&emsp;百度网盘:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
 		  <p style="line-height: 5px;">&emsp;</p>
-		  <p><span>&emsp;Mobile anyconnect客户端：(链接分享密码:vzfn)</span></p>
-		  <p><span>&emsp;Android 4.0+:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
-		  <p><span>&emsp;Apple IOS:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
-		  <p><span>&emsp;Apple Mac:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
+		  <p><span>&emsp;用户帮助文档：</span></p>
+		  <p><span>&emsp;百度网盘:&emsp;<a href="https://pan.baidu.com/s/17mmZWm4ZWK_5GwO4PaOjIA" target="_bank">https://pan.baidu.com/s/17mmZWm4ZWK_5GwO4PaOjIA</a></span></p>
 		  <p style="line-height: 5px;">&emsp;</p>
 		  <p><span>&emsp;FTP客户端下载：</span></p>
 		  <p><span>&emsp;Filezilla:&emsp;<a href="https://www.filezilla.cn/download" target="_bank">https://www.filezilla.cn/download</a> </span></p>

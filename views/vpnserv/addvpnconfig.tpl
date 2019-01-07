@@ -34,7 +34,7 @@
 		    <div class="modal-body">
                         <div class="input-group">
                            <span class="input-group-addon">验证方式&emsp;</span>
-                           <select style="width:420px" class="form-control" name="authtype">
+                           <select style="width:420px" class="form-control" id="sel" name="authtype">
              <option 
                 %if info.get('authtype','') == '2':
                     selected
@@ -53,10 +53,16 @@
                 %end 
                                         value="1">密码认证
                                 </option>
+                                <option 
+                %if info.get('authtype','') == '3':
+                    selected
+                %end 
+                                        value="3">关闭服务
+                                </option>
                             </select>
                         </div>
                    </div>
-            <div class="modal-body">
+            <div class="modal-body" id="p_a">
                         <div class="input-group">
                           <span class="input-group-addon">监听信息&emsp;</span>
                           <input type="text" style="width:210px" class="form-control" id="" name="ipaddr" onkeyup="this.value=this.value.replace(/[^\d.*]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="IP地址" aria-describedby="inputGroupSuccess4Status"
@@ -75,7 +81,7 @@
 			   >
                         </div>
                     </div>
-		    <div class="modal-body">
+		    <div class="modal-body" id="p_b">
                         <div class="input-group">
                           <span class="input-group-addon">虚拟网络段</span>
                           <input type="text" style="width:210px" class="form-control" id="" name="virip" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="虚拟IP" aria-describedby="inputGroupSuccess4Status"
@@ -94,7 +100,7 @@
                            >
                         </div>
                     </div>
-		    <div class="modal-body">
+		    <div class="modal-body" id="p_c">
                         <div class="input-group">
                           <span class="input-group-addon">连接数控制</span>
                           <input type="text" style="width:210px" class="form-control" id="" name="maxclient" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="最大连接数" aria-describedby="inputGroupSuccess4Status" 
@@ -113,7 +119,7 @@
 			 >
                        </div>
                     </div>
-		    <div class="modal-body">
+		    <div class="modal-body" id="p_d">
 		    	<div class="input-group">
 			   <span class="input-group-addon">验证控制&emsp;</span>
 			   <input type="text" style="width:140px" class="form-control" id="" name="authtimeout" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="验证超时时间(s)" aria-describedby="inputGroupSuccess4Status" 
@@ -139,7 +145,7 @@
                            >
 		    	</div>
 		    </div>
-		    <div class="modal-body">
+		    <div class="modal-body" id="p_e">
                         <div class="input-group">
 			   <span class="input-group-addon">启用压缩&emsp;</span>
 			   <select style="width:420px" class="form-control" name="comp">
@@ -158,10 +164,10 @@
                             </select>
 			</div>
 		   </div>
-		   <div class="modal-body">
+		   <div class="modal-body" id="p_f">
 			 <div class="input-group">
                            <span class="input-group-addon">AnyConnect支持</span>
-			   <select style="width:387px" class="form-control" name="cisco">
+                           <select style="width:387px" class="form-control" name="cisco">
                                 <option
                                 %if info.get('cisco','')=='0' : 
                                     selected
@@ -175,15 +181,15 @@
                                         value="1">禁用
                                 </option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="modal-body" id="signd">
+              </div>
+           </div>
+           <div class="modal-body" id="p_g">
                         <span style="color:#666666;">备注: 如服务启动失败请检查证书已初始化且配置组策略Profile.xml属性文件.</span>
-                    </div>
-                    <div class="modal-footer">
+           </div>
+           <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
 			            <a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
-                    </div>
+           </div>
                 </div>
               </form>
             </div>
@@ -193,3 +199,27 @@
 <script src="/assets/js/datetime/bootstrap-datepicker.js"></script> 
 <script charset="utf-8" src="/assets/kindeditor/kindeditor.js"></script>
 <script charset="utf-8" src="/assets/kindeditor/lang/zh_CN.js"></script>
+<script language="JavaScript" type="text/javascript">
+$(function(){
+  $('#sel').click(function() {
+    if (this.value == '3') {
+    $('#p_a').hide();
+    $('#p_b').hide();
+    $('#p_c').hide();
+    $('#p_d').hide();
+    $('#p_e').hide();
+    $('#p_f').hide();
+    $('#p_g').hide();
+    } else {
+    $('#p_a').show();
+    $('#p_b').show();
+    $('#p_c').show();
+    $('#p_d').show();
+    $('#p_e').show();
+    $('#p_f').show();
+    $('#p_g').show();
+    }
+ });
+ $('#sel').click();
+});
+</script>
