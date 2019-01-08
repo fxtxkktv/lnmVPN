@@ -1,5 +1,10 @@
 # 该项目应用于企业远程维护、应用访问、安全连接、GFW路由跳转
-# 还有惊喜功能哦 ！！！
+### 1.支持Android、IOS、MAC、Windows、Linux各类客户端拨入
+### 2.支持不用用户不同的访问策略控制
+### 2.支持基于不同的用户策略组进行VPN连接限速
+### 3.支持用户在线下载客户端资源及用户配置说明
+### 4.支持通过VPN帐号自动翻墙并共享路由，供企业内部学术研究
+### 5.支持DNS全局代理及防污染控制
 ### 客户端下载：https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ 分享密码:vzfn
 
 ## 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
@@ -53,10 +58,16 @@ pip install -r readme/requirements.txt <br>
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/systeminfo.jpg)
 ### 网络配置
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/networks.jpg)
+### DNS配置
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/dns.jpg)
 ### UTM防护
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/utm.jpg)
 ### VPN配置
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/vpnserv.jpg)
+### 证书管理
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/certs.jpg)
+### 策略配置
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/policys.jpg)
 ### 日志审计
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/logaudit.jpg)
 ### 帮助文档
