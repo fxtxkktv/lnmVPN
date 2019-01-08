@@ -83,6 +83,18 @@ $(function(){
               valign: 'middle',
               sortable: false,
           },{
+              field: 'txlimit',
+              title: '发送速率(M/s)',
+              align: 'center',
+              valign: 'middle',
+              sortable: false
+          },{
+              field: 'rxlimit',
+              title: '接收速率(M/s)',
+              align: 'center',
+              valign: 'middle',
+              sortable: false
+          },{
               field: 'pushdns',
               title: '推送DNS',
               align: 'center',

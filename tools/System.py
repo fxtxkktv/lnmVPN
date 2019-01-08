@@ -627,7 +627,7 @@ def getifaceinfo():
 @route('/api/getpolicylist',method=['GET', 'POST'])
 @checkAccess
 def getifaceinfo():
-    sql = " SELECT id,name,pushdns,left(pushroute,100) as pushroute,left(pushnoroute,100) as pushnoroute FROM vpnpolicy "
+    sql = " SELECT id,name,txlimit,rxlimit,pushdns,left(pushroute,100) as pushroute,left(pushnoroute,100) as pushnoroute FROM vpnpolicy "
     iface_list = readDb(sql,)
     return json.dumps(iface_list)
 
