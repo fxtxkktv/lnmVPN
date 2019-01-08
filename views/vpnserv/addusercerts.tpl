@@ -32,7 +32,7 @@
 		    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">用户名&emsp;</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="commonname" aria-describedby="inputGroupSuccess4Status" value="{{info.get('commonname','')}}">
+                            <input type="text" style="width:420px" class="form-control" id="" name="commonname" onkeyup="value=value.replace(/[^\w\/]/ig,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('commonname','')}}">
                         </div>
             </div>
             <div class="modal-body">
@@ -44,7 +44,7 @@
             <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">安全密钥</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="safekey" aria-describedby="inputGroupSuccess4Status" value="{{info.get('safekey','')}}">
+                            <input type="text" style="width:420px" class="form-control" id="" name="safekey" onkeyup="this.value=this.value.replace(/\D/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('safekey','')}}">
                         </div>
             </div>
 		    <div class="modal-body">

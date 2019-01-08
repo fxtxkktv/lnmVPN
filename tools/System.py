@@ -652,6 +652,8 @@ def do_addpolicy():
     """POST"""
     s = request.environ.get('beaker.session')
     name = request.forms.get("name")
+    txlimit = request.forms.get("txlimit")
+    rxlimit = request.forms.get("rxlimit")
     pushdns = request.forms.get("pushdns").replace('\r\n','\n').strip()
     pushroute = request.forms.get("pushroute").replace('\r\n','\n').strip()
     pushnoroute = request.forms.get("pushnoroute").replace('\r\n','\n').strip()
@@ -664,9 +666,16 @@ def do_addpolicy():
         if netmod.checkipmask(ipmask) == False and ipmask != '':
            msg = {'color':'red','message':u'路由内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
-
-    sql = "INSERT INTO vpnpolicy(name,pushdns,pushroute,pushnoroute) VALUES(%s,%s,%s,%s)"
-    data=(name,pushdns,pushroute,pushnoroute)
+    try:
+       int(txlimit)
+    except:
+       txlimit = 100
+    try:
+       int(rxlimit)
+    except:
+       rxlimit = 100
+    sql = "INSERT INTO vpnpolicy(name,txlimit,rxlimit,pushdns,pushroute,pushnoroute) VALUES(%s,%s,%s,%s,%s,%s)"
+    data=(name,txlimit,rxlimit,pushdns,pushroute,pushnoroute)
     result = writeDb(sql,data)
     if result == True:
        writeVPNconf(action='uptgroup')
@@ -682,7 +691,7 @@ def do_addpolicy():
 def editpolicy(id):
     """修改策略"""
     s = request.environ.get('beaker.session')
-    sql = "select name,pushdns,pushroute,pushnoroute from vpnpolicy WHERE id=%s"
+    sql = "select name,txlimit,rxlimit,pushdns,pushroute,pushnoroute from vpnpolicy WHERE id=%s"
     result = readDb(sql,(id,))
     if result :
        return(template('addpolicyconf',session=s,info=result[0]))
@@ -693,6 +702,8 @@ def editpolicy(id):
     """修改策略"""
     s = request.environ.get('beaker.session')
     name = request.forms.get("name")
+    txlimit = request.forms.get("txlimit")
+    rxlimit = request.forms.get("rxlimit")
     pushdns = request.forms.get("pushdns").replace('\r\n','\n').strip()
     pushroute = request.forms.get("pushroute").replace('\r\n','\n').strip()
     pushnoroute = request.forms.get("pushnoroute").replace('\r\n','\n').strip()
@@ -706,9 +717,16 @@ def editpolicy(id):
         if netmod.checkipmask(ipmask) == False and ipmask != '' :
            msg = {'color':'red','message':u'路由内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
-
-    sql = "UPDATE vpnpolicy set name=%s,pushdns=%s,pushroute=%s,pushnoroute=%s where id=%s"
-    data=(name,pushdns,pushroute,pushnoroute,id)
+    try:
+       int(txlimit)
+    except:
+       txlimit = 100
+    try: 
+       int(rxlimit)
+    except:
+       rxlimit = 100
+    sql = "UPDATE vpnpolicy set name=%s,txlimit=%s,rxlimit=%s,pushdns=%s,pushroute=%s,pushnoroute=%s where id=%s"
+    data=(name,txlimit,rxlimit,pushdns,pushroute,pushnoroute,id)
     result = writeDb(sql,data)
     if result == True:
        writeVPNconf(action='uptgroup')
