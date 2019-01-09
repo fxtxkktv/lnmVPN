@@ -69,7 +69,7 @@ CREATE TABLE `logrecord` (
   `objtext` varchar(255) DEFAULT NULL,
   `objhost` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1100 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1103 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +172,7 @@ CREATE TABLE `sysinfo` (
   `tim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=48778 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50170 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `vpnpolicy` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-08 16:28:01
+-- Dump completed on 2019-01-09 16:35:24
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -286,7 +286,7 @@ CREATE TABLE `vpnpolicy` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','zL+ckVsxUYQleCoYHt3BDA==',100033,1,'2018-09-26 01:00:06',1,'admin');
+INSERT INTO `user` VALUES (1,'admin','p9PvYWRiJQA0Fw5fB1TjKw==',100033,1,'2018-09-26 01:00:06',1,'admin');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -299,7 +299,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-08 16:28:01
+-- Dump completed on 2019-01-09 16:35:24
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -337,4 +337,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-08 16:28:01
+-- Dump completed on 2019-01-09 16:35:24
