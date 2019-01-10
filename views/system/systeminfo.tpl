@@ -1,7 +1,7 @@
 %rebase base position='欢迎主页', managetopli="system"
 <link href="/assets/css/charisma-app.css" rel="stylesheet" type="text/css" />
 <div class="page-body">
-    <div class="row">
+    <div class="row" >
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="widget" style="background: #fff;">
                 <div class="widget-header bordered-bottom bordered-themesecondary">
@@ -13,17 +13,17 @@
                         <a href="#" data-toggle="dispose"><i class="fa fa-times"></i></a>
                     </div>
                 </div><!--Widget Header-->
-   <div class="row">
+    <div class="row">
     <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff;">
             <div class="box-header well" data-original-title>
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
-		<span class="widget-caption themesecondary">系统信息</span>
-		<!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <span class="widget-caption themesecondary">系统信息</span>
+                <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
             </div>
-	
+
         <div class="box-content" style="height:300px;">
-		  <div style="display: block;">
+          <div style="display: block;" id="newpage">
                     <table class="table">
                         <tbody>
                         <tr>
@@ -46,17 +46,17 @@
                             <td>Python版本:</td>
                             <td class="center">{{info.get('pyversion','')}}</td>
                         </tr>
-			            <tr>
+                        <tr>
                             <td>CPU型号:</td>
                             <td class="center">{{info.get('cpumode','')}}</td>
                         </tr>
-			            <tr>
+                        <tr>
                             <td>MEM容量:</td>
                             <td class="center">{{info.get('memsize','')}}</td>
                         </tr>
-			            <tr>
+                        <tr>
                             <td>APP版本:</td>
-			                <td class="center">{{info.get('appversion','')}}</td>
+                            <td class="center">{{info.get('appversion','')}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -70,25 +70,25 @@
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">管理日志</span>
-		<a href="/applog" style="float:right;" ><i class="fa fa-sliders"></i></a>
+                <a href="/applog" style="float:right;" ><i class="fa fa-sliders"></i></a>
             </div>
         <div class="box-content" style="height:300px;">
-		  <div style="display: block;">
+          <div style="display: block;" id="newpage2">
                   <table class="table">
                         <tbody>
-			        <tr>
+                        <tr>
                         <td>用户</td>
                         <td class="center">操作信息</td>
                         <td class="center">远程主机</td>
                         <td class="center">操作时间</td>
-			        </tr>
-			        %for log in logdict:
-			        <tr>
-			        <td>{{log.get('objtext','')}}</td>
-			        <td class="center">{{log.get('objact','')}}</td>
-			        <td class="center">{{log.get('objhost','')}}</td>
-			        <td class="center">{{log.get('objtime','')}}</td>		
-			        </tr>
+                        </tr>
+                    %for log in logdict:
+                       <tr>
+                       <td>{{log.get('objtext','')}}</td>
+                       <td class="center">{{log.get('objact','')}}</td>
+                       <td class="center">{{log.get('objhost','')}}</td>
+                       <td class="center">{{log.get('objtime','')}}</td>		
+                       </tr>
                     %end
                     </tbody>
                   </table>
@@ -96,25 +96,14 @@
             </div>
         </div>
    </div>
-   <!--div class="box col-md-12">
-        <div class="box-inner widget" style="background: #fff;height: 330px;">
-            <div class="box-header well" style="margin-top: 0px;margin-left: 0px;" data-original-title="">
-                <i class="glyphicon glyphicon-list-alt widget-icon"></i>
-                <span class="widget-caption themesecondary">系统活动</span>
-            </div>
-            <div id="echartsLine1" class="box-content" style="width: 32%;height: 300px;float: left;margin-top: 0px;margin-left: 10px;"></div>
-	    <div id="echartsLine2" class="box-content" style="width: 32%;height: 300px;float: left;margin-top: 0px;margin-left: 10px;"></div>
-	    <div id="echartsLine3" class="box-content" style="width: 32%;height: 300px;float: left;margin-top: 0px;margin-left: 10px;"></div>
-        </div>
-   </div-->
    <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff; height: 300px;">
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">CPU负载</span>
-		<!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
-	    <div id="echartsLine1" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
-	    </div>
+                <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <div id="echartsLine1" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
+            </div>
         </div>
    </div>
    <div class="box col-md-6">
@@ -122,19 +111,19 @@
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">内存使用率</span>
-		<!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
-	    <div id="echartsLine2" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
-	    </div>
-	</div>
+                <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <div id="echartsLine2" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
+            </div>
+        </div>
    </div>
    <div class="box col-md-6">
         <div class="box-inner widget" style="background: #fff;height: 300px;">
             <div class="box-header well" data-original-title="">
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">网络IO</span>
-		        <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
+                <!--a href="/systeminfomore" style="float:right;" ><i class="fa fa-sliders"></i></a-->
                 <div id="echartsLine3" class="box-content" style="width: 100%;height: 270px;float: left;margin-top: 0px;margin-left: 3px;"></div>
-	        </div>
+            </div>
         </div>
    </div>
    <div class="box col-md-6">
@@ -153,6 +142,8 @@
 <!--script src="https://cdn.staticfile.org/echarts/4.2.0-rc.1/echarts.js"></script-->
 <script src="/assets/js/echarts.js"></script>
 <script type="text/javascript">
+
+function refreshOnTime() {
     var cpu = {
         'used': [],
         'free': [],
@@ -202,7 +193,7 @@
             createEcharts();
         }
     });
-
+ 
     function creatNetEcharts() {
         option = {
             /*title: {
@@ -251,7 +242,7 @@
             }, {
                 handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
             }],
-        };　　
+        };
         echartsLineFunc = echarts.init(echartsLine3);
         echartsLineFunc.setOption(option);
     };
@@ -396,4 +387,22 @@
         creatMemoryEcharts();
         creatVPNEcharts();
     };
+    setInterval('refreshOnTime()', 60000);
+};
+    refreshOnTime();
+</script>
+
+
+<script language="JavaScript">
+    $(function () {
+        setInterval(function () {
+            //注意后面DIV的ID前面的空格，很重要！没有空格的话，会出双眼皮！（也可以使用类名）
+            $("#newpage").load(location.href + " #newpage")
+        }, 10000); //5秒自动刷新
+    })
+    $(function () {
+        setInterval(function () {
+            $("#newpage2").load(location.href + " #newpage2")
+        }, 30000); //30秒自动刷新
+    })
 </script>
