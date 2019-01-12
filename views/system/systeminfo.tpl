@@ -407,6 +407,6 @@ function refreshOnTime() {
     $(function () {
         setInterval(function () {
 	refreshOnTime();
-        }, 10000); //30秒自动刷新
+        }, 60000); //60秒自动刷新
     })
 </script>
