@@ -387,7 +387,6 @@ function refreshOnTime() {
         creatMemoryEcharts();
         creatVPNEcharts();
     };
-    setInterval('refreshOnTime()', 60000);
 };
     refreshOnTime();
 </script>
@@ -404,5 +403,10 @@ function refreshOnTime() {
         setInterval(function () {
             $("#newpage2").load(location.href + " #newpage2")
         }, 30000); //30秒自动刷新
+    })
+    $(function () {
+        setInterval(function () {
+	refreshOnTime();
+        }, 10000); //30秒自动刷新
     })
 </script>
