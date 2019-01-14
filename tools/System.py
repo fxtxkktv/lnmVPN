@@ -250,7 +250,10 @@ def servtools():
 def do_servtools():
     s = request.environ.get('beaker.session')
     toolsname = request.forms.get("toolsname")
-    servname = request.forms.get("servname")
+    if toolsname == 'DEVACT':
+       servname = request.forms.get("servname2")
+    else:
+       servname = request.forms.get("servname")
     result = cmds.syscmds(toolsname,servname)
     info = {}
     info['toolsname'] = toolsname
