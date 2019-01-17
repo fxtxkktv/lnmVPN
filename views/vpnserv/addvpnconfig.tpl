@@ -184,7 +184,7 @@
               </div>
            </div>
            <div class="modal-body" id="p_g">
-                        <span style="color:#666666;">备注: 如服务启动失败请检查证书已初始化且配置组策略Profile.xml属性文件.</span>
+                       <span style="color:red;">备注: 如服务启动失败请检查<strong>&nbsp;证书已初始化&nbsp;</strong>且<strong>&nbsp;已配置组策略ProfileXML属性文件.&nbsp;</strong></span>
            </div>
            <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>

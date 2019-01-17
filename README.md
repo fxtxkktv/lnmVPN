@@ -10,7 +10,7 @@
 ## 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
 
 1. 安装初始化环境 python >=2.7 (推荐lnmos定制版本,可以在"客户端下载"中获取) <br>
-rpm -i Py27lnmos-2.7.15-2.el6.rpm <br>
+rpm -i Py27lnmos-2.7.15-6.el6.rpm <br>
 安装pip工具 <br>
 wget https://bootstrap.pypa.io/get-pip.py <br>
 /opt/Py27lnmos/bin/python27 get-pip.py <br>
@@ -32,7 +32,7 @@ yum install -y gcc mysql-server mysql-devel MySQL-python <br>
 yum install -y gnutls-utils <br>
 VPN服务: [yum需要调用第三方源] <br>
 yum install -y epel-release <br>
-yum install -y ocserv openconnect <br>
+yum install -y ocserv openconnect iptables ipset dnsmasq<br>
 安装Python程序扩展包 <br>
 pip install -r readme/requirements.txt <br>
 

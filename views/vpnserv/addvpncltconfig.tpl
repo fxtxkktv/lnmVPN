@@ -155,17 +155,19 @@ $(function(){
   $('#sel').click(function() {
     if (this.value == '0') {
     $('#servinfo').show();
+    $('#servopts').show();
     $('#chkconn').show();
-	$('#signa').hide();
+    $('#signa').hide();
     $('#signc').show();
     $('#signd').show();
     //document.getElementById("selInput").readOnly=false ;
     /*显示 $('#selInput').show(); */
     } else if (this.value == '1'){
     $('#servinfo').show();
+    $('#servopts').show();
     $('#chkconn').show();
-	$('#signc').hide();
-	$('#signa').show();
+    $('#signc').hide();
+    $('#signa').show();
     $('#signd').show();
     } else {
     $('#servinfo').hide();

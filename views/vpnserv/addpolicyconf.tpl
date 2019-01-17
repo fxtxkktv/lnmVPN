@@ -29,6 +29,26 @@
             </div>
             <div class="modal-body">
                         <div class="input-group">
+                         <span class="input-group-addon">分配地址</span>
+                         <select style="width:210px" class="form-control" id="sel" name="authtype">
+                         <option 
+                            %if info.get('pushaddr','') == 'DynamicIP':
+                                selected
+                            %end 
+                                value="0">全局自动分配
+                        </option>
+                        <option 
+                            %if info.get('pushaddr','') != 'DynamicIP':
+                                selected
+                            %end 
+                            value="1">自定义分配
+                        </option>
+                        </select>
+                        <input type="text" style="width:210px" id="pushaddr" class="form-control" name="pushaddr" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('pushaddr','')}}">
+                        </div>
+            </div>
+            <div class="modal-body">
+                        <div class="input-group">
                          <span class="input-group-addon">速率限制</span>
                          <input type="text" style="width:210px" class="form-control" name="txlimit" placeholder="发送速率(M/s)" onkeyup="this.value=this.value.replace(/\D/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('txlimit','')}}">
                          <input type="text" style="width:210px" class="form-control" name="rxlimit" placeholder="接收速率(M/s)" onkeyup="this.value=this.value.replace(/\D/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('rxlimit','')}}">
@@ -47,7 +67,7 @@
 			<textarea id="pushnoroute" name="pushnoroute" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('pushnoroute','')}}</textarea>
 		    </div>
             <div class="modal-body">
-                        <span style="color:#666666;">备注: 速率限制填写为空表示不限制VPN速率.</span>
+                        <span style="color:#666666;">备注: 速率限制填写为空或0表示不限制VPN速率.</span>
             </div>
             <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">提交</button>
@@ -62,3 +82,18 @@
 <script src="/assets/js/datetime/bootstrap-datepicker.js"></script> 
 <script charset="utf-8" src="/assets/kindeditor/kindeditor.js"></script>
 <script charset="utf-8" src="/assets/kindeditor/lang/zh_CN.js"></script>
+<script language="JavaScript" type="text/javascript">
+$(function(){
+  $('#sel').click(function() {
+    if (this.value == '0') {
+        //to do something  这写你的逻辑 之后清空input
+       document.getElementById('pushaddr').value = "DynamicIP";
+       document.getElementById("pushaddr").readOnly=true ;
+    } else {
+       document.getElementById('pushaddr').value = "{{info.get('pushaddr','')}}";
+       document.getElementById("pushaddr").readOnly=false ;
+    }
+ });
+ $('#sel').click();
+});
+</script>

@@ -83,6 +83,17 @@ $(function(){
               valign: 'middle',
               sortable: false,
           },{
+              field: 'pushaddr',
+              title: '分配地址',
+              align: 'center',
+              valign: 'middle',
+              sortable: false,
+              formatter: function(value,row,index){
+              if( value == 'DynamicIP' ){
+                                return '动态地址';
+              }else{ return value;}
+              }
+          },{
               field: 'txlimit',
               title: '发送速率(M/s)',
               align: 'center',
@@ -104,12 +115,14 @@ $(function(){
               field: 'pushroute',
               title: '推送安全路由',
               align: 'center',
-	      valign: 'middle',
+              visible: false,
+	          valign: 'middle',
               sortable: false
           },{
               field: 'pushnoroute',
               title: '推送本地路由',
               align: 'center',
+              visible: false,
               valign: 'middle',
               sortable: false
 	  },{
