@@ -97,7 +97,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存</button>
-			<a id="adddnsconf" style="float:left" href="/dnsservconf" class="btn btn-primary ">返回</a>
+                        <a id="adddnsconf" style="float:left" href="/dnsservconf" class="btn btn-primary ">返回</a>
                     </div>
                 </div>
               </form>

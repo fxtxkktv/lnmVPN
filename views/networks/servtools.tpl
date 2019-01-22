@@ -82,9 +82,9 @@
                         <div class="input-group">
                           <textarea id="result" name="result"
                           %if info.get('result','') == '':
-                             style="width:500px;height:250px;overflow:hidden;background-color:#202020;color:green;resize:vertical;display:none"
+                             style="width:500px;height:250px;overflow:hidden;background-color:#000000;color:#33FF33;resize:vertical;display:none"
                           %else:
-                             style="width:500px;height:250px;overflow:hidden;background-color:#202020;color:green;resize:vertical;"
+                             style="width:500px;height:250px;overflow:hidden;background-color:#000000;color:#33FF33;resize:vertical;font-family:sans-serif;"
                           %end
                           readonly>{{info.get('result','')}}
                           </textarea>
