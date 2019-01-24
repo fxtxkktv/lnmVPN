@@ -83,6 +83,11 @@
                         <span class="menu-text">DHCP服务</span>
                     </a>
                 </li>
+        <li class="">
+                    <a href="/ifdatashow">
+                        <span class="menu-text">流量统计</span>
+                    </a>
+                </li>
 		<li class="">
                     <a href="/servtools">
                         <span class="menu-text">运维工具</span>
