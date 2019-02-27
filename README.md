@@ -12,9 +12,13 @@
 
 1. 安装初始化环境 python >=2.7 (推荐lnmos定制版本,可以在"客户端下载"中获取) <br>
 rpm -i Py27lnmos-2.7.15-6.el6.rpm <br>
+加载python环境
+export PATH=$PATH:/opt/Py27lnmos/bin
+检测是否安装必须工具
+yum -y install wget git 
 安装pip工具 <br>
 wget https://bootstrap.pypa.io/get-pip.py <br>
-/opt/Py27lnmos/bin/python27 get-pip.py <br>
+/opt/Py27lnmos/bin/python get-pip.py <br>
 安装virtualenv组件[使程序运行环境和系统环境分离] <br>
 /opt/Py27lnmos/bin/pip install virtualenv <br> 
 获取程序代码 <br>

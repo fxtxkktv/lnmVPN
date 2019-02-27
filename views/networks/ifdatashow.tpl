@@ -30,7 +30,7 @@
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">操作信息</span>
             </div>
-            <div class="box-content" style="height:660px;padding:0px;">
+            <div class="box-content" style="height:680px;padding:0px;">
             <div class="modal-body" style="width:100%">
                   <label class="" for="inputSuccess1">网络接口</label>
                   <select type="text" class="form-control" id="ifname" name="ifname">
@@ -39,7 +39,7 @@
                                %if sel.get('ifname','') == name.get('attr'):
                                    selected
                                %end
-                                value='{{name.get('attr')}}'>{{name.get('attr')}}</option>
+                                value='{{name.get('ifacename')}}'>{{name.get('ifacename')}}</option>
                           %end
                   </select>
             </div>
@@ -64,23 +64,23 @@
                   </select>
             </div>
             <div class="modal-body" style="width:100%">
-                  <label class="" for="inputSuccess1">刷新时间</label>
+                  <label class="" for="inputSuccess1">统计时间</label>
                   <select class="form-control" id="rftime" name="rftime" >
                      <option
                      %if sel.get('rftime','') == '10':
                         selected
                      %end
-                     value='10'>每10秒</option>
+                     value='10'>10秒</option>
                      <option
                      %if sel.get('rftime','') == '30':
                         selected
                      %end
-                     value='30'>每30秒</option>
+                     value='30'>30秒</option>
                      <option
                      %if sel.get('rftime','') == '60':
                         selected
                      %end
-                     value='60'>每60秒</option>
+                     value='60'>60秒</option>
                   </select>
             </div>
             <div class="modal-body" id="submit">
@@ -96,7 +96,7 @@
                 <i class="glyphicon glyphicon-list-alt widget-icon"></i>
                 <span class="widget-caption themesecondary">运行结果</span>
             </div>
-            <div class="box-content" style="height:660px;padding:0px;">
+            <div class="box-content" style="height:680px;padding:0px;">
              <div class="modal-body" style="width:100%">
                   <textarea id="runresult" name="runresult" 
                     style="width:100%;height:650px;background-color:#000000;color:#33ff33;resize:none;font-family:sans-serif;" 
