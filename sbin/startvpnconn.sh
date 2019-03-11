@@ -37,7 +37,12 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        vmtu=${uDict["vmtu"]} 
        vpnuser=${uDict["vpnuser"]}
        connpass=${uDict["vpnpass"]}
-       OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       chkdtls=${uDict["dtls"]}
+       if [ ${uDict["dtls"]} = "1"  ];then
+          OPTIONS="-u $vpnuser --pfs $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       else
+          OPTIONS="-u $vpnuser --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       fi
     elif [ ${uDict["authtype"]} = "0" ];then
        server=${uDict["ipaddr"]}
        servport=${uDict["servport"]}
@@ -45,7 +50,11 @@ for servID in $(awk -F= '/^openconn_conf/{print $1}' $confdir/ocserv_client.conf
        vmtu=${uDict["vmtu"]}
        certinfo=${uDict["certinfo"]}
        connpass=${uDict["certpass"]}
-       OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       if [ ${uDict["dtls"]} = "1"  ];then
+          OPTIONS="-c $wkdir/certs/conncerts/$certinfo --pfs $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       else
+          OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
+       fi
     fi
 done
 

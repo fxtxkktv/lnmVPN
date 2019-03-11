@@ -102,6 +102,25 @@
                          </select>
                  </div>
             </div>
+            <div class="modal-body" id="chkdtls">
+                 <div class="input-group">
+                      <span class="input-group-addon" hidden>DTLS优化&emsp;</span>
+                      <select style="width:420px" class="form-control" name="chkdtls">
+                                <option 
+                                %if info.get('chkdtls','') == '1':
+                                        selected
+                                %end 
+                                     value="1">启用DTLS连接
+                                </option>
+                                <option 
+                                %if info.get('chkdtls','') == '0':
+                                        selected
+                                %end 
+                                     value="0">禁用DTLS连接
+                                </option>
+                         </select>
+                 </div>
+            </div>
 		    <div class="modal-body" id="signa">
                  <div class="input-group">
                           <span class="input-group-addon">验证信息&emsp;</span>
@@ -157,6 +176,7 @@ $(function(){
     $('#servinfo').show();
     $('#servopts').show();
     $('#chkconn').show();
+    $('#chkdtls').show();
     $('#signa').hide();
     $('#signc').show();
     $('#signd').show();
@@ -166,6 +186,7 @@ $(function(){
     $('#servinfo').show();
     $('#servopts').show();
     $('#chkconn').show();
+    $('#chkdtls').show();
     $('#signc').hide();
     $('#signa').show();
     $('#signd').show();
@@ -173,6 +194,7 @@ $(function(){
     $('#servinfo').hide();
     $('#servopts').hide();
     $('#chkconn').hide();
+    $('#chkdtls').hide();
     $('#signc').hide();
     $('#signa').hide();
     $('#signd').hide();

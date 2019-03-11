@@ -898,6 +898,7 @@ def addclientconf():
     idata['tunid'] = request.forms.get("tunid")
     idata['vmtu'] = request.forms.get("vmtu")
     idata['chkconn'] = request.forms.get("chkconn")
+    idata['chkdtls'] = request.forms.get("chkdtls")
     #获取证书选择列表
     conncerts_list=[]
     status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
