@@ -62,24 +62,32 @@ def do_additem():
     s = request.environ.get('beaker.session')
     ifacename = request.forms.get("ifacename")
     ifacetype = request.forms.get("ifacetype")
-    ipaddr = request.forms.get("ipaddr")
-    netmask = request.forms.get("netmask")
-    gateway = request.forms.get("gateway")
-    defaultgw = request.forms.get("defaultgw")
-    extip = request.forms.get("extip").replace('\r\n','\n')
-    # 判断填写网关和没有填写网关的情况
-    if ipaddr == '' or netmask == '' :
-       msg = {'color':'red','message':u'地址不合法,添加失败'}
-       return(template('networkconf',session=s,msg=msg))
-    if gateway != '' :
-       if netmod.checkip(ipaddr) == False or netmod.checkmask(netmask) == False or netmod.checkip(gateway) == False or netmod.checknet(gateway,ipaddr,netmask) == False :
-          msg = {'color':'red','message':u'地址不合法,添加失败'}
-          return(template('networkconf',session=s,msg=msg))
+    if ifacetype == 'ADSL' :
+       username = request.forms.get("username")
+       password = request.forms.get("password")
+       mtu = request.forms.get("mtu")
+       defaultgw = request.forms.get("defaultgwB")
     else :
+       ipaddr = request.forms.get("ipaddr")
+       netmask = request.forms.get("netmask")
+       gateway = request.forms.get("gateway")
+       extip = request.forms.get("extip").replace('\r\n','\n')
+       defaultgw = request.forms.get("defaultgwA")
+    osize = request.forms.get("osize")
+    if ifacetype == 'STATIC' :
+      # 固定IP类型：判断填写网关和没有填写网关的情况
+      if ipaddr == '' or netmask == '' :
+         msg = {'color':'red','message':u'地址不合法,添加失败'}
+         return(template('networkconf',session=s,msg=msg))
+      if gateway != '' :
+         if netmod.checkip(ipaddr) == False or netmod.checkmask(netmask) == False or netmod.checkip(gateway) == False or netmod.checknet(gateway,ipaddr,netmask) == False :
+            msg = {'color':'red','message':u'地址不合法,添加失败'}
+            return(template('networkconf',session=s,msg=msg))
+      else :
          if netmod.checkip(ipaddr) == False or netmod.checkmask(netmask) == False :
             msg = {'color':'red','message':u'地址不合法,添加失败'}
             return(template('networkconf',session=s,msg=msg))
-    for extlist in extip.split('\n'):
+      for extlist in extip.split('\n'):
         if len(extlist.split('/')) == 3:
            extsip=extlist.split('/')[0]
            extmask=extlist.split('/')[1]
@@ -98,14 +106,25 @@ def do_additem():
            else :
               msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
               return(template('networkconf',session=s,msg=msg))
+    else :
+        if int(mtu) % 4 != 0 :
+           msg = {'color':'red','message':u'MTU值不合法,更新失败'}
+           return(template('networkconf',session=s,msg=msg))
+        
 
     if ifacename == u'' :
        msg = {'color':'red','message':u'物理接口未选择,添加失败'}
        return(template('networkconf',session=s,msg=msg))
 
-    sql = "INSERT INTO netiface (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip)
-    result = writeDb(sql,data)
+    if ifacetype == 'STATIC' :
+       sql = "INSERT INTO netiface (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+       data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize)
+       result = writeDb(sql,data)
+    else :
+       sql = "INSERT INTO netiface (ifacename,ifacetype,username,password,mtu,defaultgw,osize) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+       data = (ifacename,ifacetype,username,password,mtu,defaultgw,osize)
+       result = writeDb(sql,data)
+
     if result == True:
        writeNIconf(action='uptconf')
        cmds.servboot('networks',action='uptconf')
@@ -116,11 +135,26 @@ def do_additem():
        writeDb(sql2,(ifacename,))
     return template('networkconf',session=s,msg=msg)
 
+@route('/rebootif/<id>')
+@checkAccess
+def do_chgstatus(id):
+    s = request.environ.get('beaker.session')
+    sql = """ select ifacename,ifacetype from netiface where id=%s """
+    msg = {'color':'green','message':u'接口已成功重启'}
+    itfinfo=readDb(sql,(id,))
+    if itfinfo[0].get('ifacetype') == 'ADSL':
+       cmds.gettuplerst('ps aux|grep -e \'xdsl.*%s\'|grep -v grep|awk \'{print $2}\' |xargs -i kill -9 {}' % id)
+       cmds.gettuplerst('ip link set ppp%s down' % itfinfo[0].get('id'))
+    cmds.gettuplerst('ip link set %s down' % itfinfo[0].get('ifacename'))
+    cmds.servboot('networks',action='uptconf')
+    return template('networkconf',session=s,msg=msg)
+
+
 @route('/editiface/<id>')
 @checkAccess
 def editiface(id):
     s = request.environ.get('beaker.session')
-    sql = " SELECT ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip FROM netiface WHERE id = %s "
+    sql = " SELECT ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,username,password,mtu,osize FROM netiface WHERE id = %s "
     sql2 = "select attr as ifacename,concat(attr,'|',value) as value from sysattr where attr=(select ifacename from netiface where id=%s);"
     info = readDb(sql,(id,))
     ifacelist_result = readDb(sql2,(id,))
@@ -136,50 +170,69 @@ def do_editiface(id):
     s = request.environ.get('beaker.session')
     ifacename = request.forms.get("ifacename")
     ifacetype = request.forms.get("ifacetype")
-    ipaddr = request.forms.get("ipaddr")
-    netmask = request.forms.get("netmask")
-    gateway = request.forms.get("gateway")
-    defaultgw = request.forms.get("defaultgw")
-    extip = request.forms.get("extip").replace('\r\n', '\n')
-    # 判断提交异常
-    if ipaddr == '' or netmask == '' :
-       msg = {'color':'red','message':u'地址不合法,添加失败1'}
-       return(template('networkconf',session=s,msg=msg))
-    if gateway != '' :
-       if netmod.checkipmask('%s/%s' % (ipaddr,netmask)) == False or netmod.checknet(gateway,ipaddr,netmask) == False :
-          msg = {'color':'red','message':u'地址不合法,添加失败%s,%s,%s' % (gateway,ipaddr,netmask)}
-          return(template('networkconf',session=s,msg=msg))
+    if ifacetype == 'ADSL' :
+       username = request.forms.get("username")
+       password = request.forms.get("password")
+       mtu = request.forms.get("mtu")
+       defaultgw = request.forms.get("defaultgwB")
     else :
-        if netmod.checkip(ipaddr) == False or netmod.checkmask(netmask) == False :
-           msg = {'color':'red','message':u'地址不合法,添加失败3'}
+       ipaddr = request.forms.get("ipaddr")
+       netmask = request.forms.get("netmask")
+       gateway = request.forms.get("gateway")
+       extip = request.forms.get("extip").replace('\r\n','\n')
+       defaultgw = request.forms.get("defaultgwA")
+    osize = request.forms.get("osize")
+    # 判断提交异常
+    if ifacetype == 'STATIC' :
+      if ipaddr == '' or netmask == '' :
+         msg = {'color':'red','message':u'地址不合法,添加失败'}
+         return(template('networkconf',session=s,msg=msg))
+      if gateway != '' :
+         if netmod.checkipmask('%s/%s' % (ipaddr,netmask)) == False or netmod.checknet(gateway,ipaddr,netmask) == False :
+           msg = {'color':'red','message':u'地址不合法,添加失败%s,%s,%s' % (gateway,ipaddr,netmask)}
            return(template('networkconf',session=s,msg=msg))
+      else :
+         if netmod.checkip(ipaddr) == False or netmod.checkmask(netmask) == False :
+            msg = {'color':'red','message':u'地址不合法,添加失败'}
+            return(template('networkconf',session=s,msg=msg))
 
-    for extlist in extip.split('\n'):
-        if len(extlist.split('/')) == 3:
-           extsip=extlist.split('/')[0]
-           extmask=extlist.split('/')[1]
-           extgw=extlist.split('/')[2]
-           if netmod.checkip(extsip) == False or netmod.checkmask(extmask) == False or netmod.checkip(extgw) == False or netmod.checknet(extgw,extsip,extmask) == False :
-              msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
-              return(template('networkconf',session=s,msg=msg))
-        elif len(extlist.split('/')) == 2:
-           extsip=extlist.split('/')[0]
-           extmask=extlist.split('/')[1]
-           if netmod.checkip(extsip) == False or netmod.checkmask(extmask) == False :
-              msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
-              return(template('networkconf',session=s,msg=msg))
-        elif extlist == u'':
+      for extlist in extip.split('\n'):
+         if len(extlist.split('/')) == 3:
+            extsip=extlist.split('/')[0]
+            extmask=extlist.split('/')[1]
+            extgw=extlist.split('/')[2]
+            if netmod.checkip(extsip) == False or netmod.checkmask(extmask) == False or netmod.checkip(extgw) == False or netmod.checknet(extgw,extsip,extmask) == False :
+               msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
+               return(template('networkconf',session=s,msg=msg))
+         elif len(extlist.split('/')) == 2:
+            extsip=extlist.split('/')[0]
+            extmask=extlist.split('/')[1]
+            if netmod.checkip(extsip) == False or netmod.checkmask(extmask) == False :
+               msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
+               return(template('networkconf',session=s,msg=msg))
+         elif extlist == u'':
               True
-        else :
-           msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
+         else :
+            msg = {'color':'red','message':u'扩展IP地址不合法,更新失败'}
+            return(template('networkconf',session=s,msg=msg))
+    else :
+        if int(mtu) % 4 != 0 :
+           msg = {'color':'red','message':u'MTU值不合法,更新失败'}
            return(template('networkconf',session=s,msg=msg))
 
     if ifacename == u'' :
        msg = {'color':'red','message':u'物理接口未选择,更新失败'}
        return(template('addinterface',session=s,msg=msg))
-    sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,ipaddr=%s,netmask=%s,gateway=%s,defaultgw=%s,extip=%s WHERE id=%s"
-    data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,id)
-    result = writeDb(sql,data)
+
+    if ifacetype == 'STATIC' :
+       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,ipaddr=%s,netmask=%s,gateway=%s,defaultgw=%s,extip=%s,osize=%s WHERE id=%s"
+       data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize,id)
+       result = writeDb(sql,data)
+    else :
+       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,username=%s,password=%s,mtu=%s,defaultgw=%s,osize=%s WHERE id=%s"
+       data = (ifacename,ifacetype,username,password,mtu,defaultgw,osize,id)
+       result = writeDb(sql,data)
+
     if result == True:
        writeNIconf(action='uptconf')
        cmds.servboot('networks',action='uptconf')
@@ -201,6 +254,9 @@ def deliface(id):
        writeUTMconf(action='uptconf')
        msg = {'color':'green','message':u'删除成功'}
        cmds.gettuplerst('ip addr flush dev %s' % ifacename[0].get('ifacename'))
+       #如果是PPP类型接口，停用ADSL
+       cmds.gettuplerst('ip link set %s down' % ifacename[0].get('ifacename'))
+       cmds.gettuplerst('ps aux|grep -e \'xdsl.*%s\'|grep -v grep|awk \'{print $2}\' |xargs -i kill -9 {}' % id)
        #恢复绑定
        sql2 = "update sysattr set status='1' where attr=%s"
        writeDb(sql2,(ifacename[0].get('ifacename'),))
@@ -212,19 +268,19 @@ def deliface(id):
 # DNS配置
 @route('/dnsservconf')
 @checkAccess
-def addroute():
+def dnsservconf():
     s = request.environ.get('beaker.session')
     return template('dnsservconf',session=s,msg={},info={})
 
 @route('/adddnsconf')
 @checkAccess
-def do_addroute():
+def adddnsconf():
     s = request.environ.get('beaker.session')
     return(template('adddnsconf',session=s,msg={},info={}))
 
 @route('/adddnsconf',method="POST")
 @checkAccess
-def do_addroute():
+def do_adddnsconf():
     s = request.environ.get('beaker.session')
     dnstype = request.forms.get("dnstype")
     domain = request.forms.get("domain")

@@ -40,24 +40,51 @@ function getifaceID() {
 function Networks(){
 inum=70
 #加载网络接口
+true > /etc/ppp/chap-secrets
+true > /etc/ppp/pap-secrets
 for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     toDict $iconf/netiface.conf $servID
-    # 处理IP信息
+    # 加载接口信息
     ip link set ${uDict["ifacename"]} up >/dev/null 2>&1
     ip addr flush dev ${uDict["ifacename"]} >/dev/null 2>&1
-    ip addr add local ${uDict["ipaddr"]}/${uDict["netmask"]} dev ${uDict["ifacename"]} >/dev/null 2>&1
-    if [ "${uDict["defaultgw"]}" = "1" ] && [ "${uDict["gateway"]}" != "" ];then
-       route add default gw ${uDict["gateway"]} >/dev/null 2>&1
-       ip route flush table ${uDict["id"]} >/dev/null 2>&1
-       ip route replace default via ${uDict["gateway"]} dev ${uDict["ifacename"]} src ${uDict["ipaddr"]} proto static table ${uDict["id"]} >/dev/null 2>&1
-       ip route append prohibit default table ${uDict["id"]} metric 1 proto static >/dev/null 2>&1
-    elif [ "${uDict["defaultgw"]}" = "0" ] && [ "${uDict["gateway"]}" != "" ];then
-       ip route flush table ${uDict["id"]} >/dev/null 2>&1
-       ip route replace default via ${uDict["gateway"]} dev ${uDict["ifacename"]} src ${uDict["ipaddr"]} proto static table ${uDict["id"]} >/dev/null 2>&1
-       ip route append prohibit default table ${uDict["id"]} metric 1 proto static >/dev/null 2>&1
-    else
+    # 处理Static IP信息
+    if [ "${uDict["ifacetype"]}" = "STATIC" ];then
+      ip addr add local ${uDict["ipaddr"]}/${uDict["netmask"]} dev ${uDict["ifacename"]} >/dev/null 2>&1
+      if [ "${uDict["defaultgw"]}" = "1" ] && [ "${uDict["gateway"]}" != "" ];then
+        route add default gw ${uDict["gateway"]} >/dev/null 2>&1
+        ip route flush table ${uDict["id"]} >/dev/null 2>&1
+        ip route replace default via ${uDict["gateway"]} dev ${uDict["ifacename"]} src ${uDict["ipaddr"]} proto static table ${uDict["id"]} >/dev/null 2>&1
+        ip route append prohibit default table ${uDict["id"]} metric 1 proto static >/dev/null 2>&1
+      elif [ "${uDict["defaultgw"]}" = "0" ] && [ "${uDict["gateway"]}" != "" ];then
+        ip route flush table ${uDict["id"]} >/dev/null 2>&1
+        ip route replace default via ${uDict["gateway"]} dev ${uDict["ifacename"]} src ${uDict["ipaddr"]} proto static table ${uDict["id"]} >/dev/null 2>&1
+        ip route append prohibit default table ${uDict["id"]} metric 1 proto static >/dev/null 2>&1
+      else
         true
+      fi
+    # 处理ADSL线路信息
+    elif [ "${uDict["ifacetype"]}" = "ADSL" ];then
+      echo -en "\"${uDict["username"]}\"\t*\t\"${uDict["password"]}\"\t*\n" >> /etc/ppp/chap-secrets
+      echo -en "\"${uDict["username"]}\"\t*\t\"${uDict["password"]}\"\t*\n" >> /etc/ppp/pap-secrets
+      if [ "${uDict["defaultgw"]}" = "0" ];then
+         defgw=no
+      else
+         defgw=yes
+      fi
+      echo -en "BOOTPROTO=dialup\nCONNECT_POLL=6\nCONNECT_TIMEOUT=0\nDEMAND=no\nFIREWALL=NONE\nLCP_FAILURE=3\nLCP_INTERVAL=15\nPPPOE_TIMEOUT=80\nPIDFILE=/tmp/xdsl-ppp${uDict["id"]}.pid\nUNIT=${uDict["id"]}\nUSERCTL=yes\nETH=${uDict["ifacename"]}\nCLAMPMSS=${uDict["mtu"]}\nUSER=${uDict["username"]}\nDEFROUTE=$defgw\n" > /tmp/xdsl_${uDict["id"]}.cf
+      /sbin/pppoe-status /tmp/xdsl_${uDict["id"]}.cf >/dev/null 
+      if [ $? != 0 ];then
+         /sbin/pppoe-connect /tmp/xdsl_${uDict["id"]}.cf >/dev/null 2>&1 &
+      fi
+      # reload ppp script
+      chkup=$(grep 'AdvRouteAPI.sh' /etc/ppp/ip-up)
+      chkdown=$(grep 'AdvRouteAPI.sh' /etc/ppp/ip-down)
+      if [ x"$chkup" = x"" ] || [ x"$chkdown" = x"" ];then
+         sed -i "s:exit .*:$wkdir/sbin/AdvRouteAPI.sh\nexit 0:g" /etc/ppp/ip-up >/dev/null 2>&1
+         sed -i "s:exit .*:$wkdir/sbin/AdvRouteAPI.sh\nexit 0:g" /etc/ppp/ip-down >/dev/null 2>&1
+      fi
     fi
+
     # 处理扩展IP
     for line in $(echo ${uDict["extip"]}|sed 's/;/ /g');do
       if [ "$line" != "" ];then
@@ -70,93 +97,23 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
             ip route append prohibit default table ${uDict["id"]} metric 1 proto static >/dev/null 2>&1
          fi
       fi
-   done
-   #普通路由模式修改为高级路由模式
-   ip rule del prio 50 table main >/dev/null 2>&1
-   ip rule add prio 50 table main >/dev/null 2>&1
-   # 增加接口路由
-   if [ "${uDict["gateway"]}" != "" ];then
+    done
+
+    #普通路由模式修改为高级路由模式
+    ip rule del prio 50 table main >/dev/null 2>&1
+    ip rule add prio 50 table main >/dev/null 2>&1
+    # 增加静态接口路由(不包含动态IP,动态IP接口路由加载高级路由脚本)
+    if [ "${uDict["gateway"]}" != "" ];then
       ip rule del prio $inum
       ip rule add prio $inum from ${uDict["ipaddr"]}/${uDict["netmask"]} table ${uDict["id"]} >/dev/null 2>&1 
       let inum+=1
-   fi
-done
-
-#加载用户定义静态路由
-for servID in $(awk -F= '/^stroute_[0-9]/{print $1}' $iconf/route.conf);do
-    toDict $iconf/route.conf $servID
-    if [ ${uDict["type"]}="net" ];then
-       rttype='-net'
-    else
-       rttype='-host'
     fi
-    if [ ${uDict["iface"]}="auto" ];then
-       route add $rttype ${uDict["dest"]} netmask ${uDict["netmask"]} gw ${uDict["gateway"]} >/dev/null 2>&1
-    else
-       route add $rttype ${uDict["dest"]} netmask ${uDict["netmask"]} gw ${uDict["gateway"]} dev ${uDict["iface"]} >/dev/null 2>&1
-    fi
+
 done
 
+#引入高级路由加载
+$wkdir/sbin/AdvRouteAPI.sh >/dev/null 2>&1
 
-#加载用户定义高级路由[配合IPTABLES+IPSET]
-#清理旧的
-for i in $(ip rule |awk -F: '$1<32766 && $1>90 {print $1}');do
-        ip rule del prio $i
-done
-
-# 加载高级路由规则
-advdesc=$(awk -F= '/^advroute_[0-9]/{print $1}' $iconf/route.conf)
-if [ "$advdesc" != "" ];then
-   # 默认网关修改为高级路由模式
-   for gw in $($pytools $wkdir/tools/API.py API getgw defaultgw);do
-       gws+="nexthop via $gw weight 1 "
-   done
-   ip route replace default table default equalize $gws >/dev/null 2>&1  
-   # 列举接口系统路由表
-   while true ;do
-     #移除系统默认路由，直到失败退出
-     route del default >/dev/null 2>&1
-     if [ $? != 0 ];then
-       break
-     fi
-   done
-
-   #ip rule del prio 50 table main >/dev/null 2>&1
-   #ip rule add prio 50 table main >/dev/null 2>&1
-   for servID in $(awk -F= '/^advroute_[0-9]/{print $1}' $iconf/route.conf);do
-      id=$(echo $servID|awk -F_ '{print $2}')
-      toDict $iconf/route.conf $servID
-      #判断下如果接口的IP地址无法获取，自动忽略该接口
-      ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iface"]}")
-      if [ "$ifaceaddr" = "False" ];then
-         continue
-      fi
-      if [ ${uDict["iface"]} = "tun1000" ];then
-         if [ ${uDict["pronum"]} = "99" ];then
-	        for dnsserv in $(echo ${uDict["dnsserver"]}|sed 's/-/ /g');do
-	            ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
-	        done
-         else
-            if [ ${uDict["rtattr"]} = "sys" ];then
-               ip rule add prio ${uDict["pronum"]} table 1000 >/dev/null 2>&1
-            else
-               ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
-            fi
-         fi
-         ip rule del prio 91 >/dev/null 2>&1
-         ip rule add prio 91 from $ifaceaddr table 1000 >/dev/null 2>&1
-      else
-         getifaceID $iconf/netiface.conf "ifacename=${uDict["iface"]}"
-         #判断高级路由是不是包含本机网络的默认路由 rtattr=sys
-         if [ ${uDict["rtattr"]} = "sys" ];then
-            ip rule add prio ${uDict["pronum"]} table ${nDict["id"]} >/dev/null 2>&1
-         else
-            ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${nDict["id"]} >/dev/null 2>&1
-         fi
-      fi
-      ip route flush cache >/dev/null 2>&1
-   done
-fi
 }
 
 case "$1" in

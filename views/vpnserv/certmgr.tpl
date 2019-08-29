@@ -57,25 +57,26 @@
          <div class="modal-body">
             <div>
             <form id="modalForm">
-		<div class="form-group">
+		        <div class="form-group">
                   <label class="control-label" for="inputSuccess1">证书类型：</label>
                   <select id="certtype" style="width:100%;" name="certtype">
-                    <option value='server'>服务证书</option>
+                    <option value='server'>CA服务证书</option>
                  </select>
                 </div>
-		<div class="form-group">
-                  <label class="control-label" for="inputSuccess1">证书名称：</label>
-		  <select id="commonname" style="width:100%;" name="commonname">
-		     <option value='caserver'>CA+Server</option>
-		  </select>
+		        <div class="form-group">
+                  <label class="control-label" for="inputSuccess1">服务名称：</label>
+                  <input type="text" class="form-control" id="servname" name="servname" placeholder="完整主机域名" require>
+                  <!--select id="commonname" style="width:100%;" name="commonname">
+                    <option value='caserver'>CA+Server</option>
+                  </select-->
                 </div>
                 <div class="form-group">
                   <label class="control-label" for="inputSuccess1">颁发机构：</label>
-                  <input type="text" class="form-control" id="organization" name="organization" require>
+                  <input type="text" class="form-control" id="organization" name="organization" onkeyup="value=value.replace(/[^\w\/]/ig,'')" require>
                 </div>
                 <div class="form-group">
                   <label class="control-label" for="inputSuccess1">有效期：</label>
-                  <input type="text" class="form-control" id="expiration" name="expiration" placeholder="有效天数(days)" require>
+                  <input type="text" class="form-control" id="expiration" name="expiration" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="有效天数(days)" require>
                 </div>
                 <br></br>
                 <input type="hidden" id="hidInput" value="">
@@ -231,7 +232,7 @@ $(function(){
     */
     $("#subBtn").click(function(){
            var certtype = $('#certtype').val();
-           var commonname = $('#commonname').val();
+           var servname = $('#servname').val();
            var organization = $('#organization').val();
            var expiration = $('#expiration').val();
            var postUrl;
@@ -239,10 +240,10 @@ $(function(){
                 postUrl = "/initca";           //初始化证书
            }
 
-           $.post(postUrl,{certtype:certtype,commonname:commonname,organization:organization,expiration:expiration},function(data){
+           $.post(postUrl,{certtype:certtype,servname:servname,organization:organization,expiration:expiration},function(data){
                   if(data==0){
                     $('#myModalINITCA').modal('hide');
-		    $('#myModalUSER').modal('hide');
+		            $('#myModalUSER').modal('hide');
                     $('#myLoadTable').bootstrapTable('refresh');
                     message.message_show(200,200,'成功','操作成功');   
                   }else if(data==-1){

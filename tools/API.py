@@ -37,6 +37,9 @@ if __name__ == '__main__' :
    #获取设备接口网关
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getgw':
       print netmod.getIfGW(sys.argv[3])
+   #获取接口权重值
+   elif sys.argv[1] == 'API' and sys.argv[2] == 'getniweight':
+      print netmod.getNiWeight(sys.argv[3])
    #获取接口网络地址
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getniaddr':
       print netmod.getNiaddr(sys.argv[3])

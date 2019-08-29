@@ -14,19 +14,8 @@ pidfile="$wkdir/plugins/firewall/firewall.pid"
 ipsetconf="$wkdir/plugins/firewall/ipset.conf"
 iptablesconf="$wkdir/plugins/firewall/iptables.conf"
 
-# kernel
-sysctl -w "net.ipv4.ip_forward=1" >/dev/null 2>&1
-sysctl -w "net.ipv4.conf.default.rp_filter=0" >/dev/null 2>&1
-sysctl -w "net.ipv4.conf.default.accept_source_route=1" >/dev/null 2>&1
-sysctl -w "net.netfilter.nf_conntrack_acct=1" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_syncookies=1" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_tw_reuse=1" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_tw_recycle=1" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_fin_timeout=30" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_keepalive_time=1200" >/dev/null 2>&1
-sysctl -w "net.ipv4.ip_local_port_range=10000 65000" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_max_syn_backlog=8192" >/dev/null 2>&1
-sysctl -w "net.ipv4.tcp_max_tw_buckets=5000" >/dev/null 2>&1
+# load kernel options
+sysctl -p "$wkdir/template/kernel.conf" >/dev/null 2>&1
 
 
 ipset_stop(){

@@ -23,6 +23,8 @@ if [ "$REASON" = "connect" ];then
    $ipset add vpnpolicy_src_$getid $IP_REMOTE >/dev/null 2>&1
    # writelog
    $pytools $wkdir/tools/API.py API wrtvpnlogin "Ocserv" "登录成功,分配地址:$IP_REMOTE" $USERNAME $IP_REAL >/dev/null 2>&1
+   # Reload User StaticRoute
+   $wkdir/sbin/AdvRouteAPI.sh onlySR >/dev/null 2>&1
 else
    $ipset del vpnpolicy_src_$getid $IP_REMOTE >/dev/null 2>&1
    # writelog

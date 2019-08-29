@@ -117,11 +117,11 @@
                         <span class="menu-text">NAT规则</span>
                     </a>
                 </li>
-                <!--li class="">
+                <li class="">
                     <a href="/mapruleconf">
                         <span class="menu-text">MAP规则</span>
                     </a>
-                </li-->
+                </li>
             </ul>
         </li>
 

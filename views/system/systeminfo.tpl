@@ -139,7 +139,6 @@
   </div>
 </div>
 
-<!--script src="https://cdn.staticfile.org/echarts/4.2.0-rc.1/echarts.js"></script-->
 <script src="/assets/js/echarts.js"></script>
 <script type="text/javascript">
 
