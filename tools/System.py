@@ -131,7 +131,6 @@ def do_addroute():
     starttime = request.forms.get("starttime")
     stoptime = request.forms.get("stoptime")
     outdev = request.forms.get("ifacename").replace('advpolicy_','')
-    print outdev 
     alladdr=srcaddr.split('\n')+destaddr.split('\n')
     #提交判断
     if outdev == '' or rulename == '':

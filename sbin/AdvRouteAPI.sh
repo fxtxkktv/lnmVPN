@@ -148,7 +148,7 @@ if [ "$advdesc_II" != "" ];then
       else
          #判断高级路由是不是包含本机网络的默认路由 rtattr=sys
          if [ ${uDict["rtattr"]} = "sys" ];then
-            ip rule add prio ${uDict["pronum"]} table ${uDict["id"]} >/dev/null 2>&1
+            ip rule add prio ${uDict["pronum"]} table ${uDict["iface"]} >/dev/null 2>&1
          else
             ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${uDict["iface"]} >/dev/null 2>&1
          fi
