@@ -22,9 +22,9 @@
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                     <div class="tickets-container">
                         <div class="table-toolbar" style="float:left">
-			    <a id="addnatrule" href="/addnatrule" class="btn btn-warning shiny">
-                                <i class="btn-label fa fa-plus"></i>添加规则
-                            </a>
+			            <a id="addnatrule" href="/addnatrule" class="btn btn-warning shiny">
+                                <i class="btn-label fa fa-plus"></i>添加记录
+                        </a>
 			    %if msg.get('message'):
                                 <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                             %end
@@ -70,11 +70,11 @@ $(function(){
               valign: 'middle',
               width:25,
               //sortable: false,
-	      formatter:function(value,row,index){
+              formatter:function(value,row,index){
                 return index+1;
               }
           },{
-	      field: 'rulename',
+              field: 'rulename',
               title: '规则描述',
               align: 'center',
               valign: 'middle',
@@ -95,11 +95,17 @@ $(function(){
               field: 'runaction',
               title: '执行动作',
               align: 'center',
-	      valign: 'middle',
+              valign: 'middle',
               sortable: false
           },{
               field: 'runobject',
               title: '执行对象',
+              align: 'center',
+              valign: 'middle',
+              sortable: false
+          },{
+              field: 'pronum',
+              title: '优先级',
               align: 'center',
               valign: 'middle',
               sortable: false

@@ -25,7 +25,7 @@
                             <a id="addinterface" href="/addinterface" class="btn btn-primary ">
                                 <i class="btn-label fa fa-plus"></i>添加接口
                             </a>
-			    %if msg.get('message'):
+                            %if msg.get('message'):
                                 <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                             %end
                         </div>
@@ -89,7 +89,7 @@ $(function(){
               field: 'ipaddr',
               title: 'IP地址',
               align: 'center',
-	      valign: 'middle',
+              valign: 'middle',
               sortable: false
           },{
               field: 'netmask',
@@ -98,19 +98,19 @@ $(function(){
               valign: 'middle',
               sortable: false
           },{
-	      field: 'rxdata',
+              field: 'rxdata',
               title: '发送数据(MB)',
               align: 'center',
               valign: 'middle',
               sortable: false
 	  },{
-	      field: 'txdata',
+              field: 'txdata',
               title: '接收数据(MB)',
               align: 'center',
               valign: 'middle',
               sortable: false
 	  },{
-	      field: 'status',
+              field: 'status',
               title: '网卡状态',
               align: 'center',
               valign: 'middle',
@@ -150,11 +150,17 @@ $(function(){
     //定义列操作
     function getinfo(value,row,index){
         eval('rowobj='+JSON.stringify(row));
+        //定义重启按钮样式，只有管理员或自己编辑的任务才有权编辑
+        if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
+            var style_rif = '<a href="/rebootif/'+rowobj['id']+'" class="btn-sm btn-success" >';
+        }else{
+            var style_rif = '<a class="btn-sm btn-success" disabled>';
+        }
         //定义编辑按钮样式，只有管理员或自己编辑的任务才有权编辑
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
-            var style_edit = '<a href="/editiface/'+rowobj['id']+'" class="btn-sm btn-info" >';
+            var style_edit = '&nbsp;<a href="/editiface/'+rowobj['id']+'" class="btn-sm btn-info" >';
         }else{
-            var style_edit = '<a class="btn-sm btn-info" disabled>';
+            var style_edit = '&nbsp;<a class="btn-sm btn-info" disabled>';
         }
         //定义删除按钮样式，只有管理员或自己编辑的任务才有权删除
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
@@ -164,6 +170,10 @@ $(function(){
         }
 
         return [
+            style_rif,
+                '<i class="fa fa-power-off"> 重启</i>',
+            '</a>',
+
             style_edit,
                 '<i class="fa fa-edit"> 编辑</i>',
             '</a>',

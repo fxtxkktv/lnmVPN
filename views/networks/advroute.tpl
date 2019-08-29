@@ -21,22 +21,25 @@
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                     <div class="tickets-container">
                         <div class="table-toolbar" style="float:left">
-			    <a id="routeconf" href="/routeconf" class="btn btn-info ">
+                            <a id="routeconf" href="/routeconf" class="btn btn-info ">
                                 <i class="btn-label fa fa-cog"></i>系统路由
                             </a>
-			    <a id="staticroute" href="/staticroute" class="btn btn-primary ">
+                            <a id="staticroute" href="/staticroute" class="btn btn-primary ">
                                 <i class="btn-label fa fa-cog"></i>静态路由
                             </a>
                             <a id="advroute" href="#" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-cog"></i>高级路由
                             </a>
-			    <a id="addadvroute" href="/addadvroute" class="btn btn-warning shiny">
+                            <a id="advroutepolicy" href="/advroutepolicy" class="btn btn-success">
+                                <i class="btn-label fa fa-cog"></i>高级策略
+                            </a>
+                            <a id="addadvroute" href="/addadvroute" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-plus"></i>添加记录
                             </a>
-			    <a id="showadvroute" href="/showadvroute" class="btn btn-success">
+                            <!--a id="showadvroute" href="/showadvroute" class="btn btn-success">
                                 <i class="btn-label fa fa-print"></i>打印高级路由表
-                            </a>
-			    %if msg.get('message'):
+                            </a-->
+                            %if msg.get('message'):
                               <span style="color:{{msg.get('color')}};font-weight:bold;">&emsp;&emsp;&emsp;&emsp;{{msg.get('message')}}</span>
                             %end
                         </div>
@@ -112,14 +115,20 @@ $(function(){
               valign: 'middle',
               sortable: false
           },{
+              field: 'stime',
+              title: '时间控制',
+              align: 'center',
+              valign: 'middle',
+              sortable: false
+          },{
               field: 'pronum',
               title: '优先级',
               align: 'center',
 	      valign: 'middle',
               sortable: false
           },{
-              field: 'iface',
-              title: '指定出口',
+              field: 'rtname',
+              title: '出口策略',
               align: 'center',
               valign: 'middle',
               sortable: false

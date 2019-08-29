@@ -24,7 +24,8 @@
 		    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">规则描述</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="rulename" aria-describedby="inputGroupSuccess4Status" value="{{info.get('rulename','')}}">
+                            <input type="text" style="width:210px" class="form-control" id="" name="rulename" aria-describedby="inputGroupSuccess4Status" value="{{info.get('rulename','')}}">
+                            <input type="text" style="width:210px" class="form-control" id="" placeholder="优先级" name="pronum" aria-describedby="inputGroupSuccess4Status" value="{{info.get('pronum','')}}">
                         </div>
                     </div>
 		    
@@ -70,7 +71,7 @@
                         </option>
                         </select>
 			<input type="text" style="width:270px" class="form-control" id="runobject" name="runobject" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('runobject','')}}">
-			<select style="width:270px" class="form-control" id="runobject2" name="runobject2">
+                <select style="width:270px" class="form-control" id="runobject2" name="runobject2">
                         %for infos in ifacelist_result:
                             <option
 			                %if info.get('runobject2','')==infos.get('ifacename','') : 
@@ -79,7 +80,7 @@
                             value='{{infos.get('ifacename','')}}'>{{infos.get('ifacename','')}}
                             </option>
                         %end
-                        </select>
+                </select>
 			</div>
 		    </div>    
                     <div class="modal-footer">
@@ -93,8 +94,6 @@
     </div>
 </div>
 <script src="/assets/js/datetime/bootstrap-datepicker.js"></script> 
-<script charset="utf-8" src="/assets/kindeditor/kindeditor.js"></script>
-<script charset="utf-8" src="/assets/kindeditor/lang/zh_CN.js"></script>
 
 <script language="JavaScript" type="text/javascript">
 $(function() {

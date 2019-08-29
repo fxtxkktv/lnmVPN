@@ -5,7 +5,7 @@
             <div class="widget">
                 <div class="widget-header bordered-bottom bordered-themesecondary">
                     <i class="widget-icon fa fa-tags themesecondary"></i>
-                    <span class="widget-caption themesecondary">路由配置——系统路由</span>
+                    <span class="widget-caption themesecondary">路由配置——策略管理</span>
                     <div class="widget-buttons">
                         <a href="#" data-toggle="maximize">
                             <i class="fa fa-expand"></i>
@@ -21,15 +21,24 @@
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                     <div class="tickets-container">
                         <div class="table-toolbar" style="float:left">
-			    <a id="routeconf" href="#" class="btn btn-info ">
+                            <a id="routeconf" href="/routeconf" class="btn btn-info ">
                                 <i class="btn-label fa fa-cog"></i>系统路由
                             </a>
-			    <a id="staticroute" href="/staticroute" class="btn btn-primary ">
+                            <a id="staticroute" href="/staticroute" class="btn btn-primary ">
                                 <i class="btn-label fa fa-cog"></i>静态路由
                             </a>
                             <a id="advroute" href="/advroute" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-cog"></i>高级路由
                             </a>
+                            <a id="advroute" href="#" class="btn btn-success">
+                                <i class="btn-label fa fa-cog"></i>高级策略
+                            </a>
+                            <a id="addadvroutepolicy" href="/addadvroutepolicy" class="btn btn-warning shiny">
+                                <i class="btn-label fa fa-plus"></i>添加记录
+                            </a>
+                            <!--a id="showadvroute" href="/showadvroute" class="btn btn-success">
+                                <i class="btn-label fa fa-print"></i>打印高级路由表
+                            </a-->
                             %if msg.get('message'):
                               <span style="color:{{msg.get('color')}};font-weight:bold;">&emsp;&emsp;&emsp;&emsp;{{msg.get('message')}}</span>
                             %end
@@ -50,7 +59,7 @@ $(function(){
 	var isEdit;
     $('#myLoadTable').bootstrapTable({
           method: 'post',
-          url: '/api/getrouteinfo',
+          url: '/api/getadvroutepolicyinfo',
           contentType: "application/json",
           datatype: "json",
           cache: false,
@@ -68,8 +77,8 @@ $(function(){
           //sidePagination : "server",
           sortOrder: 'asc',
           sortName: 'id',
-          columns: [{
-	      field: 'xid',
+	  columns: [{
+              field: 'xid',
               title: '编号',
               align: 'center',
               valign: 'middle',
@@ -78,28 +87,35 @@ $(function(){
               formatter:function(value,row,index){
                 return index+1;
               }
+          /*columns: [{
+              field: 'id',
+              title: '编号',
+              align: 'center',
+              valign: 'middle',
+              width:25,
+              sortable: false, */
           },{
-              field: 'dest',
-              title: '目标网络',
+              field: 'rtname',
+              title: '策略名称',
               align: 'center',
               valign: 'middle',
               sortable: false,
               //formatter:url_link
           },{
-              field: 'netmask',
-              title: '子网掩码',
+              field: 'rttype',
+              title: '策略模式',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: false,
+              formatter: function(value,row,index){
+                if( value == 'A' ){
+                        return '单线路由模式';
+                }else{  return '多线权重模式';
+                }
+            }
           },{
-              field: 'gateway',
-              title: '网关地址',
-              align: 'center',
-	      valign: 'middle',
-              sortable: false
-          },{
-              field: 'iface',
-              title: '本地接口',
+              field: 'iflist',
+              title: '策略内容',
               align: 'center',
               valign: 'middle',
               sortable: false
@@ -115,47 +131,32 @@ $(function(){
       });
 
     //定义列操作
-//    function getinfo(value,row,index){
-//        eval('rowobj='+JSON.stringify(row))
-//        return [
-//            '<a href="/infoitem/'+rowobj['id']+'" class="btn-sm btn-success">',
-//                '<i class="fa fa-arrow-circle-right"> 详情</i>',
-//             '</a>',' ',
-//            '<a href="/edititem/'+rowobj['id']+'" class="btn-sm btn-info">',
-//                '<i class="fa fa-edit"> 编辑</i>',
-//             '</a>',' ',
-//            '<a href="/delitem/'+rowobj['id']+'" class="btn-sm btn-danger">',
-//                '<i class="fa fa-times"> 删除</i>',
-//             '</a>'
-//        ].join('');
-//    }
-//
-    //定义列操作
     function getinfo(value,row,index){
         eval('rowobj='+JSON.stringify(row));
         //定义编辑按钮样式，只有管理员或自己编辑的任务才有权编辑
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
-            var style_edit = '<a href="/edititem/'+rowobj['id']+'" class="btn-sm btn-info" >';
+            var style_edit = '<a href="/editadvroutepolicy/'+rowobj['attr']+'" class="btn-sm btn-info" >';
         }else{
             var style_edit = '<a class="btn-sm btn-info" disabled>';
         }
         //定义删除按钮样式，只有管理员或自己编辑的任务才有权删除
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
-            var style_del = '&nbsp;<a href="/delroute/sys/'+rowobj['id']+'" class="btn-sm btn-danger" onClick="return confirm(&quot;确定删除?&quot;)"> ';
+            var style_del = '&nbsp;<a href="/delroute/advpolicy/'+rowobj['attr']+'" class="btn-sm btn-danger" onClick="return confirm(&quot;确定删除?&quot;)">';
         }else{
             var style_del = '&nbsp;<a class="btn-sm btn-danger" disabled>';
         }
 
         return [
-          /* style_edit,
+            style_edit,
                 '<i class="fa fa-edit"> 编辑</i>',
-            '</a>',  */
+            '</a>',
 
             style_del,
                 '<i class="fa fa-times"> 删除</i>',
             '</a>'
         ].join('');
     }
+
 
     //任务名的URL链接
     function url_link(value,row,index){

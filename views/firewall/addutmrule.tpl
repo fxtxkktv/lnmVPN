@@ -25,7 +25,7 @@
                         <div class="input-group">
                           <span class="input-group-addon">规则描述</span>
                           <input type="text" style="width:210px" class="form-control" id="" placeholder="规则名称" name="rulename" aria-describedby="inputGroupSuccess4Status" value="{{info.get('rulename','')}}">
-			  <input type="text" style="width:210px" class="form-control" id="" placeholder="优先级" name="pronum" aria-describedby="inputGroupSuccess4Status" value="{{info.get('pronum','')}}">
+            	          <input type="text" style="width:210px" class="form-control" id="" placeholder="优先级" name="pronum" aria-describedby="inputGroupSuccess4Status" value="{{info.get('pronum','')}}">
                         </div>
                     </div>
 		    <div class="modal-body">
@@ -121,7 +121,7 @@
 		    </div>    
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存</button>
-			<a id="rego" style="float:left" class="btn btn-primary" href="/utmruleconf">返回</a>
+                        <a id="rego" style="float:left" class="btn btn-primary" href="/utmruleconf">返回</a>
                     </div>
                 </div>
               </form>
