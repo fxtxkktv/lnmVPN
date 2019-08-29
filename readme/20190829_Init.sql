@@ -69,7 +69,7 @@ CREATE TABLE `logrecord` (
   `objtext` varchar(255) DEFAULT NULL,
   `objhost` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1123 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1157 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,8 +94,31 @@ CREATE TABLE `netiface` (
   `rxdata` int(20) DEFAULT NULL,
   `txdata` int(20) DEFAULT NULL,
   `extip` longtext,
+  `osize` int(2) DEFAULT '5' COMMENT '线路权重',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ruleconfmap`
+--
+
+DROP TABLE IF EXISTS `ruleconfmap`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ruleconfmap` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rulename` varchar(255) DEFAULT NULL,
+  `pronum` int(11) DEFAULT '1',
+  `wantype` int(11) DEFAULT '1',
+  `wanaddr` longtext,
+  `wanport` varchar(255) DEFAULT NULL,
+  `intaddr` longtext,
+  `intport` varchar(255) DEFAULT NULL,
+  `proto` varchar(255) DEFAULT NULL,
+  `status` int(11) DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,6 +131,7 @@ DROP TABLE IF EXISTS `ruleconfnat`;
 CREATE TABLE `ruleconfnat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rulename` varchar(255) DEFAULT NULL,
+  `pronum` int(11) DEFAULT '1',
   `srcaddr` longtext,
   `dstmatch` int(11) DEFAULT '1',
   `dstaddr` longtext,
@@ -115,7 +139,7 @@ CREATE TABLE `ruleconfnat` (
   `runobject` varchar(255) DEFAULT NULL,
   `status` int(11) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +163,7 @@ CREATE TABLE `ruleconfutm` (
   `runaction` varchar(255) DEFAULT NULL,
   `status` int(11) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +196,7 @@ CREATE TABLE `sysinfo` (
   `tim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=61309 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=370277 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +215,7 @@ CREATE TABLE `sysroute` (
   `iface` varchar(10) DEFAULT NULL COMMENT '匹配接口',
   `fromtype` int(2) DEFAULT NULL COMMENT '路由来源（系统、用户定义）',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3883 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4468 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,9 +231,11 @@ CREATE TABLE `sysrouteadv` (
   `srcaddr` longtext,
   `destaddr` longtext,
   `pronum` int(11) DEFAULT NULL,
-  `iface` varchar(16) DEFAULT NULL,
+  `iface` varchar(32) DEFAULT NULL,
+  `starttime` time DEFAULT NULL,
+  `stoptime` time DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -262,7 +288,7 @@ CREATE TABLE `vpnpolicy` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-17 19:41:23
+-- Dump completed on 2019-08-29 19:10:00
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -300,7 +326,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-17 19:41:23
+-- Dump completed on 2019-08-29 19:10:00
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -325,7 +351,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `sysattr` WRITE;
 /*!40000 ALTER TABLE `sysattr` DISABLE KEYS */;
-INSERT INTO `sysattr` VALUES ('appversion','1.0.0',1,'sys'),('vpnprofile','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<AnyConnectProfile xmlns=\"http://schemas.xmlsoap.org/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://schemas.xmlsoap.org/encoding/ AnyConnectProfile.xsd\">\r\n\r\n        <ClientInitialization>\r\n                <UseStartBeforeLogon UserControllable=\"false\">false</UseStartBeforeLogon>\r\n                <StrictCertificateTrust>false</StrictCertificateTrust>\r\n                <RestrictPreferenceCaching>false</RestrictPreferenceCaching>\r\n                <RestrictTunnelProtocols>IPSec</RestrictTunnelProtocols>\r\n                <BypassDownloader>true</BypassDownloader>\r\n                <WindowsVPNEstablishment>AllowRemoteUsers</WindowsVPNEstablishment>\r\n                <CertEnrollmentPin>pinAllowed</CertEnrollmentPin>\r\n                <CertificateMatch>\r\n                        <KeyUsage>\r\n                                <MatchKey>Digital_Signature</MatchKey>\r\n                        </KeyUsage>\r\n                        <ExtendedKeyUsage>\r\n                                <ExtendedMatchKey>ClientAuth</ExtendedMatchKey>\r\n                        </ExtendedKeyUsage>\r\n                </CertificateMatch>\r\n\r\n                <BackupServerList>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                     <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </BackupServerList>\r\n        </ClientInitialization>\r\n\r\n        <ServerList>\r\n                <HostEntry>\r\n                    <HostName>LnmOS.devel.com</HostName>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </HostEntry>\r\n        </ServerList>\r\n</AnyConnectProfile>',1,'sys'),('vpnrelay','tun1000',0,'vpnrelay'),('dnsconf','{\"dnsrelay\": \"1\", \"dnsrule\": \"1\", \"dnsport\": 53, \"dnslist\": \"8.8.8.8\\n8.8.4.4\", \"dnsproxy\": \"0\", \"dnsstatus\": 1}',1,'dnsmasq'),('vpnclient','{\"authtype\": \"2\", \"service\": \"off\"}',1,'openconnect'),('resData','{\"ResState\": \"True\", \"visitDay\": \"30\", \"ResInv\": \"60\", \"ResSaveDay\": \"1\"}',1,'sys'),('dhcpconf','{\"otime\": \"48\", \"getdns1\": \"8.8.8.8\", \"getdns2\": \"8.8.4.4\", \"startip\": \"192.168.200.100\", \"dhcplist\": \"F0:79:59:92:C9:92,192.168.0.87\", \"getgw\": \"192.168.200.1\", \"dhcpenable\": \"0\", \"stopip\": \"192.168.200.200\"}',1,'dnsmasq'),('vpnserver','{\"authtype\": \"3\", \"service\": \"off\"}',1,'ocserv');
+INSERT INTO `sysattr` VALUES ('appversion','1.0.0',1,'sys'),('vpnprofile','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<AnyConnectProfile xmlns=\"http://schemas.xmlsoap.org/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://schemas.xmlsoap.org/encoding/ AnyConnectProfile.xsd\">\r\n\r\n        <ClientInitialization>\r\n                <UseStartBeforeLogon UserControllable=\"false\">false</UseStartBeforeLogon>\r\n                <StrictCertificateTrust>false</StrictCertificateTrust>\r\n                <RestrictPreferenceCaching>false</RestrictPreferenceCaching>\r\n                <RestrictTunnelProtocols>IPSec</RestrictTunnelProtocols>\r\n                <BypassDownloader>true</BypassDownloader>\r\n                <WindowsVPNEstablishment>AllowRemoteUsers</WindowsVPNEstablishment>\r\n                <CertEnrollmentPin>pinAllowed</CertEnrollmentPin>\r\n                <CertificateMatch>\r\n                        <KeyUsage>\r\n                                <MatchKey>Digital_Signature</MatchKey>\r\n                        </KeyUsage>\r\n                        <ExtendedKeyUsage>\r\n                                <ExtendedMatchKey>ClientAuth</ExtendedMatchKey>\r\n                        </ExtendedKeyUsage>\r\n                </CertificateMatch>\r\n\r\n                <BackupServerList>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                     <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </BackupServerList>\r\n        </ClientInitialization>\r\n\r\n        <ServerList>\r\n                <HostEntry>\r\n                    <HostName>LnmOS.devel.com</HostName>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </HostEntry>\r\n        </ServerList>\r\n</AnyConnectProfile>',1,'sys'),('vpnrelay','tun1000',1,'vpnrelay'),('dnsconf','{\"dnsrelay\": \"1\", \"dnsrule\": \"1\", \"dnsport\": 53, \"dnslist\": \"8.8.8.8\\n8.8.4.4\", \"dnsproxy\": \"0\", \"dnsstatus\": 0}',1,'dnsmasq'),('vpnclient','{\"authtype\": \"2\", \"service\": \"off\"}',1,'openconnect'),('resData','{\"ResState\": \"True\", \"visitDay\": \"30\", \"ResInv\": \"60\", \"ResSaveDay\": \"1\"}',1,'sys'),('dhcpconf','{\"otime\": \"48\", \"getdns1\": \"8.8.8.8\", \"getdns2\": \"8.8.4.4\", \"startip\": \"192.168.200.100\", \"dhcplist\": \"F0:79:59:92:C9:92,192.168.0.87\", \"getgw\": \"192.168.200.1\", \"dhcpenable\": \"0\", \"stopip\": \"192.168.200.200\"}',1,'dnsmasq'),('vpnserver','{\"authtype\": \"3\", \"service\": \"off\"}',1,'ocserv'),('advpolicy_1566810662','{\"rtname\": \"PPP\\u51fa\\u53e3\", \"iflist\": [\"eth1\"], \"rttype\": \"A\"}',1,'advroutepolicy'),('advpolicy_1566976448','{\"rtname\": \"\\u9999\\u6e2f\\u51fa\\u53e3\", \"iflist\": [\"tun1000\"], \"rttype\": \"A\"}',1,'advroutepolicy'),('advpolicy_1566897119','{\"rtname\": \"\\u7535\\u4fe1+\\u8054\\u901a\", \"iflist\": [\"eth0\", \"eth1\"], \"rttype\": \"B\"}',1,'advroutepolicy');
 /*!40000 ALTER TABLE `sysattr` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -338,4 +364,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-17 19:41:23
+-- Dump completed on 2019-08-29 19:10:00
