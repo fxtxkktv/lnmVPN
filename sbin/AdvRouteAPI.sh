@@ -96,6 +96,7 @@ if [ "$advdesc_I" != "" ];then
       id=$(echo $servID|awk -F_ '{print $2}')
       toDict $iconf/route.conf $servID
       if [ ${uDict["rttype"]} = "A" ];then
+         ip route flush table $id >/dev/null 2>&1
          ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iflist"]}")
          #忽略接口不存在地址的情况路由
          if [ $ifaceaddr = "" ];then
@@ -110,6 +111,7 @@ if [ "$advdesc_I" != "" ];then
             ip route replace default table $id via $ifacegw src $ifaceaddr >/dev/null 2>&1
          fi
       elif [ ${uDict["rttype"]} = "B" ];then
+         ip route flush table $id >/dev/null 2>&1
          for i in $(echo ${uDict["iflist"]}|sed 's/,/\n/g');do
              ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr $i)
              #忽略接口不存在地址的情况路由
@@ -118,9 +120,9 @@ if [ "$advdesc_I" != "" ];then
              fi
              ifacegw=$($pytools $wkdir/tools/API.py API getgw $i)
              ifaceweight=$($pytools $wkdir/tools/API.py API getniweight $i)
-             gws+="nexthop via $ifacegw weight $ifaceweight "
+             gws2+="nexthop via $ifacegw weight $ifaceweight "
          done
-         ip route replace default table $id equalize $gws >/dev/null 2>&1
+         ip route replace default table $id equalize $gws2 >/dev/null 2>&1
       fi
    done
 fi
