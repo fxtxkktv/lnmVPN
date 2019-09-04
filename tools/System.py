@@ -646,7 +646,7 @@ def addmaprule():
     """MAP配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     return template('addmaprule',session=s,msg={},info={},ifacelist_result=ifacelist_result)
 
@@ -827,7 +827,7 @@ def addutmrule():
     sql = """ select id,objname from netobjgroup where status='1' order by id"""
     result = readDb(sql,)
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     return template('addnatrule',session=s,msg={},info={},ifacelist_result=ifacelist_result,setlist=result)
 
@@ -879,7 +879,7 @@ def editnatrule(id):
     netmod.InitNIinfo()
     sql = """ select id,objname from netobjgroup where status='1' order by id"""
     result = readDb(sql,)
-    sql2 = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql2 = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql2,)
     sql3 = " SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,runobject as runobject2,pronum from ruleconfnat where status='1' and id=%s"
     result3 = readDb(sql3,(id,))
@@ -926,7 +926,7 @@ def editutmrule(id):
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     sql2 = " SELECT rulename,wantype,wanaddr,wanport,intaddr,intport,proto,pronum from ruleconfmap where status='1' and id=%s"
     result = readDb(sql2,(id,))

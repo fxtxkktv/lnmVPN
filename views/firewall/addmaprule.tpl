@@ -53,7 +53,7 @@
                          <select style="width:210px" class="form-control" id="waniface" name="waniface">
                         %for infos in ifacelist_result:
                             <option
-                            %if info.get('waniface','')==infos.get('ifacename','') : 
+                            %if info.get('wanaddr','')==infos.get('ifacename',''): 
                                 selected 
                             %end 
                             value='{{infos.get('ifacename','')}}'>{{infos.get('ifacename','')}}
