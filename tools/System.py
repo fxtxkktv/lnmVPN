@@ -57,7 +57,12 @@ def getrouteinfo():
 @route('/api/getrouteinfo3',method=['GET', 'POST'])
 @checkAccess
 def getrouteinfo():
-    sql = """ SELECT U.id, U.rulename, left(U.srcaddr,100) as srcaddr, left(U.destaddr,100) as destaddr, U.pronum, concat(starttime,'-',stoptime) as stime, U.iface, D.value FROM sysrouteadv as U LEFT OUTER JOIN sysattr as D on position(U.iface in D.attr) order by pronum asc """
+    sql = """ SELECT U.id, U.rulename, U.pronum, concat(starttime,'-',stoptime) as stime, U.iface, D.value, 
+              if(U.srcaddr="all","全部网络",concat(if(U.srcmatch=0,"! ",""),E.objname)) as srcaddr,
+              if(U.dstaddr="all","全部网络",concat(if(U.dstmatch=0,"! ",""),F.objname)) as dstaddr
+              FROM sysrouteadv as U LEFT OUTER JOIN sysattr as D on position(U.iface in D.attr) 
+              LEFT OUTER JOIN netobjgroup as E on E.id=U.srcaddr LEFT OUTER JOIN netobjgroup as F on F.id=U.dstaddr
+              order by pronum asc """
     info=[]
     item_list = readDb(sql,)
     for idict in item_list:
@@ -110,6 +115,8 @@ def do_addroute():
 @checkAccess
 def addroute():
     s = request.environ.get('beaker.session')
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
     netmod.InitNIinfo()
     sql = " SELECT attr,value FROM sysattr where servattr='advroutepolicy'"
     iflist_result = readDb(sql,)
@@ -118,20 +125,27 @@ def addroute():
         idict['attr']=idict.get('attr')
         idict['rtname']=json.loads(idict.get('value')).get('rtname')
         infos.append(idict)
-    return template('addadvroute',session=s,info={},iflist=infos)
+    return template('addadvroute',session=s,info={},iflist=infos,setlist=result)
 
 @route('/addadvroute',method="POST")
 @checkAccess
 def do_addroute():
     s = request.environ.get('beaker.session')
     rulename = request.forms.get("rulename")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    destaddr = request.forms.get("destaddr").replace('\r\n','\n').strip()
     pronum = request.forms.get("pronum")
     starttime = request.forms.get("starttime")
     stoptime = request.forms.get("stoptime")
     outdev = request.forms.get("ifacename").replace('advpolicy_','')
-    alladdr=srcaddr.split('\n')+destaddr.split('\n')
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
     #提交判断
     if outdev == '' or rulename == '':
        msg = {'color':'red','message':u'描述或出口未填写，添加失败'}
@@ -139,14 +153,10 @@ def do_addroute():
     if int(pronum) <100 or int(pronum) >32765 :
        msg = {'color':'red','message':u'优先级值填写错误，添加失败'}
        return(template('advroute',msg=msg,session=s))
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'地址格式错误，添加失败'}
-           return(template('advroute',msg=msg,session=s))
     cmdDict=cmds.getdictrst('ip rule add prio %s fwmark 1000 dev %s' % (pronum,outdev.replace('advpolicy_','')))
     if cmdDict.get('status') == 0:
-       sql = """ insert into sysrouteadv(rulename,srcaddr,destaddr,pronum,starttime,stoptime,iface) VALUES(%s,%s,%s,%s,%s,%s,%s) """
-       data = (rulename,srcaddr,destaddr,int(pronum),starttime,stoptime,outdev)
+       sql = """ insert into sysrouteadv(rulename,srcmatch,srcaddr,dstmatch,dstaddr,pronum,starttime,stoptime,iface) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+       data = (rulename,srcmatch,srcaddr,dstmatch,dstaddr,int(pronum),starttime,stoptime,outdev)
        result = writeDb(sql,data)
        if result :
           writeROUTEconf(action='uptconf')
@@ -162,29 +172,38 @@ def do_addroute():
 @checkAccess
 def editadvroute(id):
     s = request.environ.get('beaker.session')
-    sql = """ SELECT attr,value FROM sysattr where servattr='advroutepolicy' """
-    iflist_result = readDb(sql,)
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
+    sql2 = """ SELECT attr,value FROM sysattr where servattr='advroutepolicy' """
+    iflist_result = readDb(sql2,)
     infos=[]
     for idict in iflist_result:
         idict['attr']=idict.get('attr')
         idict['rtname']=json.loads(idict.get('value')).get('rtname')
         infos.append(idict)
-    sql2 = """ SELECT rulename,srcaddr,destaddr,pronum,concat('advpolicy_',iface) as iface FROM sysrouteadv WHERE id=%s """
-    result = readDb(sql2,(id,))
-    return template('addadvroute',session=s,info=result[0],iflist=infos)
+    sql2 = """ SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,pronum,concat('advpolicy_',iface) as iface FROM sysrouteadv WHERE id=%s """
+    result2 = readDb(sql2,(id,))
+    return template('addadvroute',session=s,info=result2[0],iflist=infos,setlist=result)
 
 @route('/editadvroute/<id>',method="POST")
 @checkAccess
 def do_editadvroute(id):
     s = request.environ.get('beaker.session')
     rulename = request.forms.get("rulename")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    destaddr = request.forms.get("destaddr").replace('\r\n','\n').strip()
     pronum = request.forms.get("pronum")
     starttime = request.forms.get("starttime")
     stoptime = request.forms.get("stoptime")
     outdev = request.forms.get("ifacename").replace('advpolicy_','')
-    alladdr=srcaddr.split('\n')+destaddr.split('\n')
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
     #提交判断
     if outdev == '' or rulename == '':
         msg = {'color':'red','message':u'描述或出口未填写，添加失败'}
@@ -192,14 +211,10 @@ def do_editadvroute(id):
     if int(pronum) <0 or int(pronum) >32765 :
         msg = {'color':'red','message':u'优先级值填写错误，添加失败'}
         return(template('advroute',msg=msg,session=s))
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'地址格式错误(%s)，添加失败' % ipmask}
-           return(template('advroute',msg=msg,session=s))
     cmdDict=cmds.getdictrst('ip rule add prio %s fwmark 1000%s dev %s' % (pronum,id,outdev))
     if cmdDict.get('status') == 0:
-       sql = """ UPDATE sysrouteadv SET rulename=%s,srcaddr=%s,destaddr=%s,pronum=%s,starttime=%s,stoptime=%s,iface=%s WHERE id=%s """
-       data = (rulename,srcaddr,destaddr,int(pronum),starttime,stoptime,outdev,id)
+       sql = """ UPDATE sysrouteadv SET rulename=%s,srcmatch=%s,srcaddr=%s,dstmatch=%s,dstaddr=%s,pronum=%s,starttime=%s,stoptime=%s,iface=%s WHERE id=%s """
+       data = (rulename,srcmatch,srcaddr,dstmatch,dstaddr,int(pronum),starttime,stoptime,outdev,id)
        result = writeDb(sql,data)
        if result :
           writeROUTEconf(action='uptconf')
@@ -312,7 +327,7 @@ def deliface(stype,id):
        sql = " DELETE FROM sysattr WHERE attr=%s "
        sqlquery = " select count(*) as num from sysrouteadv WHERE position( iface in %s) "
     else:
-       sqlquery = " select srcaddr,destaddr,pronum,iface as outdev FROM sysrouteadv WHERE id=%s "
+       sqlquery = " select srcaddr,dstaddr,pronum,iface as outdev FROM sysrouteadv WHERE id=%s "
        sql = " DELETE FROM sysrouteadv WHERE id=%s "
     resultA = readDb(sqlquery,(id,))
     # 判断删除入口并返回到指定界面
@@ -333,14 +348,14 @@ def deliface(stype,id):
     if result == True:
        if stype == 'adv':
           try:
-             if resultA[0].get('srcaddr') == '' and resultA[0].get('destaddr') != '':
-                cmds.getdictrst('ip rule del prio %s to %s' % (resultA[0].get('pronum'),resultA[0].get('destaddr')))
-             elif resultA[0].get('destaddr') == '' and resultA[0].get('srcaddr') != '':
+             if resultA[0].get('srcaddr') == '' and resultA[0].get('dstaddr') != '':
+                cmds.getdictrst('ip rule del prio %s to %s' % (resultA[0].get('pronum'),resultA[0].get('dstaddr')))
+             elif resultA[0].get('dstaddr') == '' and resultA[0].get('srcaddr') != '':
                 cmds.getdictrst('ip rule del prio %s from %s dev %s' % (resultA[0].get('pronum'),resultA[0].get('srcaddr')))
-             elif resultA[0].get('destaddr') == '' and resultA[0].get('srcaddr') == '':
+             elif resultA[0].get('dstaddr') == '' and resultA[0].get('srcaddr') == '':
                 cmds.getdictrst('ip rule del prio %s dev %s' % (resultA[0].get('pronum'),resultA[0].get('outdev')))
              else:
-                cmds.getdictrst('ip rule del prio %s from %s to %s' % (resultA[0].get('pronum'),resultA[0].get('srcaddr'),resultA[0].get('destaddr')))
+                cmds.getdictrst('ip rule del prio %s from %s to %s' % (resultA[0].get('pronum'),resultA[0].get('srcaddr'),resultA[0].get('dstaddr')))
              msg = {'color':'green','message':u'删除成功'}
              return template(tpl,session=s,msg=msg)
           except:
@@ -495,6 +510,114 @@ def getapplog():
     item_list = readDb(sql,)
     return json.dumps(item_list, cls=DateEncoder)
 
+# 网络对象
+@route('/netobjconf')
+@checkAccess
+def netobjconf():
+    """UTM配置页"""
+    s = request.environ.get('beaker.session')
+    return template('netobjconf',session=s,msg={})
+
+@route('/addnetobj')
+@checkAccess
+def addnetobj():
+    """网络对象配置 添加页"""
+    s = request.environ.get('beaker.session')
+    return template('addnetobj',session=s,msg={},info={})
+
+@route('/addnetobj',method='POST')
+@checkAccess
+def do_addnetobj():
+    """网络对象配置 添加页"""
+    s = request.environ.get('beaker.session')
+    objname = request.forms.get("objname")
+    objtype = request.forms.get("objtype")
+    if objname == "":
+       msg = {'color':'red','message':u'添加失败，对象名称不能为空'}
+       return template('netobjconf',session=s,msg=msg,info={})
+    if objtype == "ipset" :
+       objtext = request.forms.get("objtextA").replace('\r\n','\n').strip()
+       for ipaddr in objtext.split('\n'):
+           if netmod.checkips(ipaddr) == False :
+              msg = {'color':'red','message':u'添加失败，地址不合法'}
+              return template('netobjconf',session=s,msg=msg,info={})
+    elif objtype == "domainset" :
+       objtext = request.forms.get("objtextB").replace('\r\n','\n').strip()
+       for domain in objtext.split('\n'):
+           if netmod.is_domain(domain) == False :
+              msg = {'color':'red','message':u'添加失败，域名不合法'}
+              return template('netobjconf',session=s,msg=msg,info={})
+    sql = "insert into netobjgroup(objname,objtype,objtext,status,objattr) VALUES(%s,%s,%s,%s,%s)"
+    data = (objname,objtype,objtext,"1","1")
+    result = writeDb(sql,data)
+    if result == True:
+       msg = {'color':'green','message':u'添加成功'}
+       return template('netobjconf',session=s,msg=msg,info={})
+    else:
+       msg = {'color':'red','message':u'添加失败'}
+       return template('netobjconf',session=s,msg=msg,info={})
+
+@route('/editnetobj/<id>')
+@checkAccess
+def editnetobj(id):
+    s = request.environ.get('beaker.session')
+    sql = " SELECT objname,objtype,objtext FROM netobjgroup where status='1' and id=%s"
+    result = readDb(sql,(id,))
+    return template('addnetobj',session=s,msg={},info=result[0])
+
+@route('/editnetobj/<id>',method="POST")
+@checkAccess
+def do_editnetobj(id):
+    s = request.environ.get('beaker.session')
+    objname = request.forms.get("objname")
+    objtype = request.forms.get("objtype")
+    if objname == "":
+       msg = {'color':'red','message':u'添加失败，对象名称不能为空'}
+       return template('netobjconf',session=s,msg=msg,info={})
+    if objtype == "ipset" :
+       objtext = request.forms.get("objtextA").replace('\r\n','\n').strip()
+       for ipaddr in objtext.split('\n'):
+           if netmod.checkips(ipaddr) == False :
+              msg = {'color':'red','message':u'添加失败，地址不合法'}
+              return template('netobjconf',session=s,msg=msg,info={})
+    elif objtype == "domainset" :
+       objtext = request.forms.get("objtextB").replace('\r\n','\n').strip()
+       for domain in objtext.split('\n'):
+           if netmod.is_domain(domain) == False :
+              msg = {'color':'red','message':u'添加失败，域名不合法'}
+              return template('netobjconf',session=s,msg=msg,info={})
+    sql = "update netobjgroup set objname=%s,objtype=%s,objtext=%s where id=%s"
+    data = (objname,objtype,objtext,id)
+    result = writeDb(sql,data)
+    if result == True:
+       msg = {'color':'green','message':u'添加成功'}
+       return template('netobjconf',session=s,msg=msg,info={})
+    else:
+       msg = {'color':'red','message':u'添加失败'}
+       return template('netobjconf',session=s,msg=msg,info={})
+
+@route('/delnetobj/<id>')
+@checkAccess
+def delutmrule(id):
+    s = request.environ.get('beaker.session')
+    sql = """ select count(*) as count from (select srcaddr,dstaddr FROM ruleconfnat union select srcaddr,dstaddr FROM ruleconfutm union select srcaddr,dstaddr FROM sysrouteadv ) as U 
+              where srcaddr=%s or dstaddr=%s
+          """
+    result = readDb(sql,(id,id))
+    if result[0].get('count') == 0:
+       sql2 = "delete from netobjgroup where id=%s"
+       result2 = writeDb(sql2,(id,))
+       if result2 == True:
+          writeUTMconf(action='uptconf')
+          msg = {'color':'green','message':u'删除成功'}
+          return template('netobjconf',session=s,msg=msg)
+       else:
+          msg = {'color':'red','message':u'删除失败'}
+          return template('netobjconf',session=s,msg=msg)
+    else:
+       msg = {'color':'red','message':u'删除失败,对象已被关联使用'}
+       return template('netobjconf',session=s,msg=msg)
+
 # UTM配置
 @route('/utmruleconf')
 @checkAccess
@@ -519,7 +642,7 @@ def utmruleconf():
 
 @route('/addmaprule')
 @checkAccess
-def addutmrule():
+def addmaprule():
     """MAP配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
@@ -529,7 +652,7 @@ def addutmrule():
 
 @route('/addmaprule',method='POST')
 @checkAccess
-def do_addutmrule():
+def do_addmaprule():
     """MAP配置 添加页"""
     s = request.environ.get('beaker.session')
     rulename = request.forms.get("rulename")
@@ -581,7 +704,9 @@ def do_addutmrule():
 def addutmrule():
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
-    return template('addutmrule',session=s,msg={},info={})
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
+    return template('addutmrule',session=s,msg={},info={},setlist=result)
 
 @route('/addutmrule',method='POST')
 @checkAccess
@@ -591,23 +716,29 @@ def do_addutmrule():
     rulename = request.forms.get("rulename")
     pronum = request.forms.get("pronum")
     actzone = request.forms.get("actzone")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    dstaddr = request.forms.get("dstaddr").replace('\r\n','\n').strip()
-    sproto = request.forms.get("sproto")
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
+    netproto = request.forms.get("netproto")
     sport = request.forms.get("sport")
-    dproto = request.forms.get("dproto")
     dport = request.forms.get("dport")
     runaction = request.forms.get("runaction")
-    sql = "insert into ruleconfutm(rulename,pronum,actzone,srcaddr,dstaddr,sproto,sport,dproto,dport,runaction) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    data = (rulename,pronum,actzone,srcaddr,dstaddr,sproto,sport,dproto,dport,runaction)
-    if not (rulename and pronum):
+    sql = """ insert into ruleconfutm(rulename,pronum,actzone,srcmatch,srcaddr,dstmatch,dstaddr,netproto,sport,dport,runaction) 
+              VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    data = (rulename,pronum,actzone,srcmatch,srcaddr,dstmatch,dstaddr,netproto,sport,dport,runaction)
+    if not (srcaddr and dstaddr and rulename and pronum):
           msg = {'color':'red','message':u'规则名称或优先级未填写,添加失败'}
           return template('utmruleconf',session=s,msg=msg,info={})
-    alladdr=srcaddr.split('\n')+dstaddr.split('\n')
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'源地址或目标地址格式错误，添加失败'}
-           return(template('utmruleconf',msg=msg,session=s))
+    if ( netproto == "TCP" or netproto == "UDP" ) and ( sport == "" and dport == ""):
+       msg = {'color':'red','message':u'TCP/UDP协议端口不能全部为空'}
+       return(template('utmruleconf',msg=msg,session=s))
     if len(sport.split(',')) > 10 or len(dport.split(',')) > 10 :
        msg = {'color':'red','message':u'端口组总数量超过最大值10，添加失败'}
        return(template('utmruleconf',msg=msg,session=s))
@@ -632,9 +763,12 @@ def do_addutmrule():
 def editutmrule(id):
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
-    sql = " SELECT rulename,actzone,srcaddr,sproto,sport,dstaddr,dproto,dport,runaction,pronum from ruleconfutm where status='1' and id=%s"
-    result = readDb(sql,(id,))
-    return template('addutmrule',session=s,msg={},info=result[0])
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
+    sql2 = """ SELECT rulename,actzone,srcmatch,srcaddr,netproto,sport,dstmatch,dstaddr,dport,runaction,pronum 
+               from ruleconfutm where status='1' and id=%s """
+    result2 = readDb(sql2,(id,))
+    return template('addutmrule',session=s,msg={},info=result2[0],setlist=result)
 
 @route('/editutmrule/<id>',method='POST')
 @checkAccess
@@ -644,23 +778,28 @@ def do_editutmrule(id):
     rulename = request.forms.get("rulename")
     pronum = request.forms.get("pronum")
     actzone = request.forms.get("actzone")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    dstaddr = request.forms.get("dstaddr").replace('\r\n','\n').strip()
-    sproto = request.forms.get("sproto")
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
+    netproto = request.forms.get("netproto")
     sport = request.forms.get("sport")
-    dproto = request.forms.get("dproto")
     dport = request.forms.get("dport")
     runaction = request.forms.get("runaction")
-    sql = "update ruleconfutm set rulename=%s,pronum=%s,actzone=%s,srcaddr=%s,dstaddr=%s,sproto=%s,sport=%s,dproto=%s,dport=%s,runaction=%s where id=%s"
-    data = (rulename,pronum,actzone,srcaddr,dstaddr,sproto,sport,dproto,dport,runaction,id)
-    if not (rulename and pronum):
-          msg = {'color':'red','message':u'规则名称或优先级未填写,添加失败'}
+    sql = """ update ruleconfutm set rulename=%s,pronum=%s,actzone=%s,srcmatch=%s,srcaddr=%s,dstmatch=%s,dstaddr=%s,netproto=%s,sport=%s,dport=%s,runaction=%s where id=%s """
+    data = (rulename,pronum,actzone,srcmatch,srcaddr,dstmatch,dstaddr,netproto,sport,dport,runaction,id)
+    if not (srcaddr and dstaddr and rulename and pronum):
+          msg = {'color':'red','message':u'规则名称或优先级、地址类型未填写,添加失败'}
           return template('utmruleconf',session=s,msg=msg,info={})
-    alladdr=srcaddr.split('\n')+dstaddr.split('\n')
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'源地址或目标地址格式错误，添加失败'}
-           return(template('utmruleconf',msg=msg,session=s))
+    if ( netproto == "TCP" or netproto == "UDP" ) and (sport == "" and dport == ""):
+       msg = {'color':'red','message':u'TCP/UDP协议端口不能全部为空'}
+       return(template('utmruleconf',msg=msg,session=s))
     if len(sport.split(',')) > 10 or len(dport.split(',')) > 10 :
        msg = {'color':'red','message':u'端口组总数量超过最大值10，添加失败'}
        return(template('utmruleconf',msg=msg,session=s))
@@ -683,25 +822,36 @@ def do_editutmrule(id):
 @route('/addnatrule')
 @checkAccess
 def addutmrule():
-    """UTM配置 添加页"""
+    """NAT配置 添加页"""
     s = request.environ.get('beaker.session')
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
     netmod.InitNIinfo()
     sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
-    return template('addnatrule',session=s,msg={},info={},ifacelist_result=ifacelist_result)
+    return template('addnatrule',session=s,msg={},info={},ifacelist_result=ifacelist_result,setlist=result)
 
 @route('/addnatrule',method='POST')
 @checkAccess
-def do_addutmrule():
+def do_addnatrule():
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     rulename = request.forms.get("rulename")
-    dstmatch = request.forms.get("dstmatch")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    dstaddr = request.forms.get("dstaddr").replace('\r\n','\n').strip()
     runaction = request.forms.get("runaction")
     runobject = request.forms.get("runobject")
     pronum = request.forms.get("pronum")
+
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
+
     if runaction == 'SNAT':
        runobject = request.forms.get("runobject")
        if netmod.checkip(runobject) == False:
@@ -709,43 +859,52 @@ def do_addutmrule():
           return template('natruleconf',session=s,msg=msg,info={})
     else :
        runobject = request.forms.get("runobject2")
-    sql = "insert into ruleconfnat(rulename,srcaddr,dstmatch,dstaddr,runaction,runobject) VALUES(%s,%s,%s,%s,%s,%s)"
-    data = (rulename,srcaddr,dstmatch,dstaddr,runaction,runobject)
-    alladdr=srcaddr.split('\n')+dstaddr.split('\n')
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'源地址或目标地址格式错误，添加失败'}
-           return(template('natruleconf',msg=msg,session=s))
+
+    sql = "insert into ruleconfnat(rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,pronum) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+    data = (rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,pronum)
     result = writeDb(sql,data)
     if result == True:
        msg = {'color':'green','message':u'添加成功'}
        writeUTMconf(action='addconf')
        return template('natruleconf',session=s,msg=msg,info={})
+    else:
+       msg = {'color':'green','message':u'添加失败'}
+       return template('natruleconf',session=s,msg=msg,info={})
 
 @route('/editnatrule/<id>')
 @checkAccess
-def editutmrule(id):
+def editnatrule(id):
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
-    ifacelist_result = readDb(sql,)
-    sql2 = " SELECT rulename,srcaddr,dstmatch,dstaddr,runaction,runobject,runobject as runobject2,pronum from ruleconfnat where status='1' and id=%s"
-    result = readDb(sql2,(id,))
-    return template('addnatrule',session=s,msg={},info=result[0],ifacelist_result=ifacelist_result)
+    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    result = readDb(sql,)
+    sql2 = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    ifacelist_result = readDb(sql2,)
+    sql3 = " SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,runobject as runobject2,pronum from ruleconfnat where status='1' and id=%s"
+    result3 = readDb(sql3,(id,))
+    return template('addnatrule',session=s,msg={},info=result3[0],ifacelist_result=ifacelist_result,setlist=result)
 
 @route('/editnatrule/<id>',method='POST')
 @checkAccess
-def do_editutmrule(id):
+def do_editnatrule(id):
     """UTM配置 更新页"""
     s = request.environ.get('beaker.session')
     rulename = request.forms.get("rulename")
-    dstmatch = request.forms.get("dstmatch")
-    srcaddr = request.forms.get("srcaddr").replace('\r\n','\n').strip()
-    dstaddr = request.forms.get("dstaddr").replace('\r\n','\n').strip()
     runaction = request.forms.get("runaction")
     runobject = request.forms.get("runobject")
     pronum = request.forms.get("pronum")
+
+    srcmatch = request.forms.get("srcmatch")
+    if srcmatch == "2":
+       srcaddr="all"
+    else:
+       srcaddr = (',').join(request.forms.getlist("srcaddr"))
+    dstmatch = request.forms.get("dstmatch")
+    if dstmatch == "2":
+       dstaddr="all"
+    else:
+       dstaddr = (',').join(request.forms.getlist("dstaddr"))
     if runaction == 'SNAT':
        runobject = request.forms.get("runobject")
        if netmod.checkip(runobject) == False:
@@ -753,19 +912,13 @@ def do_editutmrule(id):
           return template('natruleconf',session=s,msg=msg,info={})
     else :
        runobject = request.forms.get("runobject2")
-    sql = "update ruleconfnat set rulename=%s,srcaddr=%s,dstmatch=%s,dstaddr=%s,runaction=%s,runobject=%s,pronum=%s where id=%s"
-    data = (rulename,srcaddr,dstmatch,dstaddr,runaction,runobject,pronum,id)
-    alladdr=srcaddr.split('\n')+dstaddr.split('\n')
-    for ipmask in alladdr :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
-           msg = {'color':'red','message':u'源地址或目标地址格式错误，添加失败'}
-           return(template('natruleconf',msg=msg,session=s))
+    sql = "update ruleconfnat set rulename=%s,srcmatch=%s,srcaddr=%s,dstmatch=%s,dstaddr=%s,runaction=%s,runobject=%s,pronum=%s where id=%s"
+    data = (rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,pronum,id)
     result = writeDb(sql,data)
     if result == True:
        writeUTMconf(action='uptconf')
        msg = {'color':'green','message':u'更新成功'}
        return template('natruleconf',session=s,msg=msg,info={})
-
 
 @route('/editmaprule/<id>')
 @checkAccess
@@ -872,16 +1025,30 @@ def delmaprule(id):
 @route('/api/getutmruleinfo',method=['GET', 'POST'])
 @checkAccess
 def getifaceinfo():
-    sql = """ SELECT id,rulename,actzone,left(srcaddr,100) as srcaddr,left(dstaddr,100) as dstaddr,concat(sproto,':',sport) as sport,concat(dproto,':',dport) as dport,runaction,pronum 
-              FROM ruleconfutm order by pronum """
+    sql = """ SELECT U.id,U.rulename,U.actzone,U.runaction,U.pronum,
+              if(U.srcaddr="all","全部网络",concat(if(U.srcmatch=0,"! ",""),D.objname)) as srcaddr,
+              if(U.dstaddr="all","全部网络",concat(if(U.dstmatch=0,"! ",""),E.objname)) as dstaddr,
+              if(U.netproto="ALL","不限",concat(U.netproto,':',U.sport)) as sport,
+              if(U.netproto="ALL","不限",concat(U.netproto,':',U.dport)) as dport
+              FROM ruleconfutm as U LEFT OUTER JOIN netobjgroup as D on D.id=U.srcaddr LEFT OUTER JOIN netobjgroup as E on E.id=U.dstaddr order by pronum """
+    result = readDb(sql,)
+    return json.dumps(result)
+
+@route('/api/getnetobjinfo',method=['GET', 'POST'])
+@checkAccess
+def getnetobjinfo():
+    sql = """ SELECT id,objname,objtype,left(objtext,100) as objtext,objattr,status
+              FROM  netobjgroup where objattr='1' order by id """
     result = readDb(sql,)
     return json.dumps(result)
 
 @route('/api/getnatruleinfo',method=['GET', 'POST'])
 @checkAccess
 def getifaceinfo():
-    sql = """ SELECT id,rulename,left(srcaddr,100) as srcaddr,left(concat((case dstmatch when 1 then '[==] ' when 0 then '[ !=] ' end),dstaddr),100) as dstaddr,runaction,runobject,pronum 
-            FROM ruleconfnat order by pronum """
+    sql = """ SELECT U.id,U.rulename,U.runaction,U.runobject,U.pronum,
+              if(U.srcaddr="all","全部网络",concat(if(U.srcmatch=0,"! ",""),D.objname)) as srcaddr,
+              if(U.dstaddr="all","全部网络",concat(if(U.dstmatch=0,"! ",""),E.objname)) as dstaddr
+              FROM ruleconfnat as U LEFT OUTER JOIN netobjgroup as D on D.id=U.srcaddr LEFT OUTER JOIN netobjgroup as E on E.id=U.dstaddr order by pronum """
     iface_list = readDb(sql,)
     return json.dumps(iface_list)
 

@@ -21,62 +21,70 @@
                 </div><!--Widget Header-->
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                   <form action="" method="post">
-		    %if msg.get('message'):
+		            %if msg.get('message'):
                       <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     %end
                     <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">记录类型</span>
-                            <select style="width:420px" class="form-control" id="sel" name="dnstype">
-			    	<option 
-					%if info.get('dnstype','')=='A': 
-						selected 
-					%end 
-					value='A'>A记录
-				</option>
-                                <option 
-					%if info.get('dnstype','')=='MX':
-						selected 
-					%end 
-					value='MX'>MX记录
-				</option>
-				<option 
-                                        %if info.get('dnstype','')=='CNAME':
-                                                selected 
-                                        %end 
-                                        value='CNAME'>CNAME记录
-                                </option>
-				<option 
-                                        %if info.get('dnstype','')=='NS':
-                                                selected 
-                                        %end 
-                                        value='NS'>NS转发记录
-                                </option>
-                                <option 
-					%if info.get('dnstype','')=='PTR': 
-						selected 
-					%end 
-					value='PTR'>PTX记录
-				</option>
-				<!--option 
-                                        %if info.get('dnstype','')=='TXT': 
-                                                selected 
-                                        %end 
-                                        value='TXT'>TXT记录
-                                </option-->
+                            <select style="width:420px" class="form-control" id="sel" name="dnstype"
+                            >
+                            %if msg.get('action','') == 'accept': 
+                            <option
+					            %if info.get('dnstype','')=='A': 
+						            selected 
+					            %end 
+					            value='A'>A记录
+				            </option>
+                            <option 
+					            %if info.get('dnstype','')=='MX':
+						            selected 
+					            %end 
+					            value='MX'>MX记录
+				            </option>
+				            <option 
+                                %if info.get('dnstype','')=='CNAME':
+                                    selected 
+                                %end 
+                                value='CNAME'>CNAME记录
+                            </option>
+                            <option 
+                                %if info.get('dnstype','')=='NS':
+                                    selected 
+                                %end 
+                                value='NS'>NS转发记录
+                            </option>
+                            <option 
+					            %if info.get('dnstype','')=='PTR': 
+						            selected 
+					            %end 
+					            value='PTR'>PTR记录
+				            </option>
+                            %end
+				            <option 
+                                %if info.get('dnstype','')=='SET': 
+                                    selected 
+                                %end 
+                                value='SET'>SET记录
+                            </option>
                             </select>
                         </div>
                     </div>
 		    <div class="modal-body">
                         <div class="input-group">
-                            <span class="input-group-addon">域名名称</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="domain" aria-describedby="inputGroupSuccess4Status" value="{{info.get('domain','')}}">
+                            <span class="input-group-addon" id="dname">域名名称</span>
+                            <input type="text" style="width:420px" class="form-control" id="domainA" name="domainA" onkeyup="this.value=this.value.replace(/[^\w\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('domain','')}}">
+                            <textarea class="input-group" id="domainB" name="domainB" onkeyup="this.value=this.value.replace(/[^\w\d.-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.-\/\\\n]/g,'')" placeholder="域名组: domain.com(一行一个,不超过40行)" style="width:420px;height:100px;resize:vertical;">{{info.get('domain','')}}</textarea>
                         </div>
                     </div>
 		    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">记录数据</span>
-                            <input type="text" style="width:420px" class="form-control" id="" name="record" aria-describedby="inputGroupSuccess4Status" value="{{info.get('record','')}}">
+                            <input type="text" style="width:420px" class="form-control" id="record" name="record" onkeyup="this.value=this.value.replace(/[^\w\d@.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d@.]/g,'')" aria-describedby="inputGroupSuccess4Status" 
+                            %if msg.get('action','') == 'reject': 
+                                readonly="readonly"
+                            %end 
+                            value="{{info.get('record','')}}">
                         </div>
                     </div>
 		    <div class="modal-body">
@@ -85,9 +93,9 @@
                             <input type="text" style="width:420px" class="form-control" id="selInput" name="pronum" aria-describedby="inputGroupSuccess4Status" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" value="{{info.get('pronum','')}}">
                         </div>
                    </div>
-		   <div class="modal-footer">
+		           <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">提交</button>
-			<a id="rego" style="float:left" class="btn btn-primary" href="#" onclick="javascript:history.back(-1);">返回</a>
+			            <a id="rego" style="float:left" class="btn btn-primary" href="/dnsservconf">返回</a>
                    </div>
                 </div>
               </form>
@@ -103,13 +111,27 @@
 $(function() {
   $('#sel').click(function() {
     if (this.value == 'MX') {
-	document.getElementById("selInput").readOnly=false ;
-        /*显示 $('#selInput').show(); */
+        document.getElementById("dname").innerHTML="域名名称" ;
+	    document.getElementById("selInput").readOnly=false ;
+        $('#domainA').show();
+        $('#domainB').hide();
+    } else if (this.value == 'PTR') {
+        document.getElementById("dname").innerHTML="IPv4地址" ;
+        $('#domainA').show();
+        $('#domainB').hide();
+    } else if (this.value == 'SET') {
+        document.getElementById("dname").innerHTML="域名列表" ;
+	    document.getElementById("selInput").readOnly=true ;
+        $('#domainB').show();
+        $('#domainA').hide();
     } else {
-	document.getElementById("selInput").readOnly=true ;
-        /*隐藏 $('#selInput').hide(); */
+        document.getElementById("dname").innerHTML="域名名称" ;
+        document.getElementById("selInput").readOnly=true ;
+        $('#domainA').show();
+        $('#domainB').hide();
     }
   });
   $('#sel').click();
 });
+
 </script>

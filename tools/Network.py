@@ -283,15 +283,11 @@ def adddnsconf():
 def do_adddnsconf():
     s = request.environ.get('beaker.session')
     dnstype = request.forms.get("dnstype")
-    domain = request.forms.get("domain")
+    domain = request.forms.get("domainA")
     record = request.forms.get("record")
     pronum = request.forms.get("pronum")
-    data = (dnstype,domain,record,pronum)
     if dnstype == 'NULL' :
        msg = {'color':'red','message':'请选择记录类型'}
-       return(template('adddnsconf',session=s,msg=msg,info={}))
-    if netmod.is_domain(domain) == False :
-       msg = {'color':'red','message':'域名名称格式错误'}
        return(template('adddnsconf',session=s,msg=msg,info={}))
     if dnstype == 'MX' and netmod.is_domain(record) == False :
        msg = {'color':'red','message':'记录数据格式错误'}
@@ -302,10 +298,26 @@ def do_adddnsconf():
     if dnstype == 'A' and netmod.checkip(record) == False :
        msg = {'color':'red','message':'记录数据格式错误'}
        return(template('adddnsconf',session=s,msg=msg,info={}))
+    if dnstype == 'PTR' and netmod.checkip(domain) == False :
+       msg = {'color':'red','message':'数据格式错误'}
+       return(template('adddnsconf',session=s,msg=msg,info={}))
+    if dnstype == 'SET':
+       domain = request.forms.get("domainB").replace('\r\n','\n').strip()
+       if domain != "":
+          for domains in domain.split('\n'):
+             if netmod.is_domain(domains) == False:
+                msg = {'color':'red','message':'记录数据格式错误'}
+                return(template('adddnsconf',session=s,msg=msg,info={}))
 
     sql = "insert into dnsrecord (dnstype,domain,data,pronum) VALUE (%s,%s,%s,%s)"
+    data = (dnstype,domain,record,pronum)
     result = writeDb(sql,data)
     if result == True:
+       #如果含SET记录,写入网络对象
+       if dnstype == 'SET':
+          sql=" insert into netobjgroup (objname,objtype,objattr) value (%s,%s,'0')"
+          data=(record,'ipset')
+          writeDb(sql,data)
        writeDNSconf(action='uptconf')
        msg = {'color':'green','message':'提交成功'}
        return(template('dnsservconf',session=s,msg=msg,info={}))
@@ -320,22 +332,22 @@ def editrecord(id):
     s = request.environ.get('beaker.session')
     sql = " select dnstype,domain,data as record,pronum from dnsrecord where id=%s "
     result = readDb(sql,(id,))
-    return(template('adddnsconf',session=s,msg={},info=result[0]))
+    msg = {'action':'accept'}
+    if result[0].get('dnstype') == "SET":
+       #当类型为ipset时，禁止编辑记录数据，仅支持删除或更新域名列表
+       msg = {'action':'reject'}
+    return(template('adddnsconf',session=s,msg=msg,info=result[0]))
 
 @route('/editrecord/<id>',method="POST")
 @checkAccess
 def do_editrecord(id):
     s = request.environ.get('beaker.session')
     dnstype = request.forms.get("dnstype")
-    domain = request.forms.get("domain")
+    domain = request.forms.get("domainA")
     record = request.forms.get("record")
     pronum = request.forms.get("pronum")
-    data = (dnstype,domain,record,pronum)
     if dnstype == 'NULL' :
        msg = {'color':'red','message':'请选择记录类型'}
-       return(template('adddnsconf',session=s,msg=msg,info={}))
-    if netmod.is_domain(domain) == False :
-       msg = {'color':'red','message':'域名名称格式错误'}
        return(template('adddnsconf',session=s,msg=msg,info={}))
     if dnstype == 'MX' and netmod.is_domain(record) == False :
        msg = {'color':'red','message':'记录数据格式错误'}
@@ -346,7 +358,19 @@ def do_editrecord(id):
     if dnstype == 'A' and netmod.checkip(record) == False :
        msg = {'color':'red','message':'记录数据格式错误'}
        return(template('adddnsconf',session=s,msg=msg,info={}))
-
+    if dnstype == 'PTR' and netmod.checkip(domain) == False :
+       msg = {'color':'red','message':'数据格式错误'}
+       return(template('adddnsconf',session=s,msg=msg,info={}))
+    if dnstype == 'SET':
+       domain = request.forms.get("domainB").replace('\r\n','\n').strip()
+       if domain != "":
+          if len(domain.split('\n')) > 40:
+             msg = {'color':'red','message':'域名行数太多，无法支持'}
+             return(template('adddnsconf',session=s,msg=msg,info={}))
+          for domains in domain.split('\n'):
+             if netmod.is_domain(domains) == False:
+                msg = {'color':'red','message':'记录数据格式错误'}
+                return(template('adddnsconf',session=s,msg=msg,info={}))
     sql = "update dnsrecord set dnstype=%s,domain=%s,data=%s,pronum=%s where id=%s"
     data = (dnstype,domain,record,pronum,id)
     result = writeDb(sql,data)

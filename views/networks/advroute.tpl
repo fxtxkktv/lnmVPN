@@ -103,14 +103,14 @@ $(function(){
               //formatter:url_link
           },{
               field: 'srcaddr',
-              title: '源地址',
+              title: '源对象',
               align: 'center',
               valign: 'middle',
               sortable: false,
               //formatter:url_link
           },{
-              field: 'destaddr',
-              title: '目标地址',
+              field: 'dstaddr',
+              title: '目的对象',
               align: 'center',
               valign: 'middle',
               sortable: false

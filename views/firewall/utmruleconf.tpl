@@ -87,25 +87,25 @@ $(function(){
               sortable: false,
           },{
               field: 'srcaddr',
-              title: '源地址',
+              title: '源对象',
               align: 'center',
               valign: 'middle',
               sortable: false,
           },{
               field: 'dstaddr',
-              title: '目标网络',
+              title: '目的对象',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{
+	      },{
               field: 'sport',
               title: '源端口',
               align: 'center',
               valign: 'middle',
               sortable: false
-	  },{
+	      },{
               field: 'dport',
-              title: '目标端口',
+              title: '目的端口',
               align: 'center',
               valign: 'middle',
               sortable: false

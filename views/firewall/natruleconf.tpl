@@ -25,7 +25,7 @@
 			            <a id="addnatrule" href="/addnatrule" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-plus"></i>添加记录
                         </a>
-			    %if msg.get('message'):
+                            %if msg.get('message'):
                                 <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                             %end
                         </div>
@@ -81,13 +81,13 @@ $(function(){
               sortable: false,
           },{
               field: 'srcaddr',
-              title: '源地址',
+              title: '源对象',
               align: 'center',
               valign: 'middle',
               sortable: false,
           },{
               field: 'dstaddr',
-              title: '目标网络',
+              title: '目的对象',
               align: 'center',
               valign: 'middle',
               sortable: false

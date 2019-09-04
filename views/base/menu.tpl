@@ -108,6 +108,11 @@
             </a>
             <ul class="submenu">
                 <li class="">
+                    <a href="/netobjconf">
+                        <span class="menu-text">网络对象</span>
+                    </a>
+                </li>
+                <li class="">
                     <a href="/utmruleconf">
                         <span class="menu-text">UTM规则</span>
                     </a>

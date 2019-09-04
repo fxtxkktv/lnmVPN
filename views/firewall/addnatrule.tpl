@@ -1,4 +1,8 @@
 %rebase base position='添加NAT配置', managetopli="firewall"
+
+<link rel="stylesheet" href="/assets/bootstrap-select/bootstrap-select.min.css">
+<link href="/assets/css/charisma-app.css" rel="stylesheet" type="text/css" />
+
 <div class="page-body">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -29,14 +33,46 @@
                         </div>
                     </div>
 		    
-		    <div class="modal-body">
-                        <span class="input-group-addon" style="width:500px">源地址</span>
-                        <textarea id="srcaddr" name="srcaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('srcaddr','')}}</textarea>
-                    </div>
-		    <div class="modal-body">
-			<div class="input-group">
-		    	<span class="input-group-addon" style="width:80px">目标网络</span>
-			<select style="width:100px;height:30px;" class="form-control" name="dstmatch">
+            <div class="modal-body" style="width:520px">
+                <div class="input-group">
+                     <span class="input-group-addon" >源对象&emsp;</span>
+                     <select class="form-control" id="srcmatch" name="srcmatch">
+                        <option 
+                                        %if info.get('srcmatch','')== 2: 
+                                                selected 
+                                        %end 
+                                        value="2">任意地址
+                        </option>
+                        <option 
+                                        %if info.get('srcmatch','')== 1: 
+                                                selected 
+                                        %end 
+                                        value="1">匹配
+                        </option>
+                        <option 
+                                        %if info.get('srcmatch','')== 0: 
+                                                selected 
+                                        %end 
+                                        value="0">非匹配
+                        </option>
+                     </select>
+                     <select type="text" class="selectpicker show-tick form-control" id="srcaddr" name="srcaddr" data-live-search="true" data-live-search-placeholder="搜索网络对象">
+                              %for name in setlist:
+                                <option value='{{name.get('id')}}'>{{name.get('objname')}}</option>
+                              %end
+                     </select>
+                </div>
+            </div>
+                        <div class="modal-body" style="width:520px">
+                <div class="input-group" >
+                    <span class="input-group-addon">目的对象</span>
+                    <select class="form-control" id="dstmatch" name="dstmatch">
+                        <option 
+                                        %if info.get('dstmatch','')== 2: 
+                                                selected 
+                                        %end 
+                                        value="2">任意地址
+                        </option>
                         <option 
                                         %if info.get('dstmatch','')== 1: 
                                                 selected 
@@ -49,10 +85,14 @@
                                         %end 
                                         value="0">非匹配
                         </option>
-                        </select>
-			</div>
-			<textarea id="dstaddr" name="dstaddr" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('dstaddr','')}}</textarea>
-                    </div>
+                    </select>
+                    <select type="text" class="selectpicker show-tick form-control" id="dstaddr" name="dstaddr" data-live-search="true" data-live-search-placeholder="搜索网络对象">
+                            %for name in setlist:
+                                <option value='{{name.get('id')}}'>{{name.get('objname')}}</option>
+                            %end
+                    </select>
+                </div>
+            </div>
 		    <div class="modal-body">
 			<div class="input-group">
 			<span class="input-group-addon" style="width:80px">执行动作</span>
@@ -94,9 +134,28 @@
     </div>
 </div>
 <script src="/assets/js/datetime/bootstrap-datepicker.js"></script> 
-
+<script src="/assets/bootstrap-select/bootstrap-select.min.js"></script>
 <script language="JavaScript" type="text/javascript">
 $(function() {
+  $("#srcaddr").selectpicker({noneSelectedText:'搜索网络对象'}); //修改默认显示值
+  $("#dstaddr").selectpicker({noneSelectedText:'搜索网络对象'}); //修改默认显示值
+  $('#srcmatch').click(function() {
+    if (this.value == 2) {
+        console.log(this.value)
+        $('#srcaddr').selectpicker('hide');
+    } else {
+        $('#srcaddr').selectpicker('show');
+    }
+  });
+  $('#dstmatch').click(function() {
+    if (this.value == 2) {
+        $('#dstaddr').selectpicker('hide');
+    } else {
+        $('#dstaddr').selectpicker('show');
+    }
+  });
+  $('#srcmatch').click() ;
+  $('#dstmatch').click() ;
   $('#runaction').click(function() {
     if (this.value == 'MASQ') {
         $('#runobject').hide();
@@ -106,6 +165,14 @@ $(function() {
         $('#runobject2').hide();
     }
   });
-  $('#runaction').click()
+  $('#runaction').click();
+  console.log({{info.get('srcaddr',None)}})
+  if ( "{{info.get('srcaddr',None)}}" != "all" ) {
+    $('#srcaddr').selectpicker('val',"{{info.get('srcaddr',None)}}");
+  };
+  var result2="{{info.get('dstaddr',None)}}";
+  if ( "{{info.get('dstaddr',None)}}" != "all" ) {
+    $('#dstaddr').selectpicker('val',"{{info.get('dstaddr',None)}}");
+  };
 });
 </script>
