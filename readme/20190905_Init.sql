@@ -216,7 +216,7 @@ CREATE TABLE `sysinfo` (
   `tim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=378619 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=379293 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,7 +310,7 @@ CREATE TABLE `vpnpolicy` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-04 20:50:53
+-- Dump completed on 2019-09-05  8:27:30
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -348,7 +348,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-04 20:50:53
+-- Dump completed on 2019-09-05  8:27:30
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -369,11 +369,11 @@ UNLOCK TABLES;
 --
 -- Dumping data for table `sysattr`
 --
--- WHERE:  servattr!='netiface'
+-- WHERE:  servattr!='netiface' and servattr!='advroutepolicy'
 
 LOCK TABLES `sysattr` WRITE;
 /*!40000 ALTER TABLE `sysattr` DISABLE KEYS */;
-INSERT INTO `sysattr` VALUES ('appversion','1.0.0',1,'sys'),('vpnprofile','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<AnyConnectProfile xmlns=\"http://schemas.xmlsoap.org/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://schemas.xmlsoap.org/encoding/ AnyConnectProfile.xsd\">\r\n\r\n        <ClientInitialization>\r\n                <UseStartBeforeLogon UserControllable=\"false\">false</UseStartBeforeLogon>\r\n                <StrictCertificateTrust>false</StrictCertificateTrust>\r\n                <RestrictPreferenceCaching>false</RestrictPreferenceCaching>\r\n                <RestrictTunnelProtocols>IPSec</RestrictTunnelProtocols>\r\n                <BypassDownloader>true</BypassDownloader>\r\n                <WindowsVPNEstablishment>AllowRemoteUsers</WindowsVPNEstablishment>\r\n                <CertEnrollmentPin>pinAllowed</CertEnrollmentPin>\r\n                <CertificateMatch>\r\n                        <KeyUsage>\r\n                                <MatchKey>Digital_Signature</MatchKey>\r\n                        </KeyUsage>\r\n                        <ExtendedKeyUsage>\r\n                                <ExtendedMatchKey>ClientAuth</ExtendedMatchKey>\r\n                        </ExtendedKeyUsage>\r\n                </CertificateMatch>\r\n\r\n                <BackupServerList>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                     <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </BackupServerList>\r\n        </ClientInitialization>\r\n\r\n        <ServerList>\r\n                <HostEntry>\r\n                    <HostName>LnmOS.devel.com</HostName>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </HostEntry>\r\n        </ServerList>\r\n</AnyConnectProfile>',1,'sys'),('vpnrelay','tun1000',1,'vpnrelay'),('dnsconf','{\"dnsrelay\": \"1\", \"dnsrule\": \"0\", \"dnsport\": 53, \"dnslist\": \"114.114.114.114\\n114.114.115.115\", \"dnsproxy\": \"0\", \"dnsstatus\": 0}',1,'dnsmasq'),('vpnclient','{\"authtype\": \"2\", \"service\": \"off\"}',1,'openconnect'),('resData','{\"ResState\": \"True\", \"visitDay\": \"30\", \"ResInv\": \"60\", \"ResSaveDay\": \"1\"}',1,'sys'),('dhcpconf','{\"otime\": \"48\", \"getdns1\": \"8.8.8.8\", \"getdns2\": \"8.8.4.4\", \"startip\": \"192.168.200.100\", \"dhcplist\": \"F0:79:59:92:C9:92,192.168.0.87\", \"getgw\": \"192.168.200.1\", \"dhcpenable\": \"0\", \"stopip\": \"192.168.200.200\"}',1,'dnsmasq'),('vpnserver','{\"authtype\": \"3\", \"service\": \"off\"}',1,'ocserv'),('advpolicy_1566810662','{\"rtname\": \"PPP\\u51fa\\u53e3\", \"iflist\": [\"eth1\"], \"rttype\": \"A\"}',1,'advroutepolicy'),('advpolicy_1566976448','{\"rtname\": \"\\u9999\\u6e2f\\u51fa\\u53e3\", \"iflist\": [\"tun1000\"], \"rttype\": \"A\"}',1,'advroutepolicy'),('advpolicy_1566897119','{\"rtname\": \"\\u7535\\u4fe1+\\u8054\\u901a\", \"iflist\": [\"eth0\", \"eth1\"], \"rttype\": \"B\"}',1,'advroutepolicy');
+INSERT INTO `sysattr` VALUES ('appversion','1.0.0',1,'sys'),('vpnprofile','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<AnyConnectProfile xmlns=\"http://schemas.xmlsoap.org/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://schemas.xmlsoap.org/encoding/ AnyConnectProfile.xsd\">\r\n\r\n        <ClientInitialization>\r\n                <UseStartBeforeLogon UserControllable=\"false\">false</UseStartBeforeLogon>\r\n                <StrictCertificateTrust>false</StrictCertificateTrust>\r\n                <RestrictPreferenceCaching>false</RestrictPreferenceCaching>\r\n                <RestrictTunnelProtocols>IPSec</RestrictTunnelProtocols>\r\n                <BypassDownloader>true</BypassDownloader>\r\n                <WindowsVPNEstablishment>AllowRemoteUsers</WindowsVPNEstablishment>\r\n                <CertEnrollmentPin>pinAllowed</CertEnrollmentPin>\r\n                <CertificateMatch>\r\n                        <KeyUsage>\r\n                                <MatchKey>Digital_Signature</MatchKey>\r\n                        </KeyUsage>\r\n                        <ExtendedKeyUsage>\r\n                                <ExtendedMatchKey>ClientAuth</ExtendedMatchKey>\r\n                        </ExtendedKeyUsage>\r\n                </CertificateMatch>\r\n\r\n                <BackupServerList>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                     <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </BackupServerList>\r\n        </ClientInitialization>\r\n\r\n        <ServerList>\r\n                <HostEntry>\r\n                    <HostName>LnmOS.devel.com</HostName>\r\n                    <HostAddress>192.168.60.188:8833</HostAddress>\r\n                </HostEntry>\r\n        </ServerList>\r\n</AnyConnectProfile>',1,'sys'),('vpnrelay','tun1000',1,'vpnrelay'),('dnsconf','{\"dnsrelay\": \"1\", \"dnsrule\": \"0\", \"dnsport\": 53, \"dnslist\": \"114.114.114.114\\n114.114.115.115\", \"dnsproxy\": \"0\", \"dnsstatus\": 0}',1,'dnsmasq'),('vpnclient','{\"authtype\": \"2\", \"service\": \"off\"}',1,'openconnect'),('resData','{\"ResState\": \"True\", \"visitDay\": \"30\", \"ResInv\": \"60\", \"ResSaveDay\": \"1\"}',1,'sys'),('dhcpconf','{\"otime\": \"48\", \"getdns1\": \"8.8.8.8\", \"getdns2\": \"8.8.4.4\", \"startip\": \"192.168.200.100\", \"dhcplist\": \"F0:79:59:92:C9:92,192.168.0.87\", \"getgw\": \"192.168.200.1\", \"dhcpenable\": \"0\", \"stopip\": \"192.168.200.200\"}',1,'dnsmasq'),('vpnserver','{\"authtype\": \"3\", \"service\": \"off\"}',1,'ocserv');
 /*!40000 ALTER TABLE `sysattr` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -386,4 +386,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-04 20:50:53
+-- Dump completed on 2019-09-05  8:27:30
