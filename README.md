@@ -37,7 +37,7 @@ yum install -y gcc mysql-server mysql-devel MySQL-python <br>
 yum install -y gnutls-utils <br>
 VPN服务: [yum需要调用第三方源] <br>
 yum install -y epel-release <br>
-yum install -y ocserv openconnect iptables ipset dnsmasq<br>
+yum install -y ocserv openconnect iptables ipset dnsmasq iftop<br>
 安装Python程序扩展包 <br>
 pip install -r readme/requirements.txt <br>
 

@@ -74,7 +74,7 @@ def getrouteinfo():
 @checkAccess
 def addroute():
     s = request.environ.get('beaker.session')
-    sql = " SELECT ifacename FROM netiface where status='UP' "
+    sql = " SELECT ifacename FROM netiface "
     ifacelist_result = readDb(sql,)
     return template('addrouteconf',session=s,info={},ifacelist_result=ifacelist_result)
 
@@ -237,7 +237,7 @@ def advroutepolicy():
 def do_addadvroutepolicy():
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql,)
     return template('addadvroutepolicy',session=s,msg={},info={},ifacelist_result=ifacelist_result)
 
@@ -282,7 +282,7 @@ def do_addadvroutepolicy(id):
         info['rtname']=json.loads(info.get('value')).get('rtname')
         info['rttype']=json.loads(info.get('value')).get('rttype')
         info['iflist']=','.join(json.loads(info.get('value')).get('iflist'))
-    sql2 = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql2 = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
     ifacelist_result = readDb(sql2,)
     return template('addadvroutepolicy',session=s,msg={},info=info,ifacelist_result=ifacelist_result)
 

@@ -71,9 +71,11 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
       else
          defgw=yes
       fi
-      echo -en "BOOTPROTO=dialup\nCONNECT_POLL=6\nCONNECT_TIMEOUT=0\nDEMAND=no\nFIREWALL=NONE\nLCP_FAILURE=3\nLCP_INTERVAL=15\nPPPOE_TIMEOUT=80\nPIDFILE=/tmp/xdsl-ppp${uDict["id"]}.pid\nUNIT=${uDict["id"]}\nUSERCTL=yes\nETH=${uDict["ifacename"]}\nCLAMPMSS=${uDict["mtu"]}\nUSER=${uDict["username"]}\nDEFROUTE=$defgw\n" > /tmp/xdsl_${uDict["id"]}.cf
+      echo -en "BOOTPROTO=dialup\nCONNECT_POLL=6\nCONNECT_TIMEOUT=0\nDEMAND=no\nFIREWALL=NONE\nLCP_FAILURE=3\nLCP_INTERVAL=15\nPPPOE_TIMEOUT=80\nPIDFILE=/tmp/xdsl-ppp${uDict["id"]}.pid\nUNIT=${uDict["id"]}\nUSERCTL=yes\nETH=${uDict["ifacename"]}\nCLAMPMSS=${uDict["mtu"]}\nUSER=${uDict["username"]}\nDEFROUTE=$defgw\n" > /tmp/xdsl_${uDict["id"]}.cf      
+      LineStatus=$(python $wkdir/tools/API.py API getnistatus ${uDict["ifacename"]})
+      Pscount=$(ps -ef|grep "xdsl_${uDict["id"]}.cf"|grep -v 'grep'|wc -l)
       /sbin/pppoe-status /tmp/xdsl_${uDict["id"]}.cf >/dev/null 
-      if [ $? != 0 ];then
+      if [ $? != 0 ] && [ "$LineStatus" == "UP" ] && [ "$Pscount" == "0" ];then
          /sbin/pppoe-connect /tmp/xdsl_${uDict["id"]}.cf >/dev/null 2>&1 &
       fi
       # reload ppp script

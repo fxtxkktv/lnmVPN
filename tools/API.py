@@ -34,6 +34,9 @@ if __name__ == '__main__' :
    #操作日志写入接口
    elif sys.argv[1] == 'API' and sys.argv[2] == 'wrtvpnlogin':
       print wrtlog(sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
+   #获取设备接口状态
+   elif sys.argv[1] == 'API' and sys.argv[2] == 'getnistatus':
+      print netmod.getNistatus(sys.argv[3])
    #获取设备接口网关
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getgw':
       print netmod.getIfGW(sys.argv[3])

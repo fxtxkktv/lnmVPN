@@ -276,7 +276,8 @@ def dnsservconf():
 @checkAccess
 def adddnsconf():
     s = request.environ.get('beaker.session')
-    return(template('adddnsconf',session=s,msg={},info={}))
+    msg = {'action':'accept'}
+    return(template('adddnsconf',session=s,msg=msg,info={}))
 
 @route('/adddnsconf',method="POST")
 @checkAccess
