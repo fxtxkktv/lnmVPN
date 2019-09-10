@@ -1252,6 +1252,19 @@ def addservconf():
        return template('addvpnconfig',session=s,msg={},info={})
     return template('addvpnconfig',session=s,info=info)
 
+@route('/disconnect/<id>')
+@checkAccess
+def do_disconnect(id):
+    """强制断开用户"""
+    s = request.environ.get('beaker.session')
+    xstatus,result=cmds.gettuplerst('occtl disconnect user %s' % id)
+    if xstatus == 0 :
+       msg = {'color':'green','message':u'断开成功'}
+       return template('vpnservconf',session=s,msg=msg)
+    else:
+       msg = {'color':'red','message':u'断开失败'}
+       return template('vpnservconf',session=s,msg=msg)
+
 @route('/addservconf',method="POST")
 @checkAccess
 def do_addservconf():
@@ -1364,7 +1377,6 @@ def addclientconf():
        cmds.servboot('vpnconn')
        writeUTMconf(action='uptconf')
        return template('addvpncltconfig',session=s,msg=msg,info=idata,conncerts_list=conncerts_list)
-
 
 # 策略配置
 @route('/api/getvpnservinfo',method=['GET', 'POST'])
@@ -1584,7 +1596,6 @@ def conncerts():
 def conncerts():
     s = request.environ.get('beaker.session')
     return template('uplconncerts',session=s,msg={})
-
 
 @route('/uplconncerts', method='POST')
 def do_upload():

@@ -138,25 +138,25 @@ $(function(){
     function getinfo(value,row,index){
         eval('rowobj='+JSON.stringify(row));
         //定义编辑按钮样式，只有管理员或自己编辑的任务才有权编辑
-        if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
+        /*if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
             var style_edit = '<a href="/editvpnservconf/'+rowobj['id']+'" class="btn-sm btn-info" >';
         }else{
             var style_edit = '<a class="btn-sm btn-info" disabled>';
-        }
+        }*/
         //定义删除按钮样式，只有管理员或自己编辑的任务才有权删除
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
-            var style_del = '&nbsp;<a id="delconf" href="/delvpnservconf/'+rowobj['id']+'" class="btn-sm btn-danger" onClick="return confirm(&quot;确定删除?&quot;)">';
+            var style_del = '&nbsp;<a id="delconf" href="/disconnect/'+rowobj['user']+'" class="btn-sm btn-danger" onClick="return confirm(&quot;确定断开吗?&quot;)">';
         }else{
             var style_del = '&nbsp;<a class="btn-sm btn-danger" disabled>';
         }
 
         return [
-            style_edit,
+            /*style_edit,
                 '<i class="fa fa-edit"> 编辑</i>',
-            '</a>',
+            '</a>',*/
 
             style_del,
-                '<i class="fa fa-times"> 删除</i>',
+                '<i class="fa fa-times"> 强制断开</i>',
             '</a>'
         ].join('');
     }
