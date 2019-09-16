@@ -460,7 +460,7 @@ def systeminfo():
     info['pyversion'] = platform.python_version()
     info['memsize'] = cmds.getdictrst('cat /proc/meminfo |grep \'MemTotal\' |awk -F: \'{printf ("%.0fM",$2/1024)}\'|sed \'s/^[ \t]*//g\'').get('result')
     info['cpumode'] = cmds.getdictrst('grep \'model name\' /proc/cpuinfo |uniq |awk -F : \'{print $2}\' |sed \'s/^[ \t]*//g\' |sed \'s/ \+/ /g\'').get('result')
-    info['v4addr'] = 'Lan: '+netmod.NatIP()+'\tWan: '+netmod.NetIP()
+    info['v4addr'] = 'Wan: '+netmod.NetIP()
     info['appversion'] = AppServer().getVersion()
     """管理日志"""
     sql = " SELECT id,objtext,objact,objhost,objtime FROM logrecord order by id DESC limit 7 "
@@ -537,6 +537,7 @@ def do_addnetobj():
        return template('netobjconf',session=s,msg=msg,info={})
     if objtype == "ipset" :
        objtext = request.forms.get("objtextA").replace('\r\n','\n').strip()
+       objtext = '\n'.join(sorted(set(objtext.split('\n'))))
        for ipaddr in objtext.split('\n'):
            if netmod.checkips(ipaddr) == False :
               msg = {'color':'red','message':u'添加失败，地址不合法'}
@@ -576,6 +577,7 @@ def do_editnetobj(id):
        return template('netobjconf',session=s,msg=msg,info={})
     if objtype == "ipset" :
        objtext = request.forms.get("objtextA").replace('\r\n','\n').strip()
+       objtext = '\n'.join(sorted(set(objtext.split('\n'))))
        for ipaddr in objtext.split('\n'):
            if netmod.checkips(ipaddr) == False :
               msg = {'color':'red','message':u'添加失败，地址不合法'}

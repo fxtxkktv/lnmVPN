@@ -14,6 +14,14 @@ PATH=$PATH:$wkdir/sbin
 iconf="$wkdir/plugins/networks"
 pytools="$wkdir/venv/bin/python"
 
+# load process lock
+lockfile="$wkdir/plugins/firewall/advroute_lock.pid"
+if [ -f $lockfile ] ;then
+   exit 0
+else
+   echo $$ > $lockfile
+fi
+
 declare -A uDict
 
 function toDict() {
@@ -45,14 +53,11 @@ if [ "$1" = "onlySR" ];then
    exit 0
 fi
 
-
 # 刷新default路由
 ip route flush table default >/dev/null 2>&1
 for i in $(ip rule |awk -F: '$1<32766 && $1>79 {print $1}');do
         ip rule del prio $i
 done
-
-
 
 # 增加ADSL接口路由
 inum=80
@@ -90,7 +95,6 @@ if [ "$advdesc_I" != "" ];then
        break
      fi
    done
-
    #添加系统制定策略路由
    for servID in $(awk -F= '/^advpolicy_[0-9]/{print $1}' $iconf/route.conf);do
       id=$(echo $servID|awk -F_ '{print $2}')
@@ -107,8 +111,9 @@ if [ "$advdesc_I" != "" ];then
             ip route replace default dev ${uDict["iflist"]} src $ifaceaddr proto static table $id >/dev/null 2>&1
             ip route append prohibit default table $id metric 1 proto static >/dev/null 2>&1
          else
+            ifaceniname=$($pytools $wkdir/tools/API.py API getniname "${uDict["iflist"]}")
             ifacegw=$($pytools $wkdir/tools/API.py API getgw "${uDict["iflist"]}")
-            ip route replace default table $id via $ifacegw src $ifaceaddr >/dev/null 2>&1
+            ip route replace default table $id via $ifacegw dev $ifaceniname src $ifaceaddr >/dev/null 2>&1
          fi
       elif [ ${uDict["rttype"]} = "B" ];then
          ip route flush table $id >/dev/null 2>&1
@@ -118,9 +123,10 @@ if [ "$advdesc_I" != "" ];then
              if [ $ifaceaddr = "" ];then
                 continue
              fi
+             ifaceniname=$($pytools $wkdir/tools/API.py API getniname $i)
              ifacegw=$($pytools $wkdir/tools/API.py API getgw $i)
              ifaceweight=$($pytools $wkdir/tools/API.py API getniweight $i)
-             gws2+="nexthop via $ifacegw weight $ifaceweight "
+             gws2+="nexthop via $ifacegw dev $ifaceniname weight $ifaceweight "
          done
          ip route replace default table $id equalize $gws2 >/dev/null 2>&1
       fi
@@ -158,5 +164,8 @@ if [ "$advdesc_II" != "" ];then
       ip route flush cache >/dev/null 2>&1
    done
 fi
+
+# 删除锁文件
+rm -f $lockfile
 
 exit 0

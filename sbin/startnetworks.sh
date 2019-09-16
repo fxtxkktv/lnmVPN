@@ -91,7 +91,7 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     for line in $(echo ${uDict["extip"]}|sed 's/;/ /g');do
       if [ "$line" != "" ];then
          extipinfos=$(echo $line|awk -F/ '{print $1"/"$2}')
-         ip addr add local $extipinfos dev ${uDict["ifacename"]} >/dev/null 2>&1
+         ip addr add local $extipinfos dev ${uDict["ifacename"]} label ${uDict["ifacename"]}:${uDict["id"]} >/dev/null 2>&1
          extgwinfos=$(echo $line|awk -F/ '{print $3}')
          if [ ${extgwinfos} != "" ];then
             ip route flush table ${uDict["id"]} >/dev/null 2>&1
@@ -105,12 +105,13 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     ip rule del prio 50 table main >/dev/null 2>&1
     ip rule add prio 50 table main >/dev/null 2>&1
     # 增加静态接口路由(不包含动态IP,动态IP接口路由加载高级路由脚本)
-    if [ "${uDict["gateway"]}" != "" ];then
-      ip rule del prio $inum
+    ifacezone=$(python $wkdir/tools/API.py API getnizone ${uDict["ifacename"]})
+    if [ "${uDict["gateway"]}" != "" ] && [ "$ifacezone" != "LAN" ];then  #这个地方必须是WAN模式才增加进出路由
+      echo ${uDict["ipaddr"]}/${uDict["netmask"]}
+      ip rule del prio $inum >/dev/null 2>&1
       ip rule add prio $inum from ${uDict["ipaddr"]}/${uDict["netmask"]} table ${uDict["id"]} >/dev/null 2>&1 
       let inum+=1
     fi
-
 done
 
 #引入高级路由加载

@@ -21,7 +21,7 @@
                 </div><!--Widget Header-->
                 <div style="padding:-10px 0px;" class="widget-body no-padding">
                   <form action="" method="post">
-		    <div class="modal-body">
+                    <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">物理网卡</span>
                             <select style="width:420px" class="form-control" name="ifacename">
@@ -35,6 +35,23 @@
                                     </option>
                                 %end
                  		  </select>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <span class="input-group-addon">所属区域</span>
+                            <select style="width:420px" class="form-control" id="ifacezone" name="ifacezone">
+                             <option 
+                             %if info.get('ifacezone','')=='LAN': 
+                                 selected 
+                             %end 
+                                 value='LAN'>LAN区域</option>
+                             <option 
+                             %if info.get('ifacezone','')=='WAN': 
+                                 selected 
+                             %end 
+                                value='WAN'>WAN区域</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-body">

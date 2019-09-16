@@ -62,6 +62,7 @@ def do_additem():
     s = request.environ.get('beaker.session')
     ifacename = request.forms.get("ifacename")
     ifacetype = request.forms.get("ifacetype")
+    ifacezone = request.forms.get("ifacezone")
     if ifacetype == 'ADSL' :
        username = request.forms.get("username")
        password = request.forms.get("password")
@@ -117,11 +118,11 @@ def do_additem():
        return(template('networkconf',session=s,msg=msg))
 
     if ifacetype == 'STATIC' :
-       sql = "INSERT INTO netiface (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
        data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize)
        result = writeDb(sql,data)
     else :
-       sql = "INSERT INTO netiface (ifacename,ifacetype,username,password,mtu,defaultgw,osize) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,username,password,mtu,defaultgw,osize) VALUES (%s,%s,%s,%s,%s,%s,%s)"
        data = (ifacename,ifacetype,username,password,mtu,defaultgw,osize)
        result = writeDb(sql,data)
 
@@ -154,7 +155,7 @@ def do_chgstatus(id):
 @checkAccess
 def editiface(id):
     s = request.environ.get('beaker.session')
-    sql = " SELECT ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,username,password,mtu,osize FROM netiface WHERE id = %s "
+    sql = " SELECT ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,username,password,mtu,osize FROM netiface WHERE id = %s "
     sql2 = "select attr as ifacename,concat(attr,'|',value) as value from sysattr where attr=(select ifacename from netiface where id=%s);"
     info = readDb(sql,(id,))
     ifacelist_result = readDb(sql2,(id,))
@@ -170,6 +171,7 @@ def do_editiface(id):
     s = request.environ.get('beaker.session')
     ifacename = request.forms.get("ifacename")
     ifacetype = request.forms.get("ifacetype")
+    ifacezone = request.forms.get("ifacezone")
     if ifacetype == 'ADSL' :
        username = request.forms.get("username")
        password = request.forms.get("password")
@@ -225,12 +227,12 @@ def do_editiface(id):
        return(template('addinterface',session=s,msg=msg))
 
     if ifacetype == 'STATIC' :
-       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,ipaddr=%s,netmask=%s,gateway=%s,defaultgw=%s,extip=%s,osize=%s WHERE id=%s"
-       data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize,id)
+       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,ifacezone=%s,ipaddr=%s,netmask=%s,gateway=%s,defaultgw=%s,extip=%s,osize=%s WHERE id=%s"
+       data = (ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,osize,id)
        result = writeDb(sql,data)
     else :
-       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,username=%s,password=%s,mtu=%s,defaultgw=%s,osize=%s WHERE id=%s"
-       data = (ifacename,ifacetype,username,password,mtu,defaultgw,osize,id)
+       sql = "UPDATE netiface SET ifacename=%s,ifacetype=%s,ifacezone=%s,username=%s,password=%s,mtu=%s,defaultgw=%s,osize=%s WHERE id=%s"
+       data = (ifacename,ifacetype,ifacezone,username,password,mtu,defaultgw,osize,id)
        result = writeDb(sql,data)
 
     if result == True:
