@@ -181,7 +181,7 @@ def editadvroute(id):
         idict['attr']=idict.get('attr')
         idict['rtname']=json.loads(idict.get('value')).get('rtname')
         infos.append(idict)
-    sql2 = """ SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,pronum,concat('advpolicy_',iface) as iface FROM sysrouteadv WHERE id=%s """
+    sql2 = """ SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,pronum,starttime,stoptime,concat('advpolicy_',iface) as iface FROM sysrouteadv WHERE id=%s """
     result2 = readDb(sql2,(id,))
     return template('addadvroute',session=s,info=result2[0],iflist=infos,setlist=result)
 
@@ -327,7 +327,7 @@ def deliface(stype,id):
        sql = " DELETE FROM sysattr WHERE attr=%s "
        sqlquery = " select count(*) as num from sysrouteadv WHERE position( iface in %s) "
     else:
-       sqlquery = " select srcaddr,dstaddr,pronum,iface as outdev FROM sysrouteadv WHERE id=%s "
+       sqlquery = " select id,pronum,srcmatch,dstmatch,iface FROM sysrouteadv WHERE id=%s "
        sql = " DELETE FROM sysrouteadv WHERE id=%s "
     resultA = readDb(sqlquery,(id,))
     # 判断删除入口并返回到指定界面
@@ -348,18 +348,14 @@ def deliface(stype,id):
     if result == True:
        if stype == 'adv':
           try:
-             if resultA[0].get('srcaddr') == '' and resultA[0].get('dstaddr') != '':
-                cmds.getdictrst('ip rule del prio %s to %s' % (resultA[0].get('pronum'),resultA[0].get('dstaddr')))
-             elif resultA[0].get('dstaddr') == '' and resultA[0].get('srcaddr') != '':
-                cmds.getdictrst('ip rule del prio %s from %s dev %s' % (resultA[0].get('pronum'),resultA[0].get('srcaddr')))
-             elif resultA[0].get('dstaddr') == '' and resultA[0].get('srcaddr') == '':
-                cmds.getdictrst('ip rule del prio %s dev %s' % (resultA[0].get('pronum'),resultA[0].get('outdev')))
-             else:
-                cmds.getdictrst('ip rule del prio %s from %s to %s' % (resultA[0].get('pronum'),resultA[0].get('srcaddr'),resultA[0].get('dstaddr')))
+             if resultA[0].get('srcmatch') == 2 and resultA[0].get('dstmatch') == 2 :
+                cmds.getdictrst('ip rule del prio %s table %s' % (resultA[0].get('pronum'),resultA[0].get('iface')))
+             else :
+                cmds.getdictrst('ip rule del prio %s fwmark 1000%s table %s' % (resultA[0].get('pronum'),resultA[0].get('id'),resultA[0].get('iface')))
              msg = {'color':'green','message':u'删除成功'}
              return template(tpl,session=s,msg=msg)
           except:
-                msg = {'color':'green','message':u'删除成功'}
+                msg = {'color':'red','message':u'删除失败'}
                 return template(tpl,session=s,msg=msg)
        elif stype == 'advpolicy':
           writeROUTEconf(action='uptconf')

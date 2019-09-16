@@ -100,14 +100,14 @@
             <div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">时间控制</span>
-                            <input type="time" style="width:210px" class="form-control" id="starttime" name="starttime" aria-describedby="inputGroupSuccess4Status" 
+                            <input type="time" style="width:210px" class="form-control" id="starttime" name="starttime" onclick="mytime()" aria-describedby="inputGroupSuccess4Status" 
                             %if info.get('starttime',''): 
                                 value="{{info.get('starttime','')}}"
                             %else :
                                 value="00:00"
                             %end 
                             >
-                            <input type="time" style="width:210px" class="form-control" id="stoptime" name="stoptime" aria-describedby="inputGroupSuccess4Status"
+                            <input type="time" style="width:210px" class="form-control" id="stoptime" name="stoptime" onclick="mytime()" aria-describedby="inputGroupSuccess4Status"
                             %if info.get('stoptime',''): 
                                 value="{{info.get('stoptime','')}}"
                             %else :
@@ -152,6 +152,8 @@ $(function() {
     if (this.value == 2) {
         $('#srcaddr').selectpicker('hide');
     } else {
+        document.getElementById("starttime").readOnly=false ;
+        document.getElementById("stoptime").readOnly=false ;
         $('#srcaddr').selectpicker('show');
     }
   });
@@ -159,6 +161,8 @@ $(function() {
     if (this.value == 2) {
         $('#dstaddr').selectpicker('hide');
     } else {
+        document.getElementById("starttime").readOnly=false ;
+        document.getElementById("stoptime").readOnly=false ;
         $('#dstaddr').selectpicker('show');
     }
   });
@@ -172,4 +176,15 @@ $(function() {
     $('#dstaddr').selectpicker('val',"{{info.get('dstaddr',None)}}");
   };
 });
+
+function mytime(){
+  //console.log($('#dstmatch option:selected').val())
+  if ($('#srcmatch option:selected').val() == 2  && $('#dstmatch option:selected').val() == 2){
+     document.getElementById("starttime").readOnly=true ;
+     document.getElementById("stoptime").readOnly=true ;
+  } else {
+     document.getElementById("starttime").readOnly=false ;
+     document.getElementById("stoptime").readOnly=false ;
+  }
+};
 </script>
