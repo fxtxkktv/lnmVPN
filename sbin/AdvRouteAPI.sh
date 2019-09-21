@@ -17,6 +17,7 @@ pytools="$wkdir/venv/bin/python"
 # load process lock
 lockfile="$wkdir/plugins/firewall/advroute_lock.pid"
 if [ -f $lockfile ] ;then
+   rm -f $lockfile
    exit 0
 else
    echo $$ > $lockfile
@@ -34,6 +35,44 @@ function toDict() {
    done	
 }
 
+function mkADVRoute(){
+   for servID in $(awk -F= -v R=$1 '{if($1~R)print $1}' $iconf/route.conf);do
+      id=$(echo $servID|awk -F_ '{print $2}')
+      toDict $iconf/route.conf $servID
+      if [ ${uDict["rttype"]} = "A" ];then
+         ip route flush table $id >/dev/null 2>&1
+         ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iflist"]}")
+         #忽略接口不存在地址的情况路由
+         if [ $ifaceaddr = "" ];then
+            continue
+         fi
+         if [ ${uDict["iflist"]} = "tun1000" ];then
+            ip route flush table $id >/dev/null 2>&1
+            ip route replace default dev ${uDict["iflist"]} src $ifaceaddr proto static table $id >/dev/null 2>&1
+            ip route append prohibit default table $id metric 1 proto static >/dev/null 2>&1
+         else
+            ifaceniname=$($pytools $wkdir/tools/API.py API getniname "${uDict["iflist"]}")
+            ifacegw=$($pytools $wkdir/tools/API.py API getgw "${uDict["iflist"]}")
+            ip route replace default table $id via $ifacegw dev $ifaceniname src $ifaceaddr >/dev/null 2>&1
+         fi
+      elif [ ${uDict["rttype"]} = "B" ];then
+         ip route flush table $id >/dev/null 2>&1
+         for i in $(echo ${uDict["iflist"]}|sed 's/,/\n/g');do
+             ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr $i)
+             #忽略接口不存在地址的情况路由
+             if [ $ifaceaddr = "" ];then
+                continue
+             fi
+             ifaceniname=$($pytools $wkdir/tools/API.py API getniname $i)
+             ifacegw=$($pytools $wkdir/tools/API.py API getgw $i)
+             ifaceweight=$($pytools $wkdir/tools/API.py API getniweight $i)
+             gws2+="nexthop via $ifacegw dev $ifaceniname weight $ifaceweight "
+         done
+         ip route replace default table $id equalize $gws2 >/dev/null 2>&1
+      fi
+   done
+}
+
 #加载用户定义静态路由
 for servID in $(awk -F= '/^stroute_[0-9]/{print $1}' $iconf/route.conf);do
     toDict $iconf/route.conf $servID
@@ -49,7 +88,17 @@ for servID in $(awk -F= '/^stroute_[0-9]/{print $1}' $iconf/route.conf);do
     fi
 done
 
+# 禁止静态路由段
 if [ "$1" = "onlySR" ];then
+   rm -f $lockfile
+   exit 0
+fi
+
+# Check高级路由规则段
+if [ "$1" = "onlyChkAdvRoute" ];then
+   RegStr="^advpolicy_$2"
+   mkADVRoute $RegStr
+   rm -f $lockfile
    exit 0
 fi
 
@@ -95,42 +144,9 @@ if [ "$advdesc_I" != "" ];then
        break
      fi
    done
-   #添加系统制定策略路由
-   for servID in $(awk -F= '/^advpolicy_[0-9]/{print $1}' $iconf/route.conf);do
-      id=$(echo $servID|awk -F_ '{print $2}')
-      toDict $iconf/route.conf $servID
-      if [ ${uDict["rttype"]} = "A" ];then
-         ip route flush table $id >/dev/null 2>&1
-         ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iflist"]}")
-         #忽略接口不存在地址的情况路由
-         if [ $ifaceaddr = "" ];then
-            continue
-         fi
-         if [ ${uDict["iflist"]} = "tun1000" ];then
-            ip route flush table $id >/dev/null 2>&1
-            ip route replace default dev ${uDict["iflist"]} src $ifaceaddr proto static table $id >/dev/null 2>&1
-            ip route append prohibit default table $id metric 1 proto static >/dev/null 2>&1
-         else
-            ifaceniname=$($pytools $wkdir/tools/API.py API getniname "${uDict["iflist"]}")
-            ifacegw=$($pytools $wkdir/tools/API.py API getgw "${uDict["iflist"]}")
-            ip route replace default table $id via $ifacegw dev $ifaceniname src $ifaceaddr >/dev/null 2>&1
-         fi
-      elif [ ${uDict["rttype"]} = "B" ];then
-         ip route flush table $id >/dev/null 2>&1
-         for i in $(echo ${uDict["iflist"]}|sed 's/,/\n/g');do
-             ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr $i)
-             #忽略接口不存在地址的情况路由
-             if [ $ifaceaddr = "" ];then
-                continue
-             fi
-             ifaceniname=$($pytools $wkdir/tools/API.py API getniname $i)
-             ifacegw=$($pytools $wkdir/tools/API.py API getgw $i)
-             ifaceweight=$($pytools $wkdir/tools/API.py API getniweight $i)
-             gws2+="nexthop via $ifacegw dev $ifaceniname weight $ifaceweight "
-         done
-         ip route replace default table $id equalize $gws2 >/dev/null 2>&1
-      fi
-   done
+   # 初始化系统制定策略路由
+   RegStr="^advpolicy_"
+   mkADVRoute $RegStr
 fi
 
 # 加载高级规则[IP RULE]
