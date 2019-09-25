@@ -60,7 +60,7 @@ function mkADVRoute(){
          for i in $(echo ${uDict["iflist"]}|sed 's/,/\n/g');do
              ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr $i)
              #忽略接口不存在地址的情况路由
-             if [ $ifaceaddr = "" ];then
+             if [ $ifaceaddr = "" ] || [ $ifaceaddr = "False" ];then
                 continue
              fi
              ifaceniname=$($pytools $wkdir/tools/API.py API getniname $i)

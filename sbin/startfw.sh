@@ -17,7 +17,7 @@ iptablesconf="$wkdir/plugins/firewall/iptables.conf"
 # load kernel options
 sysctl -p "$wkdir/template/kernel.conf" >/dev/null 2>&1
 if [ -f /etc/sysctl.conf ];then
-   $wkdir/sbin/busybox cp -f template/kernel.conf /etc/sysctl.conf
+   $wkdir/sbin/busybox cp -f $wkdir/template/kernel.conf /etc/sysctl.conf
 fi
 
 # disabled selinux policy

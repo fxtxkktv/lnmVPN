@@ -118,12 +118,12 @@ def do_additem():
        return(template('networkconf',session=s,msg=msg))
 
     if ifacetype == 'STATIC' :
-       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-       data = (ifacename,ifacetype,ipaddr,netmask,gateway,defaultgw,extip,osize)
+       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+       data = (ifacename,ifacetype,ifacezone,ipaddr,netmask,gateway,defaultgw,extip,osize)
        result = writeDb(sql,data)
     else :
-       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,username,password,mtu,defaultgw,osize) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-       data = (ifacename,ifacetype,username,password,mtu,defaultgw,osize)
+       sql = "INSERT INTO netiface (ifacename,ifacetype,ifacezone,username,password,mtu,defaultgw,osize) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+       data = (ifacename,ifacetype,ifacezone,username,password,mtu,defaultgw,osize)
        result = writeDb(sql,data)
 
     if result == True:
@@ -134,6 +134,8 @@ def do_additem():
        #已绑定的网卡禁止再次绑定
        sql2 = """ update sysattr set status="0" where attr=%s """
        writeDb(sql2,(ifacename,))
+    else:
+       msg = {'color':'red','message':u'添加失败'}
     return template('networkconf',session=s,msg=msg)
 
 @route('/rebootif/<id>')
