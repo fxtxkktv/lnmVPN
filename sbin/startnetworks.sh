@@ -107,12 +107,18 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     # 增加静态接口路由(不包含动态IP,动态IP接口路由加载高级路由脚本)
     ifacezone=$(python $wkdir/tools/API.py API getnizone ${uDict["ifacename"]})
     if [ "${uDict["gateway"]}" != "" ] && [ "$ifacezone" != "LAN" ];then  #这个地方必须是WAN模式才增加进出路由
-      echo ${uDict["ipaddr"]}/${uDict["netmask"]}
+      #echo ${uDict["ipaddr"]}/${uDict["netmask"]}
       ip rule del prio $inum >/dev/null 2>&1
       ip rule add prio $inum from ${uDict["ipaddr"]}/${uDict["netmask"]} table ${uDict["id"]} >/dev/null 2>&1 
       let inum+=1
     fi
 done
+#加载VPN接口
+if [ "$(python tools/API.py API getniaddr tun1000)" != "False" ];then
+   ifaceaddr=$(python tools/API.py API getniaddr tun1000)
+   ip rule del prio 79 >/dev/null 2>&1
+   ip rule add prio 79 from $ifaceaddr table 1000 >/dev/null 2>&1
+fi
 
 #引入高级路由加载
 $wkdir/sbin/AdvRouteAPI.sh >/dev/null 2>&1

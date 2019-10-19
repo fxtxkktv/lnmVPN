@@ -548,6 +548,7 @@ def do_addnetobj():
     data = (objname,objtype,objtext,"1","1")
     result = writeDb(sql,data)
     if result == True:
+       writeUTMconf(action='uptconf')
        msg = {'color':'green','message':u'添加成功'}
        return template('netobjconf',session=s,msg=msg,info={})
     else:
@@ -588,6 +589,7 @@ def do_editnetobj(id):
     data = (objname,objtype,objtext,id)
     result = writeDb(sql,data)
     if result == True:
+       writeUTMconf(action='uptconf')
        msg = {'color':'green','message':u'添加成功'}
        return template('netobjconf',session=s,msg=msg,info={})
     else:

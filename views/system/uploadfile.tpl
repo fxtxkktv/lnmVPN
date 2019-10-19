@@ -24,13 +24,13 @@
                   %if msg.get('message'):
                         <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                   %end
-		   <div class="modal-body">
+                  <div class="modal-body">
                         <div class="input-group">
                              <input type="file" name="upload" />
                         </div>
                   </div>
-		  <div class="modal-footer">
-			<button type="submit" style="float:left" class="btn btn-primary">保存</button>
+                  <div class="modal-footer">
+                        <button type="submit" style="float:left" class="btn btn-primary">保存</button>
                         <a id="rego" style="float:left" class="btn btn-primary" href="#" onclick="javascript:history.back(-1);">返回</a>
                  </div>
                 </div>
@@ -40,5 +40,3 @@
     </div>
 </div>
 <script src="/assets/js/datetime/bootstrap-datepicker.js"></script> 
-<script charset="utf-8" src="/assets/kindeditor/kindeditor.js"></script>
-<script charset="utf-8" src="/assets/kindeditor/lang/zh_CN.js"></script>
