@@ -12,4 +12,4 @@ netifaces==0.10.7
 psutil==5.4.8
 pycrypto==2.6.1
 requests==2.20.0
-urllib3==1.24
+urllib3==1.24.2
