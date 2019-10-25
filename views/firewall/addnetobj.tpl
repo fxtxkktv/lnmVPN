@@ -51,7 +51,7 @@
                 <div class="input-group">
                       <span class="input-group-addon">对象内容</span>
                       <textarea class="input-group" id="objtextA" name="objtextA" onkeyup="this.value=this.value.replace(/[^\d.\-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.-\/\\\n]/g,'')" placeholder="IP组: IP地址/IP段(一行一个)" style="width:300px;height:100px;resize:vertical;">{{info.get('objtext','')}}</textarea>
-                      <textarea class="input-group" id="objtextB" name="objtextB" onkeyup="this.value=this.value.replace(/[^\w\d.-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.-\/\\\n]/g,'')" placeholder="域名组: domain.com(一行一个)" style="width:300px;height:100px;resize:vertical;">{{info.get('objtext','')}}</textarea>
+                      <textarea class="input-group" id="objtextB" name="objtextB" onkeyup="this.value=this.value.replace(/[^\w\d.\-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\w\d.-\/\\\n]/g,'')" placeholder="域名组: domain.com(一行一个)" style="width:300px;height:100px;resize:vertical;">{{info.get('objtext','')}}</textarea>
                  </div>
 		   </div>    
                     <div class="modal-footer">

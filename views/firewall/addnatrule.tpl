@@ -124,7 +124,7 @@
 			</div>
             <div class="modal-body" id="p_g">
                  <span style="color:red;">备注: 当源或目的对象均为任意地址时<strong>&nbsp;建议使用源地址伪装MASQ，SNAT容易造成高级路由异常.&nbsp;</strong></span>
-           </div>
+            </div>
 		    </div>    
                     <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存</button>

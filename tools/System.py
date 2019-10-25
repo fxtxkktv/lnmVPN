@@ -1103,8 +1103,8 @@ def do_addpolicy():
         if netmod.checkip(ip) == False and ip != '':
            msg = {'color':'red','message':u'DNS内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
-    for ipmask in allipmask :
-        if netmod.checkipmask(ipmask) == False and ipmask != '':
+    for ips in allipmask :
+        if netmod.checkips(ips) == False and ips != '':
            msg = {'color':'red','message':u'路由内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
     try:
@@ -1158,8 +1158,8 @@ def editpolicy(id):
         if netmod.checkip(ip) == False and ip != '':
            msg = {'color':'red','message':u'DNS内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
-    for ipmask in allipmask :
-        if netmod.checkipmask(ipmask) == False and ipmask != '' :
+    for ips in allipmask :
+        if netmod.checkips(ips) == False and ips != '' :
            msg = {'color':'red','message':u'路由内容检测错误,更新失败'}
            return(template('policyconf',session=s,msg=msg,info={}))
     try:

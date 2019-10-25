@@ -56,15 +56,15 @@
             </div>
 		    <div class="modal-body">
                         <span class="input-group-addon" style="width:500px">推送DNS</span>
-                        <textarea id="pushdns" name="pushdns" onkeyup="this.value=this.value.replace(/[^\d.\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 8.8.8.8" style="width:500px;height:50px;resize:vertical;">{{info.get('pushdns','')}}</textarea>
+                        <textarea id="pushdns" name="pushdns" onkeyup="this.value=this.value.replace(/[^\d.\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.\\\n]/g,'')" placeholder="eg: 8.8.8.8" style="width:500px;height:50px;resize:vertical;">{{info.get('pushdns','')}}</textarea>
                     </div>
 		    <div class="modal-body">
 		    	<span class="input-group-addon" style="width:500px">推送安全路由</span>
-			<textarea id="pushroute" name="pushroute" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('pushroute','')}}</textarea>
+			<textarea id="pushroute" name="pushroute" onkeyup="this.value=this.value.replace(/[^\d.\-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.\-\/\\\n]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('pushroute','')}}</textarea>
                     </div>
 		    <div class="modal-body">
 			<span class="input-group-addon" style="width:500px">推送本地路由</span>
-			<textarea id="pushnoroute" name="pushnoroute" onkeyup="this.value=this.value.replace(/[^\d.\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('pushnoroute','')}}</textarea>
+			<textarea id="pushnoroute" name="pushnoroute" onkeyup="this.value=this.value.replace(/[^\d.\-\/\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.\-\/\\\n]/g,'')" placeholder="eg: 192.168.5.0/255.255.255.0" style="width:500px;height:100px;resize:vertical;">{{info.get('pushnoroute','')}}</textarea>
 		    </div>
             <div class="modal-body">
                         <span style="color:#666666;">备注: 速率限制填写为空或0表示不限制VPN速率.</span>
