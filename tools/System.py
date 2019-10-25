@@ -695,7 +695,7 @@ def do_addmaprule():
     result = writeDb(sql,data)
     if result == True:
        msg = {'color':'green','message':u'添加成功'}
-       #writeUTMconf(action='addconf')
+       writeUTMconf(action='addconf')
        return template('mapruleconf',session=s,msg=msg,info={})
 
 # UTM添加规则
@@ -977,7 +977,7 @@ def do_editutmrule(id):
     result = writeDb(sql,data)
     if result == True:
        msg = {'color':'green','message':u'添加成功'}
-       #writeUTMconf(action='addconf')
+       writeUTMconf(action='addconf')
        return template('mapruleconf',session=s,msg=msg,info={})
 
 @route('/delutmrule/<id>')

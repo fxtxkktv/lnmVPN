@@ -66,6 +66,7 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     elif [ "${uDict["ifacetype"]}" = "ADSL" ];then
       echo -en "\"${uDict["username"]}\"\t*\t\"${uDict["password"]}\"\t*\n" >> /etc/ppp/chap-secrets
       echo -en "\"${uDict["username"]}\"\t*\t\"${uDict["password"]}\"\t*\n" >> /etc/ppp/pap-secrets
+      chmod 600 /etc/ppp/pap-secrets /etc/ppp/chap-secrets >/dev/null 2>&1 &
       if [ "${uDict["defaultgw"]}" = "0" ];then
          defgw=no
       else
