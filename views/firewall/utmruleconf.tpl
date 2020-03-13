@@ -120,7 +120,7 @@ $(function(){
               title: '优先级',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: true
 	 },{
               field: '',
               title: '操作',

@@ -63,6 +63,10 @@
                   <label class="control-label" for="inputSuccess1">密码：</label>
                   <input type="password" class="form-control" id="passwd" name="passwd" placeholder="由字母、数字组成、符号，至少8位以上" require>
                 </div>
+                <div class="form-group">
+                  <label class="control-label" for="inputSuccess1">有效期：</label>
+                  <input type="date" class="form-control" id="stopdate" name="stopdate" require>
+                </div>
 		<div class="form-group">
                   <label class="control-label" for="inputSuccess1">关联策略：</label>
 		          <select id="policy" style="width:100%;" name="policy">
@@ -141,18 +145,23 @@ $(function(){
                 return index+1;
               }
           },{
-
               field: 'username',
               title: '帐号',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: true
+          },{
+              field: 'stopdate',
+              title: '有效期',
+              align: 'center',
+              valign: 'middle',
+              sortable: true
           },{ 
               field: 'policyname',
               title: '关联策略',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: true
           },{ 
               field: 'comment',
               title: '备注信息',
@@ -164,13 +173,14 @@ $(function(){
               title: '创建日期',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              visible: false,
+              sortable: true
           },{
               field: 'access',
               title: '权限',
               align: 'center',
               valign: 'middle',
-              sortable: false,
+              sortable: true,
               formatter: function(value,row,index){
                         if( value == '0' ){
                                 return '普通用户';
@@ -224,6 +234,7 @@ $(function(){
         $('#hidInput').val('0');
         $('#myModal').modal('show');
         $('#modalForm')[0].reset();
+        $('#stopdate').val('2099-12-31');
         isEdit = 0;
     });
 
@@ -252,6 +263,7 @@ $(function(){
                 $('#changeuser').popover('hide');
                 $('#username').val(result[0]['username']);
                 $('#passwd').val(result[0]['passwd']);
+                $('#stopdate').val(result[0]['stopdate']);
 		        $('#policy').val(result[0]['policy']);
                 $('#comment').val(result[0]['comment']);
                 $('#access').val(result[0]['access']);
@@ -269,6 +281,7 @@ $(function(){
     $("#subBtn").click(function(){
            var username = $('#username').val();
            var passwd = $('#passwd').val();
+           var stopdate = $('#stopdate').val();
            var policy = $('#policy').val(); 
            var comment = $('#comment').val(); 
            var access = $('#access').val(); 
@@ -279,7 +292,7 @@ $(function(){
                 postUrl = "/adduser";          //添加路径
            }
 
-           $.post(postUrl,{username:username,passwd:passwd,policy:policy,comment:comment,access:access},function(data){
+           $.post(postUrl,{username:username,passwd:passwd,stopdate:stopdate,policy:policy,comment:comment,access:access},function(data){
                   if(data==0){
                     $('#myModal').modal('hide');
                     $('#myLoadTable').bootstrapTable('refresh');

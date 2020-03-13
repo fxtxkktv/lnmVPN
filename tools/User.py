@@ -69,6 +69,7 @@ def adduser():
     s = request.environ.get('beaker.session')
     username = request.forms.get("username")
     passwd = request.forms.get("passwd")
+    stopdate = request.forms.get("stopdate")
     policy = request.forms.get("policy")
     access = request.forms.get("access")
     comment = request.forms.get("comment")
@@ -84,10 +85,10 @@ def adduser():
         return '-2'
     sql = """
             INSERT INTO
-                user(username,passwd,policy,access,comment)
-            VALUES(%s,%s,%s,%s,%s)
+                user(username,passwd,stopdate,policy,access,comment)
+            VALUES(%s,%s,%s,%s,%s,%s)
         """
-    data = (username,m_encrypt,policy,access,comment)
+    data = (username,m_encrypt,stopdate,policy,access,comment)
     result = writeDb(sql,data)
     if result:
        wrtlog('User','新增用户成功:%s' % username,s['username'],s.get('clientip'))
@@ -103,6 +104,7 @@ def do_changeuser(id):
     s = request.environ.get('beaker.session')
     username = request.forms.get("username")
     passwd = request.forms.get("passwd")
+    stopdate = request.forms.get("stopdate")
     policy = request.forms.get("policy")
     access = request.forms.get("access")
     comment = request.forms.get("comment")
@@ -124,10 +126,10 @@ def do_changeuser(id):
         return -2
     sql = """
             UPDATE user SET
-            username=%s,passwd=%s,policy=%s,access=%s,comment=%s
+            username=%s,passwd=%s,stopdate=%s,policy=%s,access=%s,comment=%s
             WHERE id=%s
         """
-    data = (username,m_encrypt,int(policy),access,comment,id)
+    data = (username,m_encrypt,stopdate,int(policy),access,comment,id)
     result = writeDb(sql,data)
     if result == True:
        wrtlog('User','更新用户成功:%s' % username,s['username'],s.get('clientip'))
@@ -167,6 +169,7 @@ def getuser():
     SELECT
     U.id,
     U.username,
+    date_format(U.stopdate,'%%Y-%%m-%%d') as stopdate,
     U.policy,
     D.name as policyname,
     U.access,

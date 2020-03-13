@@ -81,25 +81,25 @@ $(function(){
               title: '域名名称',
               align: 'center',
               valign: 'middle',
-              sortable: false,
+              sortable: true
           },{
               field: 'dnstype',
               title: '记录类型',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: true
           },{
               field: 'data',
               title: '数据',
               align: 'center',
-	      valign: 'middle',
-              sortable: false
+	          valign: 'middle',
+              sortable: true
           },{
               field: 'pronum',
               title: '优先级',
               align: 'center',
               valign: 'middle',
-              sortable: false
+              sortable: true
 	 },{
               field: '',
               title: '操作',

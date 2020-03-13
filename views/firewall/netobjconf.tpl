@@ -78,13 +78,13 @@ $(function(){
               title: '对象名称',
               align: 'center',
               valign: 'middle',
-              sortable: false,
+              sortable: true
 	      },{
               field: 'objtype',
               title: '对象类型',
               align: 'center',
               valign: 'middle',
-              sortable: false,
+              sortable: true
           },{
               field: 'objtext',
               title: '对象内容',

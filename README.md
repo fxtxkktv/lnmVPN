@@ -49,7 +49,7 @@ pip install -r readme/requirements.txt <br>
 4. 正式运行程序 <br>
 [程序调试]：python27 main.py <br>
 [后台运行]: startweb.sh restart <br>
-[前段访问]：https://IP地址:端口号 用户名：admin 密码: admin<br>
+[前段访问]：https://IP地址:888[端口号] 用户名：admin 密码: admin<br>
 [修改safekey]: 首次使用建议修改passkey，可通过API接口重置管理员密码[python tools/API.py API resetAdminPass newpass]<br>
 
 备注：程序启动将自动接管网络接口配置、DNS服务、DHCP服务等相关，建议关闭系统中涉及到的相关程序，以免相互冲突。<br>
