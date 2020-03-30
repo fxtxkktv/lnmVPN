@@ -191,6 +191,7 @@ def getuser():
     SELECT
     U.id,
     U.username,
+    date_format(U.stopdate,'%%Y-%%m-%%d') as stopdate,
     U.policy,
     D.name as policyname,
     U.access,
