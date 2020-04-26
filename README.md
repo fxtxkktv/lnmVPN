@@ -18,7 +18,7 @@ git clone https://github.com/fxtxkktv/lnmVPN.git <br>
 进入程序目录 <br>
 cd lnmVPN <br>
 创建程序独立运行Python环境 <br>
-/opt/Py27lnmos/bin/virtualenv -p /opt/Py27lnmos/bin/python --no-site-packages venv <br>
+/opt/Py27lnmos/bin/virtualenv -p /opt/Py27lnmos/bin/python venv <br>
 进入virtualenv环境 <br>
 source venv/bin/activate <br>
 
