@@ -1,49 +1,36 @@
 # 该项目应用于企业远程维护、应用访问、安全连接、GFW路由跳转
 ### 1.支持Android、IOS、MAC、Windows、Linux各类客户端拨入
-### 2.支持不用用户不同的访问策略控制
-### 3.支持策略用户指定分配特定网络地址，防止端对端网络地址冲突
-### 4.支持基于不同的用户策略组进行VPN连接限速
-### 5.支持用户在线下载客户端资源及用户配置说明
-### 6.支持通过VPN帐号自动翻墙并共享路由，供企业内部学术研究
-### 7.支持DNS全局代理及防污染控制
-### 客户端下载：https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ 分享密码:vzfn
+### 2.支持不用用户不同的访问策略[速度、路由、网络地址、DNS解析]
+### 3.支持用户在线下载客户端资源及用户配置说明
+### 4.支持通过VPN帐号路由共享过墙，供企业内部学术研究
+### 5.支持策略多线路由及域名跟踪解析路由（IPROUTE+DNSMASQ+IPSET+IPTABLES）
+### 6.支持PPP、DNS、DHCP、NAT、UTM防护等功能
 
 ## 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
 
-1. 安装初始化环境 python >=2.7 (推荐lnmos定制版本,可以在"客户端下载"中获取) <br>
-rpm -i Py27lnmos-2.7.15-6.el6.rpm <br>
-加载python环境 <br>
-export PATH=$PATH:/opt/Py27lnmos/bin <br>
-检测是否安装必须工具 <br>
-yum -y install wget git <br>
-安装pip工具 <br>
-wget https://bootstrap.pypa.io/get-pip.py <br>
-/opt/Py27lnmos/bin/python get-pip.py <br>
-安装virtualenv组件[使程序运行环境和系统环境分离] <br>
-/opt/Py27lnmos/bin/pip install virtualenv <br> 
-获取程序代码 <br>
+1. 安装lnmOS环境,从[fxtxkktv.github.io](https://raw.githubusercontent.com/fxtxkktv/fxtxkktv.github.io/master/files/Install_LnmOS_env.sh)获取简化安装Shell脚本<br>
+wget https://raw.githubusercontent.com/fxtxkktv/fxtxkktv.github.io/master/files/Install_LnmOS_env.sh <br>
+运行脚本<br> 
+chmod +x ./Install_LnmOS_env.sh && ./Install_LnmOS_env.sh <br>
+
+2. 获取程序代码 <br>
 git clone https://github.com/fxtxkktv/lnmVPN.git <br>
 进入程序目录 <br>
 cd lnmVPN <br>
-创建程序虚拟环境 <br>
+创建程序独立运行Python环境 <br>
 virtualenv -p /opt/Py27lnmos/bin/python --no-site-packages venv <br>
 进入virtualenv环境 <br>
 source venv/bin/activate <br>
 
 2. 安装程序运行模块 <br>
-MySQL服务 <br>
-yum install -y gcc mysql-server mysql-devel MySQL-python <br>
-证书组件 <br>
-yum install -y gnutls-utils <br>
-VPN服务: [yum需要调用第三方源] <br>
-yum install -y epel-release <br>
-yum install -y ocserv openconnect iptables ipset dnsmasq iftop<br>
+安装lnmVPN相关服务组件 <br>
+yum install -y gnutls-utils ocserv openconnect iptables ipset dnsmasq iftop<br>
 安装Python程序扩展包 <br>
 pip install -r readme/requirements.txt <br>
 
 3. 创建数据库并恢复数据模版 <br>
 [创建数据库]: # mysql -u root -p -e "create database vpndb" <br>
-[恢复数据模版]: # mysql -u root -p vpndb < readme/xxxxxx_Init.sql <br>
+[恢复数据模版]: # mysql -u root -p vpndb < readme/db_schema.sql <br>
 [配置数据库连接及其他]: # vim config/config.ini <br>
 
 4. 正式运行程序 <br>
@@ -58,22 +45,20 @@ pip install -r readme/requirements.txt <br>
 
 ## 项目截图
 ### 系统管理
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/systeminfo.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/systeminfo.png)
 ### 网络配置
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/networks.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/network.png)
 ### DNS配置
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/dns.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/dnsconf.png)
 ### UTM防护
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/utm.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/utmconf.png)
 ### VPN配置
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/vpnserv.jpg)
-### 证书管理
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/certs.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/vpnserver.png)
 ### 策略配置
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/policys.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/vpnpolicy.png)
 ### 日志审计
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/logaudit.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/logaudit.png)
 ### 帮助文档
-![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/help.jpg)
+![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/helpinfo.png)
 ### 支持捐赠
 ![其余界面](https://github.com/fxtxkktv/lnmVPN/blob/master/readme/pay.jpg)

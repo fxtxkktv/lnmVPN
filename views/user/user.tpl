@@ -32,6 +32,9 @@
                             <a id="deluser" href="javascript:void(0);" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-times"></i>删除用户
                             </a>
+                            <a id="edit3Uapi" href="javascript:void(0);" class="btn btn-primary">
+                                <i class="btn-label fa fa-cog"></i>3U接口配置
+                            </a>
                             %if msg.get('message'):
                       		    <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     	    %end
@@ -44,16 +47,65 @@
     </div>
 </div>
 
+<div class="modal fade" id="3Uapi-form" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >3U接口配置</h5>
+            </div>
+            <form action="/3Uapi" role="form" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        3U接口地址:
+                        <input type="text" class="form-control" name="api_url" 
+                        %if UUUinfo.get('api_url') :
+                            value = {{UUUinfo.get('api_url')}}
+                        %end
+                        placeholder="3U接口地址">
+                    </div>
+                    <div class="form-group">
+                        Token密钥:
+                        <input type="text" class="form-control" name="api_token" 
+                        %if UUUinfo.get('api_token') :
+                            value = {{UUUinfo.get('api_token')}}
+                        %end
+                        placeholder="Token密钥">
+                    </div>
+                    <div class="form-group">
+                        用户解密密钥:
+                        <input type="text" class="form-control" name="api_pkey" 
+                        %if UUUinfo.get('api_pkey') :
+                            value = {{UUUinfo.get('api_pkey')}}
+                        %end
+                        placeholder="用户解密密钥">
+                    </div>
+                    <div class="form-group">
+                        区域映射:
+                        <textarea id="api_map" name="api_map" style="height:70px;width:100%;resize:vertical;" placeholder="区域映射">{{UUUinfo.get('api_map')}}</textarea>
+                    </div>
+                    <div align="center">
+                        <input type="hidden" name="formtype" value="reg">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary  btn-sm">保存</button>
+                    <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" >
       <div class="modal-content" id="contentDiv">
-         <div class="widget-header bordered-bottom bordered-blue ">
+        <div class="widget-header bordered-bottom bordered-blue ">
            <i class="widget-icon fa fa-pencil themeprimary"></i>
            <span class="widget-caption themeprimary" id="modalTitle">添加用户</span>
         </div>
 
          <div class="modal-body">
-            <div>
+          <div>
             <form id="modalForm">
                 <div class="form-group">
                   <label class="control-label" for="inputSuccess1">帐号：</label>
@@ -67,7 +119,7 @@
                   <label class="control-label" for="inputSuccess1">有效期：</label>
                   <input type="date" class="form-control" id="stopdate" name="stopdate" require>
                 </div>        
-		<div class="form-group">
+                <div class="form-group">
                   <label class="control-label" for="inputSuccess1">关联策略：</label>
 		          <select id="policy" style="width:100%;" name="policy">
                     <option value=''>请选择策略</option>
@@ -77,29 +129,30 @@
 			            </option>
                     %end
                  </select>
-        </div>
-        <div class="form-group">
+                </div>
+                <div class="form-group">
                   <label class="control-label" for="inputSuccess1">权限：</label>
                   <select id="access" style="width:100%;" name="access">
                     <option value='0'>普通</option>
                     <!--option value='1'>管理</option-->
                  </select>
-		</div>
-		<div class="form-group">
+                </div>
+                <div class="form-group">
                   <label class="control-label" for="inputSuccess1">备注信息：</label>
                   <textarea id="comment" name="comment" style="height:70px;width:100%;resize:vertical;"></textarea>
                 </div>
-		<div class="form-group">
+                <div class="form-group">
                   <input type="hidden" id="hidInput" value="">
                   <button type="button" id="subBtn" class="btn btn-primary  btn-sm">提交</button>
                   <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">关闭</button> 
-	        </div>
-             </form>
-            </div>
+                </div>
+            </form>
+          </div>
          </div>
       </div>
    </div>
 </div>
+
 <script type="text/javascript">
 $(function(){
     /**
@@ -221,7 +274,16 @@ $(function(){
         ].join('');
     }
 
-
+    /**
+    *配置3U.API
+    */
+    $('#edit3Uapi').click(function(){
+        $('#modalTitle').html('配置3UAPI');
+        $('#hidInput').val('0');
+        $('#3Uapi-form').modal('show');
+        $('#modalForm')[0].reset();
+        isEdit = 0;
+    });
 
     /**
     *添加弹出框

@@ -28,9 +28,9 @@
 			    <a id="addservconf" href="/addservconf" class="btn btn-primary ">
                                 <i class="btn-label fa fa-cog"></i>服务端配置
                             </a>
-			    <a id="addclientconf" href="/addclientconf" class="btn btn-warning shiny">
+			    <!--a id="addclientconf" href="/addclientconf" class="btn btn-warning shiny">
                                 <i class="btn-label fa fa-cog"></i>客户端配置
-                            </a>
+                            </a-->
 			    <a id="showservlog" href="/showservlog" class="btn btn-darkorange">
                                 <i class="btn-label fa fa-print"></i>查看服务日志
                             </a>

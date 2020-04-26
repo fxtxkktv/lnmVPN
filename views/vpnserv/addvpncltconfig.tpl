@@ -24,28 +24,38 @@
                     %if msg.get('message'):
                         <span style="color:{{msg.get('color','')}};font-weight:bold;">&emsp;{{msg.get('message','')}}</span>
                     %end
+            <div class="modal-body">
+                <div class="input-group">
+                           <span class="input-group-addon">节点名称&emsp;</span>
+                           <input type="text" style="width:420px" class="form-control" id="vnodename" name="vnodename" placeholder="节点名称" aria-describedby="inputGroupSuccess4Status"
+                            %if info.get('vnodename',''): 
+                                value="{{info.get('vnodename','')}}"
+                            %end 
+                           >
+                </div>
+            </div>
 		    <div class="modal-body">
                         <div class="input-group">
                            <span class="input-group-addon">验证方式&emsp;</span>
                            <select style="width:420px" class="form-control" id="sel" name="authtype">
                                 <option 
-                        		%if info.get('authtype','') == '0':
-                                    selected
-                                %end 
-                                    value="0">证书认证
-                                </option>
-                                <option 
-                                %if info.get('authtype','') == '1':
+                        		%if info.get('authtype','') == '1':
                                     selected
                                 %end 
                                     value="1">密码认证
                                 </option>
                                 <option 
+                                %if info.get('authtype','') == '0':
+                                    selected
+                                %end 
+                                    value="0">证书认证
+                                </option>
+                                <!--option 
                                 %if info.get('authtype','') == '2':
                                     selected
                                 %end 
                                     value="2">关闭服务 
-                                </option>
+                                </option-->
                             </select>
                         </div>
                    </div>
@@ -107,13 +117,13 @@
                       <span class="input-group-addon" hidden>DTLS优化&emsp;</span>
                       <select style="width:420px" class="form-control" name="chkdtls">
                                 <option 
-                                %if info.get('chkdtls','') == '1':
+                                %if info.get('chkdtls','') == 1:
                                         selected
                                 %end 
                                      value="1">启用DTLS连接
                                 </option>
                                 <option 
-                                %if info.get('chkdtls','') == '0':
+                                %if info.get('chkdtls','') == 0:
                                         selected
                                 %end 
                                      value="0">禁用DTLS连接
@@ -158,7 +168,7 @@
             </div>
             <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
-			            <a id="rego" style="float:left" class="btn btn-primary" href="/vpnservconf">返回</a>
+			            <a id="rego" style="float:left" class="btn btn-primary" href="/vnodemgr">返回</a>
             </div>
            </div>
            </form>

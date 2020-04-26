@@ -46,7 +46,8 @@ function mkADVRoute(){
          if [ $ifaceaddr = "" ];then
             continue
          fi
-         if [ ${uDict["iflist"]} = "tun1000" ];then
+         if [[ ${uDict["iflist"]} =~ "tun10" ]];then
+            echo  $id
             ip route flush table $id >/dev/null 2>&1
             ip route replace default dev ${uDict["iflist"]} src $ifaceaddr proto static table $id >/dev/null 2>&1
             ip route append prohibit default table $id metric 1 proto static >/dev/null 2>&1

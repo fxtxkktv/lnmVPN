@@ -20,11 +20,9 @@
                 </div><!--Widget Header-->
 		<div style="padding:-10px 0px;" class="widget-body no-padding">
 		  <p style="line-height: 5px;">&emsp;</p>
-		  <p><span>&emsp;Anyconnect、OpenConnect客户端：(链接分享密码:vzfn)</span></p>
-		  <p><span>&emsp;百度网盘:&emsp;<a href="https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ" target="_bank">https://pan.baidu.com/s/1xDAfspJdBEm9ilipT61PbQ</a></span></p>
+		  <p><span><a href="https://fxtxkktv.github.io" target="_bank">&emsp;Anyconnect、OpenConnect客户端</a></span></p>
 		  <p style="line-height: 5px;">&emsp;</p>
-		  <p><span>&emsp;用户帮助文档：</span></p>
-		  <p><span>&emsp;百度网盘:&emsp;<a href="https://pan.baidu.com/s/1SybAkSHU8IZ9EQKIL2x5nA" target="_bank">https://pan.baidu.com/s/1SybAkSHU8IZ9EQKIL2x5nA</a></span></p>
+		  <p><span><a href="https://fxtxkktv.github.io" target="_bank">&emsp;用户帮助文档</a></span></p>
 		  <p style="line-height: 5px;">&emsp;</p>
 		  <p><span>&emsp;FTP客户端下载：</span></p>
 		  <p><span>&emsp;Filezilla:&emsp;<a href="https://www.filezilla.cn/download" target="_bank">https://www.filezilla.cn/download</a> </span></p>

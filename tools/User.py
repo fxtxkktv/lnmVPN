@@ -61,7 +61,13 @@ def user():
     s = request.environ.get('beaker.session')
     policylist_sql = " select id,name from vpnpolicy "
     plylist_result = readDb(policylist_sql,)
-    return template('user',session=s,msg={},plylist_result=plylist_result)
+    UUUapi_sql = " select value from sysattr where servattr='3Uapi' and status=1 "
+    UUUresult = readDb(UUUapi_sql,)
+    try:
+       UUUinfo = json.loads(UUUresult[0].get('value'))
+    except:
+       UUUinfo = {}
+    return template('user',session=s,msg={},plylist_result=plylist_result,UUUinfo=UUUinfo)
 
 @route('/adduser',method="POST")
 @checkAccess
@@ -161,6 +167,59 @@ def deluser():
     else:
        wrtlog('User','删除用户失败',s['username'],s.get('clientip'))
        return '-1'
+
+@route('/3Uapi',method="POST")
+@checkAccess
+def do_3Uapi():
+    import requests
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    s = request.environ.get('beaker.session')
+    policylist_sql = " select id,name from vpnpolicy "
+    plylist_result = readDb(policylist_sql,)
+    UUUapi_sql = " select value from sysattr where servattr='3Uapi' and status=1 "
+    UUUresult = readDb(UUUapi_sql,)
+    try:
+       UUUinfo = json.loads(UUUresult[0].get('value'))
+    except:
+       UUUinfo = {}
+    info = {}
+    info['api_url'] = request.forms.get('api_url')
+    info['api_token'] = request.forms.get('api_token')
+    info['api_map'] = request.forms.get('api_map')
+    info['api_pkey'] = request.forms.get('api_pkey')
+    try:
+       req = requests.get('%s/wsapi?token=%s&otype=1' % (info['api_url'],info['api_token']),verify=False,timeout=5).text.replace('&#039;','\'').replace('\n','')
+    except:
+       msg = {'color':'red', 'message':'3Uapi接口连接失败'}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    if info['api_pkey'] == '':
+       msg = {'color':'red', 'message':'3Uapi解码密钥不允许为空'}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    try:
+       rstatus = eval(req).get('return')
+       if rstatus != 0 :
+          msg = {'color':'red', 'message':'3Uapi接口验证失败'}
+          return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    except:
+       msg = {'color':'red', 'message':'3Uapi接口验证失败'}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    
+    sql = " INSERT INTO sysattr (attr,value,status,servattr) value ('3Uapi',%s,1,'3Uapi') ON DUPLICATE KEY UPDATE value=%s"
+    sdata = (json.dumps(info),json.dumps(info))
+    result = writeDb(sql,sdata)
+    if result:
+       msg = {'color':'green', 'message':'3Uapi接口保存成功'}
+       UUUapi_sql = " select value from sysattr where servattr='3Uapi' and status=1 "
+       UUUresult = readDb(UUUapi_sql,)
+       try:
+          UUUinfo = json.loads(UUUresult[0].get('value'))
+       except:
+          UUUinfo = {}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    else:
+       msg = {'color':'red', 'message':'3Uapi接口保存失败'}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
 
 @route('/api/getuser',method=['GET', 'POST'])
 @checkAccess

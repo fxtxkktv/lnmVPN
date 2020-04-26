@@ -32,16 +32,16 @@
                          <span class="input-group-addon">分配地址</span>
                          <select style="width:210px" class="form-control" id="sel" name="authtype">
                          <option 
-                            %if info.get('pushaddr','') == 'DynamicIP':
-                                selected
-                            %end 
-                                value="0">全局自动分配
-                        </option>
-                        <option 
                             %if info.get('pushaddr','') != 'DynamicIP':
                                 selected
                             %end 
-                            value="1">自定义分配
+                                value="1">自定义分配
+                        </option>
+                        <option 
+                            %if info.get('pushaddr','') == 'DynamicIP':
+                                selected
+                            %end 
+                            value="0">动态分配
                         </option>
                         </select>
                         <input type="text" style="width:210px" id="pushaddr" class="form-control" name="pushaddr" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" aria-describedby="inputGroupSuccess4Status" value="{{info.get('pushaddr','')}}">
@@ -91,6 +91,7 @@ $(function(){
        document.getElementById("pushaddr").readOnly=true ;
     } else {
        document.getElementById('pushaddr').value = "{{info.get('pushaddr','')}}";
+       document.getElementById('pushaddr').value = "";
        document.getElementById("pushaddr").readOnly=false ;
     }
  });

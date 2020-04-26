@@ -147,6 +147,11 @@
                     </a>
                 </li>
                 <li class="">
+                    <a href="/vnodemgr">
+                        <span class="menu-text">节点管理</span>
+                    </a>
+                </li>
+                <li class="">
                     <a href="/certmgr">
                         <span class="menu-text">证书管理</span>
                     </a>

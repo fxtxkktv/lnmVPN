@@ -122,6 +122,7 @@ $(function() {
     } else if (this.value == 'SET') {
         document.getElementById("dname").innerHTML="域名列表" ;
 	    document.getElementById("selInput").readOnly=true ;
+        document.getElementById("record").readOnly=true ;
         $('#domainB').show();
         $('#domainA').hide();
     } else {

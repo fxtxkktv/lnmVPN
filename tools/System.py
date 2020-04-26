@@ -57,7 +57,7 @@ def getrouteinfo():
 @route('/api/getrouteinfo3',method=['GET', 'POST'])
 @checkAccess
 def getrouteinfo():
-    sql = """ SELECT U.id, U.rulename, U.pronum, concat(starttime,'-',stoptime) as stime, U.iface, D.value, 
+    sql = """ SELECT U.id, U.rulename, U.pronum, concat(U.starttime,'-',U.stoptime) as stime, U.iface, D.value, 
               if(U.srcaddr="all","全部网络",concat(if(U.srcmatch=0,"! ",""),E.objname)) as srcaddr,
               if(U.dstaddr="all","全部网络",concat(if(U.dstmatch=0,"! ",""),F.objname)) as dstaddr
               FROM sysrouteadv as U LEFT OUTER JOIN sysattr as D on position(U.iface in D.attr) 
@@ -115,10 +115,10 @@ def do_addroute():
 @checkAccess
 def addroute():
     s = request.environ.get('beaker.session')
-    sql = """ select id,objname from netobjgroup where status='1' order by id"""
+    sql = """ select id,objname from netobjgroup where status='1' union select id,concat('VPNClient_',name) as objname from vpnpolicy """
     result = readDb(sql,)
     netmod.InitNIinfo()
-    sql = " SELECT attr,value FROM sysattr where servattr='advroutepolicy'"
+    sql = " SELECT attr,value FROM sysattr where servattr='advroutepolicy' "
     iflist_result = readDb(sql,)
     infos=[]
     for idict in iflist_result:
@@ -237,7 +237,7 @@ def advroutepolicy():
 def do_addadvroutepolicy():
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' "
     ifacelist_result = readDb(sql,)
     return template('addadvroutepolicy',session=s,msg={},info={},ifacelist_result=ifacelist_result)
 
@@ -250,11 +250,14 @@ def addadvroutepolicy():
     rttype = request.forms.get("rttype")
     if rttype == 'A' :
        iflist = request.forms.getlist("ifname")
+       if 'tun10' in iflist[0] :
+          rid = 'advpolicy_%d' % int(iflist[0].replace('tun',''))
     elif rttype == 'B' :
        iflist = request.forms.getlist("ifnames")
-       if 'tun1000' in iflist :
-          msg = {'color':'red','message':u'添加失败,TUN接口仅适用于单线路由模式'}
-          return(template('advroutepolicy',msg=msg,session=s))
+       for ifname in iflist:
+         if 'tun10' in ifname :
+            msg = {'color':'red','message':u'添加失败,TUN接口仅适用于单线路由模式'}
+            return(template('advroutepolicy',msg=msg,session=s))
        if len(iflist) < 2 :
           msg = {'color':'red','message':u'添加失败,权重模式至少2个接口'}
           return(template('advroutepolicy',msg=msg,session=s))
@@ -282,7 +285,7 @@ def do_addadvroutepolicy(id):
         info['rtname']=json.loads(info.get('value')).get('rtname')
         info['rttype']=json.loads(info.get('value')).get('rttype')
         info['iflist']=','.join(json.loads(info.get('value')).get('iflist'))
-    sql2 = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql2 = " SELECT ifacename FROM netiface UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' "
     ifacelist_result = readDb(sql2,)
     return template('addadvroutepolicy',session=s,msg={},info=info,ifacelist_result=ifacelist_result)
 
@@ -296,9 +299,10 @@ def do_editadvroutepolicy(id):
        iflist = request.forms.getlist("ifname")
     elif rttype == 'B' :
        iflist = request.forms.getlist("ifnames")
-       if 'tun1000' in iflist :
-          msg = {'color':'red','message':u'添加失败,TUN接口仅适用于单线路由模式'}
-          return(template('advroutepolicy',msg=msg,session=s))
+       for ifname in iflist:
+         if 'tun10' in ifname :
+           msg = {'color':'red','message':u'添加失败,TUN接口仅适用于单线路由模式'}
+           return(template('advroutepolicy',msg=msg,session=s))
        if len(iflist) < 2 :
           msg = {'color':'red','message':u'添加失败,权重模式至少2个接口'}
           return(template('advroutepolicy',msg=msg,session=s))
@@ -827,7 +831,7 @@ def addutmrule():
     sql = """ select id,objname from netobjgroup where status='1' order by id"""
     result = readDb(sql,)
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = """ SELECT ifacename FROM netiface UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' """
     ifacelist_result = readDb(sql,)
     return template('addnatrule',session=s,msg={},info={},ifacelist_result=ifacelist_result,setlist=result)
 
@@ -879,7 +883,7 @@ def editnatrule(id):
     netmod.InitNIinfo()
     sql = """ select id,objname from netobjgroup where status='1' order by id"""
     result = readDb(sql,)
-    sql2 = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql2 = """ SELECT ifacename FROM netiface UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' """
     ifacelist_result = readDb(sql2,)
     sql3 = " SELECT rulename,srcmatch,srcaddr,dstmatch,dstaddr,runaction,runobject,runobject as runobject2,pronum from ruleconfnat where status='1' and id=%s"
     result3 = readDb(sql3,(id,))
@@ -1080,7 +1084,7 @@ def policyconf():
 def policyconf():
     """添加策略页"""
     s = request.environ.get('beaker.session')
-    return template('addpolicyconf',session=s,info={})
+    return template('addpolicyconf',session=s,info={'pushaddr':'DynamicIP'})
 
 
 @route('/addpolicy',method="POST")
@@ -1304,6 +1308,7 @@ def do_addservconf():
 def addclientconf():
     """新增服务配置项"""
     s = request.environ.get('beaker.session')
+    info={}
     #获取证书选择列表
     conncerts_list=[]
     status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
@@ -1313,12 +1318,16 @@ def addclientconf():
            infos['filename']=str(i)
            conncerts_list.append(infos)
     #加载现有配置
-    sql = " select value from sysattr where attr='vpnclient' "
-    idata = readDb(sql,)
+    sql = " select tunid from vnodemgr where status=1 "
+    data = readDb(sql,)
+    max_item=1000
     try:
-       info = json.loads(idata[0].get('value'))
+       for x in data:
+           if x.get('tunid') > max_item:
+              max_item = x.get('tunid')
+       info['tunid'] = int(max_item)+1
     except:
-       return template('addvpncltconfig',session=s,msg={},info={},conncerts_list=conncerts_list)
+       info['tunid'] = 1000
     return template('addvpncltconfig',session=s,msg={},info=info,conncerts_list=conncerts_list)
 
 @route('/addclientconf',method="POST")
@@ -1327,25 +1336,21 @@ def addclientconf():
     """新增服务配置项"""
     s = request.environ.get('beaker.session')
     authtype = request.forms.get("authtype")
-    idata=dict()
     if authtype == '0' :
-       idata['certinfo'] = request.forms.get("certinfo")
-       idata['certpass'] = request.forms.get("certpass")
+       vconninfo = '%s::%s ' % (request.forms.get("certinfo"),request.forms.get("certpass"))
     elif authtype == '1' :
-       idata['vpnuser'] = request.forms.get("vpnuser")
-       idata['vpnpass'] = request.forms.get("vpnpass")
-    elif authtype == '2' :
-       idata['service'] = 'off'
+       vconninfo = '%s::%s ' % (request.forms.get("vpnuser"),request.forms.get("vpnpass"))
     else :
        msg = {'color':'green','message':u'验证类型错误，保存失败'}    
        return template('addvpncltconfig',session=s,msg=msg,info={})
-    idata['authtype'] = request.forms.get("authtype")
-    idata['ipaddr'] = request.forms.get("ipaddr")
-    idata['servport'] = request.forms.get("servport")
-    idata['tunid'] = request.forms.get("tunid")
-    idata['vmtu'] = request.forms.get("vmtu")
-    idata['chkconn'] = request.forms.get("chkconn")
-    idata['chkdtls'] = request.forms.get("chkdtls")
+    vnodename = request.forms.get("vnodename")
+    authtype = request.forms.get("authtype")
+    ipaddr = request.forms.get("ipaddr")
+    servport = request.forms.get("servport")
+    tunid = request.forms.get("tunid")
+    vmtu = request.forms.get("vmtu")
+    chkconn = request.forms.get("chkconn")
+    chkdtls = request.forms.get("chkdtls")
     #获取证书选择列表
     conncerts_list=[]
     status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
@@ -1355,28 +1360,125 @@ def addclientconf():
            infos['filename']=str(i)
            conncerts_list.append(infos)
     #加载正常配置判断
-    if not (idata['ipaddr'] and idata['servport'] and idata['tunid'] and idata['vmtu']) :
+    if not (ipaddr and servport and tunid and vmtu) :
        #处理特殊情况，关闭服务时
-       if idata['authtype'] != '2' :
-          msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
-          sql = " select value from sysattr where attr='vpnclient' "
-          idata = readDb(sql,)
-          try:
-             info = json.loads(idata[0].get('value'))
-          except:
+       msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
+       return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+    #服务器地址相同的情况下，只允许保存一次
+    sqlx = " select ipaddr from vnodemgr where status=1"
+    Xresult = readDb(sqlx,) 
+    for i in Xresult:
+          if ipaddr in i.get('ipaddr'):
+             msg = {'color':'red','message':u'配置保存失败，服务器地址重复'}
              return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
-          return template('addvpncltconfig',session=s,msg=msg,info=info,conncerts_list=conncerts_list)
-       else :
-          idata={"authtype": "2", "service": "off"}
-    sql = " update sysattr set value=%s where attr='vpnclient' "
-    iidata=json.dumps(idata)
-    result = writeDb(sql,(iidata,))
+    #写入数据库
+    sql = " insert into vnodemgr(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+    idata=(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn)
+    result = writeDb(sql,idata)
     if result == True :
        msg = {'color':'green','message':u'配置保存成功'}
        writeVPNconf(action='uptcltconf')
        cmds.servboot('vpnconn')
        writeUTMconf(action='uptconf')
-       return template('addvpncltconfig',session=s,msg=msg,info=idata,conncerts_list=conncerts_list)
+       return template('vnodemgr',session=s,msg=msg)
+
+@route('/editcltconf/<id>')
+@checkAccess
+def editcltconf(id):
+    """编辑客户端配置项"""
+    s = request.environ.get('beaker.session')
+    info={}
+    #获取证书选择列表
+    conncerts_list=[]
+    status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos = {}
+           infos['filename']=str(i)
+           conncerts_list.append(infos)
+    #加载现有配置
+    sql = " select vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn from vnodemgr where tunid=%s "
+    xdata = readDb(sql,(id,))
+    info['vnodename']=xdata[0].get('vnodename')
+    info['authtype']=xdata[0].get('authtype')
+    if xdata[0].get('authtype') == 0 :
+       info['certinfo'] = xdata[0].get('vconninfo').split('::')[0]
+       info['certpass'] = xdata[0].get('vconninfo').split('::')[1]
+    elif xdata[0].get('authtype') == 1 :
+       info['vpnuser'] = xdata[0].get('vconninfo').split('::')[0]
+       info['vpnpass'] = xdata[0].get('vconninfo').split('::')[1]
+    info['ipaddr']=xdata[0].get('ipaddr')
+    info['servport']=xdata[0].get('servport')
+    info['tunid']=xdata[0].get('tunid')
+    info['vmtu']=xdata[0].get('vmtu')
+    info['chkdtls']=xdata[0].get('chkdtls')
+    info['chkconn']=xdata[0].get('chkconn')
+    return template('addvpncltconfig',session=s,msg={},info=info,conncerts_list=conncerts_list)
+
+@route('/editcltconf/<id>',method="POST")
+@checkAccess
+def post_editcltconf(id):
+    """编辑VPN客户端配置项"""
+    s = request.environ.get('beaker.session')
+    authtype = request.forms.get("authtype")
+    if authtype == '0' :
+       vconninfo = '%s::%s ' % (request.forms.get("certinfo"),request.forms.get("certpass"))
+    elif authtype == '1' :
+       vconninfo = '%s::%s ' % (request.forms.get("vpnuser"),request.forms.get("vpnpass"))
+    vnodename = request.forms.get("vnodename")
+    authtype = request.forms.get("authtype")
+    ipaddr = request.forms.get("ipaddr")
+    servport = request.forms.get("servport")
+    vmtu = request.forms.get("vmtu")
+    chkconn = request.forms.get("chkconn")
+    chkdtls = request.forms.get("chkdtls")
+    #获取证书选择列表
+    conncerts_list=[]
+    status,result=cmds.gettuplerst('find %s/conncerts -name \'*.p12\' -exec basename {} \;|sort' % gl.get_value('certdir'))
+    for i in result.split('\n'):
+        if str(i) != "":
+           infos = {}
+           infos['filename']=str(i)
+           conncerts_list.append(infos)
+    #加载正常配置判断
+    if not (ipaddr and servport and vmtu) :
+       #处理特殊情况，关闭服务时
+       msg = {'color':'red','message':u'配置保存失败，关键参数未设置'}
+       return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+    #服务器地址相同的情况下，只允许保存一次
+    sqlx = " select ipaddr from vnodemgr where status=1 and tunid != %s"
+    Xresult = readDb(sqlx,(id,))
+    for i in Xresult:
+          if ipaddr in i.get('ipaddr'):
+             msg = {'color':'red','message':u'配置保存失败，服务器地址重复'}
+             return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+    #更新数据库
+    sql = " UPDATE vnodemgr set vnodename=%s,authtype=%s,ipaddr=%s,servport=%s,vmtu=%s,chkdtls=%s,vconninfo=%s,chkconn=%s where tunid=%s "
+    idata=(vnodename,authtype,ipaddr,servport,vmtu,chkdtls,vconninfo,chkconn,id)
+    result = writeDb(sql,idata)
+    if result == True :
+       msg = {'color':'green','message':u'配置保存成功'}
+       writeVPNconf(action='uptcltconf')
+       cmds.servboot('vpnconn')
+       writeUTMconf(action='uptconf')
+       return template('vnodemgr',session=s,msg=msg)
+
+@route('/delcltconf/<id>')
+@checkAccess
+def delcltconf(id):
+    s = request.environ.get('beaker.session')
+    sql = " DELETE FROM vnodemgr WHERE tunid=%s "
+    result = writeDb(sql,(id,))
+    if result == True :
+       msg = {'color':'green','message':u'删除成功'}
+       cmds.servboot('ocserv')
+       writeVPNconf(action='uptcltconf')
+       cmds.servboot('vpnconn')
+       writeUTMconf(action='uptconf')
+       return template('vnodemgr',session=s,msg=msg)
+    else:
+       msg = {'color':'red','message':u'删除失败'}
+       return template('vnodemgr',session=s,msg=msg)
 
 # 策略配置
 @route('/api/getvpnservinfo',method=['GET', 'POST'])
@@ -1480,6 +1582,15 @@ def showservlog():
     s = request.environ.get('beaker.session')
     result = cmds.getdictrst('grep "ocserv" /var/log/messages|tail -300|awk \'{$4="";print $0}\'')
     return template('showlog',session=s,msg={},info=result)
+
+# 节点管理
+@route('/vnodemgr')
+@checkAccess
+def servconf():
+    """节点管理项"""
+    s = request.environ.get('beaker.session')
+    return template('vnodemgr',session=s,msg={})
+
 
 # 证书配置
 @route('/certmgr')
@@ -1647,7 +1758,46 @@ def download(vdir,filename):
        download_path = '%s/conncerts' % gl.get_value('certdir')
     return static_file(filename, root=download_path, download=filename)
 
-# 策略配置
+# LnmVPN系统对接
+@route('/wsapi')
+def wsapi():
+    import urlparse,urllib
+    s = request.environ.get('beaker.session')
+    odict = urlparse.parse_qs(urlparse.urlparse('wsapi?%s' % request.environ.get('QUERY_STRING')).query)
+    PassKey = AppServer().getConfValue('wsapi','token')
+
+    try:
+       if odict['token'][0] != PassKey :
+          msg = {'return':255,'message':'token id error...'}
+          return(template('wsapp.html',msg=msg,session=s))
+    except:
+       msg = {'return':256,'message':'token id error...'}
+       return(template('wsapp.html',msg=msg,session=s))
+
+    try:
+       if odict['otype'][0] == '1':
+          sql = """ select username as username,passwd as password,concat('Policy_',policy) as area from user where access=0 and stopdate >= %s """
+          curdate = datetime.datetime.now().strftime('%Y%m%d')
+          result = readDb(sql,(curdate,))
+          if result is False or len(result) == 0:
+             msg = {'return':255,'message':'wsapi get error...'}
+          else:
+             msg = {'return':0,'message':result}
+       else:
+          msg = {'return':255,'message':'system not found otype .'}
+    except:
+       msg = {'return':0,'message':'system not found otype .'}
+    return(template('wsapp.html',msg=msg,session=s))
+
+# 获取节点列表
+@route('/api/getvnodelist',method=['GET', 'POST'])
+@checkAccess
+def getcertinfo():
+    sql = """ select vnodename,authtype,concat(ipaddr,':',servport) as vconn,chkdtls,vconninfo,vmtu,chkconn,tunid from vnodemgr where status=1 """
+    Xresult = readDb(sql,)
+    return json.dumps(Xresult)
+
+# 获取证书列表
 @route('/api/getcertinfo',method=['GET', 'POST'])
 @checkAccess
 def getcertinfo():

@@ -70,7 +70,7 @@
                             </select>
                         </div>
                     </div>
-		    <div class="modal-body">
+		    <!--div class="modal-body">
                         <div class="input-group">
                             <span class="input-group-addon">DNS防污染 [VPN]</span>
                             <select style="width:210px" class="form-control" name="dnsrule">
@@ -87,7 +87,7 @@
                                         </option>
                             </select>
                         </div>
-                    </div>
+                    </div-->
 		    <div class="modal-body">
                       <span class="input-group-addon" style="width:350px">DNS中继列表</span>
                       <textarea id="dnslist" name="dnslist" onkeyup="this.value=this.value.replace(/[^\d.\\\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="eg: DNS IP地址" style="width:350px;height:100px;resize:vertical;">{{info.get('dnslist','')}}</textarea>

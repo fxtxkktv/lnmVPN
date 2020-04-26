@@ -412,7 +412,7 @@ def do_editdnsserv():
     idata = dict()
     idata['dnsrelay']=dnsrelay
     idata['dnsproxy']=dnsproxy
-    idata['dnsrule']=dnsrule
+    idata['dnsrule']=0 #功能取消
     idata['dnslist']=dnslist
     idata['dnsport']=53
     dnsstatus=cmds.servchk(idata.get('dnsport'))

@@ -25,6 +25,15 @@ if [ -f /etc/selinux/config ];then
    sed -i 's/SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
 fi
 
+# disabled system firewall [EL6/EL7]
+which systemctl >/dev/null 2>&1
+if [[ $? = 0 ]] ;then
+   chkconfig iptables off >/dev/null 2>&1 
+else
+   systemctl disable iptables.service >/dev/null 2>&1
+   systemctl disable firewalld.service >/dev/null 2>&1
+fi
+
 # clear all firewall service pid file
 rm -f $wkdir/plugins/firewall/*.pid
 
