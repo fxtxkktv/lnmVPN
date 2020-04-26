@@ -18,7 +18,7 @@ git clone https://github.com/fxtxkktv/lnmVPN.git <br>
 进入程序目录 <br>
 cd lnmVPN <br>
 创建程序独立运行Python环境 <br>
-virtualenv -p /opt/Py27lnmos/bin/python --no-site-packages venv <br>
+/opt/Py27lnmos/bin/virtualenv -p /opt/Py27lnmos/bin/python --no-site-packages venv <br>
 进入virtualenv环境 <br>
 source venv/bin/activate <br>
 
@@ -26,7 +26,7 @@ source venv/bin/activate <br>
 安装lnmVPN相关服务组件 <br>
 yum install -y gnutls-utils ocserv openconnect iptables ipset dnsmasq iftop<br>
 安装Python程序扩展包 <br>
-pip install -r readme/requirements.txt <br>
+/opt/Py27lnmos/bin/pip install -r readme/requirements.txt <br>
 
 3. 创建数据库并恢复数据模版 <br>
 [创建数据库]: # mysql -u root -p -e "create database vpndb" <br>
