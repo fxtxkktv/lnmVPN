@@ -9,9 +9,7 @@
 ## 安装步骤(仅针对centos/redhat发行版,其他版本自行测试)
 
 1. 安装lnmOS环境,从[fxtxkktv.github.io](https://raw.githubusercontent.com/fxtxkktv/fxtxkktv.github.io/master/files/Install_LnmOS_env.sh)获取简化安装Shell脚本<br>
-wget https://raw.githubusercontent.com/fxtxkktv/fxtxkktv.github.io/master/files/Install_LnmOS_env.sh <br>
-运行脚本<br> 
-chmod +x ./Install_LnmOS_env.sh && ./Install_LnmOS_env.sh <br>
+curl -o - https://raw.githubusercontent.com/fxtxkktv/fxtxkktv.github.io/master/files/Install_LnmOS_env.sh | bash <br>
 
 2. 获取程序代码 <br>
 git clone https://github.com/fxtxkktv/lnmVPN.git <br>
