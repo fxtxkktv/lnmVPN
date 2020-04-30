@@ -115,7 +115,7 @@ def do_addroute():
 @checkAccess
 def addroute():
     s = request.environ.get('beaker.session')
-    sql = """ select id,objname from netobjgroup where status='1' union select id,concat('VPNClient_',name) as objname from vpnpolicy """
+    sql = """ select id,objname from netobjgroup where status='1' order by id """
     result = readDb(sql,)
     netmod.InitNIinfo()
     sql = " SELECT attr,value FROM sysattr where servattr='advroutepolicy' "
