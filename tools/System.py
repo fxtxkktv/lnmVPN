@@ -147,8 +147,8 @@ def do_addroute():
     else:
        dstaddr = (',').join(request.forms.getlist("dstaddr"))
     #提交判断
-    if outdev == '' or rulename == '':
-       msg = {'color':'red','message':u'描述或出口未填写，添加失败'}
+    if outdev == '' or rulename == '' or srcaddr == '' or dstaddr == '':
+       msg = {'color':'red','message':u'必填项未填写，添加失败'}
        return(template('advroute',msg=msg,session=s))
     if int(pronum) <100 or int(pronum) >32765 :
        msg = {'color':'red','message':u'优先级值填写错误，添加失败'}
@@ -205,8 +205,8 @@ def do_editadvroute(id):
     else:
        dstaddr = (',').join(request.forms.getlist("dstaddr"))
     #提交判断
-    if outdev == '' or rulename == '':
-        msg = {'color':'red','message':u'描述或出口未填写，添加失败'}
+    if outdev == '' or rulename == '' or srcaddr == '' or dstaddr == '':
+        msg = {'color':'red','message':u'必填项未填写，添加失败'}
         return(template('advroute',msg=msg,session=s))
     if int(pronum) <0 or int(pronum) >32765 :
         msg = {'color':'red','message':u'优先级值填写错误，添加失败'}
