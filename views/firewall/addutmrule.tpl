@@ -116,19 +116,19 @@
                             <span class="input-group-addon">网络协议</span>
                             <select style="width:420px" class="form-control" id="netproto" name="netproto">
                                <option 
-                                        %if info.get('sport','')== "ALL": 
+                                        %if info.get('netport','')== "ALL": 
                                                 selected 
                                         %end 
                                         value="ALL">不限
                                </option>
                                <option 
-                                        %if info.get('sproto','')=="TCP": 
+                                        %if info.get('netproto','')=="TCP": 
                                                 selected 
                                         %end 
                                         value="TCP">TCP
                                </option>
                                <option 
-                                        %if info.get('sproto','')=="UDP": 
+                                        %if info.get('netproto','')=="UDP": 
                                                 selected 
                                         %end 
                                         value="UDP">UDP
