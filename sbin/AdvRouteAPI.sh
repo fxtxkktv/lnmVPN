@@ -47,7 +47,6 @@ function mkADVRoute(){
             continue
          fi
          if [[ ${uDict["iflist"]} =~ "tun10" ]];then
-            echo  $id
             ip route flush table $id >/dev/null 2>&1
             ip route replace default dev ${uDict["iflist"]} src $ifaceaddr proto static table $id >/dev/null 2>&1
             ip route append prohibit default table $id metric 1 proto static >/dev/null 2>&1
@@ -156,28 +155,28 @@ if [ "$advdesc_II" != "" ];then
    for servID in $(awk -F= '/^advroute_[0-9]/{print $1}' $iconf/route.conf);do
       id=$(echo $servID|awk -F_ '{print $2}')
       toDict $iconf/route.conf $servID
-      # VPN路由例外
-      if [ ${uDict["iface"]} = "tun1000" ];then
-         if [ ${uDict["pronum"]} = "99" ];then
-	        for dnsserv in $(echo ${uDict["dnsserver"]}|sed 's/-/ /g');do
-	            ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
-	        done
-         else
-            if [ ${uDict["rtattr"]} = "sys" ];then
-               ip rule add prio ${uDict["pronum"]} table 1000 >/dev/null 2>&1
-            else
-               ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
-            fi
-         fi
+      # VPN路由例外 [弃用]
+      #if [ ${uDict["iface"]} = "tun1000" ];then
+      #   if [ ${uDict["pronum"]} = "99" ];then
+	  #      for dnsserv in $(echo ${uDict["dnsserver"]}|sed 's/-/ /g');do
+	  #          ip rule add prio 99 to $dnsserv table 1000 >/dev/null 2>&1
+	  #      done
+      #   else
+      #      if [ ${uDict["rtattr"]} = "sys" ];then
+      #         ip rule add prio ${uDict["pronum"]} table 1000 >/dev/null 2>&1
+      #      else
+      #         ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table 1000 >/dev/null 2>&1
+      #      fi
+      #   fi
       # 非VPN部分
+      #else
+      #判断高级路由是不是包含本机网络的默认路由 rtattr=sys
+      if [ ${uDict["rtattr"]} = "sys" ];then
+         ip rule add prio ${uDict["pronum"]} table ${uDict["iface"]} >/dev/null 2>&1
       else
-         #判断高级路由是不是包含本机网络的默认路由 rtattr=sys
-         if [ ${uDict["rtattr"]} = "sys" ];then
-            ip rule add prio ${uDict["pronum"]} table ${uDict["iface"]} >/dev/null 2>&1
-         else
-            ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${uDict["iface"]} >/dev/null 2>&1
-         fi
+         ip rule add prio ${uDict["pronum"]} fwmark 1000${id} table ${uDict["iface"]} >/dev/null 2>&1
       fi
+      #fi
       ip route flush cache >/dev/null 2>&1
    done
 fi

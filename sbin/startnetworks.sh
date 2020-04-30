@@ -115,11 +115,11 @@ for servID in $(awk -F= '/^netiface_[0-9]/{print $1}' $iconf/netiface.conf);do
     fi
 done
 #加载VPN接口
-if [ "$(python $wkdir/tools/API.py API getniaddr tun1008)" != "False" ];then
-   ifaceaddr=$(python $wkdir/tools/API.py API getniaddr tun1008)
-   ip rule del prio 79 >/dev/null 2>&1
-   ip rule add prio 79 from $ifaceaddr table 1008 >/dev/null 2>&1
-fi
+#if [ "$(python $wkdir/tools/API.py API getniaddr tun1008)" != "False" ];then
+#   ifaceaddr=$(python $wkdir/tools/API.py API getniaddr tun1008)
+#   ip rule del prio 79 >/dev/null 2>&1
+#   ip rule add prio 79 from $ifaceaddr table 1008 >/dev/null 2>&1
+#fi
 
 #引入高级路由加载
 $wkdir/sbin/AdvRouteAPI.sh >/dev/null 2>&1
