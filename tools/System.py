@@ -650,7 +650,7 @@ def addmaprule():
     """MAP配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface "
     ifacelist_result = readDb(sql,)
     return template('addmaprule',session=s,msg={},info={},ifacelist_result=ifacelist_result)
 
@@ -930,7 +930,7 @@ def editutmrule(id):
     """UTM配置 添加页"""
     s = request.environ.get('beaker.session')
     netmod.InitNIinfo()
-    sql = " SELECT ifacename FROM netiface UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' "
     ifacelist_result = readDb(sql,)
     sql2 = " SELECT rulename,wantype,wanaddr,wanport,intaddr,intport,proto,pronum from ruleconfmap where status='1' and id=%s"
     result = readDb(sql2,(id,))
@@ -1467,10 +1467,19 @@ def post_editcltconf(id):
 @checkAccess
 def delcltconf(id):
     s = request.environ.get('beaker.session')
+    sql1 = """ SELECT count(*) as num FROM ruleconfnat where runobject="tun%s" """ % id
+    result1 = readDb(sql1,)
+    args = '%%'+'iflist'+'%%'+'tun'+id+'%%'
+    sql2 = """ SELECT count(*) as num FROM sysattr where servattr="advroutepolicy" and value like "%s" """ % args
+    result2 = readDb(sql2,)
+    if result1[0].get('num') > 0 or result2[0].get('num') > 0 :
+       msg = {'color':'red','message':u'接口被绑定NAT或高级路由，无法关联删除'}
+       return template('vnodemgr',session=s,msg=msg)
     sql = " DELETE FROM vnodemgr WHERE tunid=%s "
     result = writeDb(sql,(id,))
     if result == True :
        msg = {'color':'green','message':u'删除成功'}
+       cmds.gettuplerst('%s/sbin/startvpnconn.sh stop %s' % (gl.get_value('wkdir'),id))
        cmds.servboot('ocserv')
        writeVPNconf(action='uptcltconf')
        cmds.servboot('vpnconn')

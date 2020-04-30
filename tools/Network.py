@@ -523,7 +523,7 @@ def do_editdhcpserv():
 @checkAccess
 def ifdatashow():
     s = request.environ.get('beaker.session')
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' "
     ifacelist_result = readDb(sql,)
     return(template('ifdatashow',session=s,msg={},iflist=ifacelist_result,sel=dict(),runresult=''))
 
@@ -536,7 +536,7 @@ def do_ifdatashow():
     sel['shownum'] = request.forms.get("shownum")
     sel['rftime'] = request.forms.get("rftime")
     x,runresult = cmds.gettuplerst('iftop -i %s -n -N -P -t -L %s -s %s' % (sel['ifname'],sel['shownum'],sel['rftime']))
-    sql = " SELECT ifacename FROM netiface where status='UP' UNION select value as ifacename FROM sysattr where status='1' and servattr='vpnrelay'"
+    sql = " SELECT ifacename FROM netiface where status='UP' UNION select concat('tun',tunid) as ifacename FROM vnodemgr where status='1' "
     ifacelist_result = readDb(sql,)
     return(template('ifdatashow',session=s,msg={},iflist=ifacelist_result,sel=sel,runresult=runresult))
 
