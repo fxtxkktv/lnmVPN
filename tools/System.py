@@ -1378,7 +1378,7 @@ def addclientconf():
     if result == True :
        msg = {'color':'green','message':u'配置保存成功'}
        writeVPNconf(action='uptcltconf')
-       cmds.servboot('vpnconn')
+       cmds.servboot('vpnconn',tunid=tunid)
        writeUTMconf(action='uptconf')
        return template('vnodemgr',session=s,msg=msg)
 
@@ -1459,7 +1459,7 @@ def post_editcltconf(id):
     if result == True :
        msg = {'color':'green','message':u'配置保存成功'}
        writeVPNconf(action='uptcltconf')
-       cmds.servboot('vpnconn')
+       cmds.servboot('vpnconn',tunid=id)
        writeUTMconf(action='uptconf')
        return template('vnodemgr',session=s,msg=msg)
 
@@ -1482,7 +1482,7 @@ def delcltconf(id):
        cmds.gettuplerst('%s/sbin/startvpnconn.sh stop %s' % (gl.get_value('wkdir'),id))
        cmds.servboot('ocserv')
        writeVPNconf(action='uptcltconf')
-       cmds.servboot('vpnconn')
+       #cmds.servboot('vpnconn')
        writeUTMconf(action='uptconf')
        return template('vnodemgr',session=s,msg=msg)
     else:
