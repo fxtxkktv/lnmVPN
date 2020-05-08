@@ -1489,6 +1489,23 @@ def delcltconf(id):
        msg = {'color':'red','message':u'删除失败'}
        return template('vnodemgr',session=s,msg=msg)
 
+@route('/chgstatus/<nodetype>/<id>')
+@checkAccess
+def do_chgstatus(nodetype,id):
+    s = request.environ.get('beaker.session')
+    sql_1 = """ update vnodemgr set status=%s where tunid=%s """
+    msg = {'color':'green','message':u'状态更新成功'}
+    if nodetype == 'vnodedisable':
+       data_1=(0,id)
+       writeDb(sql_1,data_1)
+       cmds.gettuplerst('%s/sbin/startvpnconn.sh stop %s' % (gl.get_value('wkdir'),id))
+       return template('vnodemgr',session=s,msg=msg)
+    elif nodetype == 'vnodeactive':
+       data_1=(1,id)
+       writeDb(sql_1,data_1)
+       cmds.gettuplerst('%s/sbin/startvpnconn.sh start %s' % (gl.get_value('wkdir'),id))
+       return template('vnodemgr',session=s,msg=msg)
+
 # 策略配置
 @route('/api/getvpnservinfo',method=['GET', 'POST'])
 @checkAccess
@@ -1802,7 +1819,7 @@ def wsapi():
 @route('/api/getvnodelist',method=['GET', 'POST'])
 @checkAccess
 def getcertinfo():
-    sql = """ select vnodename,authtype,concat(ipaddr,':',servport) as vconn,chkdtls,vconninfo,vmtu,chkconn,tunid from vnodemgr where status=1 """
+    sql = """ select vnodename,authtype,concat(ipaddr,':',servport) as vconn,chkdtls,vconninfo,vmtu,chkconn,tunid,status from vnodemgr """
     Xresult = readDb(sql,)
     return json.dumps(Xresult)
 

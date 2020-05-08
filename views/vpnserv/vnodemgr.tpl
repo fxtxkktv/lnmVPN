@@ -118,7 +118,7 @@ $(function(){
               valign: 'middle',
               width:25,
               //sortable: false,
-	      formatter:function(value,row,index){
+	          formatter:function(value,row,index){
                 return index+1;
               }
           },{
@@ -134,7 +134,7 @@ $(function(){
               align: 'center',
               valign: 'middle',
               sortable: false,
-	      formatter: function(value,row,index){
+	          formatter: function(value,row,index){
                         if( value == '1' ){
                                 return '密码验证';
                         }else{  return '证书验证';
@@ -179,6 +179,19 @@ $(function(){
               valign: 'middle',
               sortable: false,
           },{
+              field: 'status',
+              title: ' 服务状态',
+              align: 'center',
+              valign: 'middle',
+              sortable: false,
+              width:25,
+              formatter: function(value,row,index){
+                if( value == '1' ){
+                        return '<img  src="/assets/img/run_1.gif" class="img-rounded" >';
+                }else{  return '<img  src="/assets/img/run_0.gif" class="img-rounded" >';
+                }
+            }
+          },{
               field: '',
               title: '操作',
               align: 'center',
@@ -191,11 +204,21 @@ $(function(){
     //定义列操作
     function getinfo(value,row,index){
         eval('rowobj='+JSON.stringify(row));
+        //定义显示启用停用按钮，只有管理员或自己编辑的任务才有权操作
+        if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
+            if(rowobj['status'] == '1'){
+               var style_action = '<a href="/chgstatus/vnodedisable/'+rowobj['tunid']+'" class="btn-sm btn-success" >';
+            }else{
+               var style_action = '<a href="/chgstatus/vnodeactive/'+rowobj['tunid']+'" class="btn-sm btn-danger active" >';
+            }
+        }else{
+            var style_action = '<a class="btn-sm btn-info" disabled>';
+        }
         //定义编辑按钮样式，只有管理员或自己编辑的任务才有权编辑
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
-            var style_edit = '<a href="/editcltconf/'+rowobj['tunid']+'" class="btn-sm btn-info" >';
+            var style_edit = '&nbsp;<a href="/editcltconf/'+rowobj['tunid']+'" class="btn-sm btn-info" >';
         }else{
-            var style_edit = '<a class="btn-sm btn-info" disabled>';
+            var style_edit = '&nbsp;<a class="btn-sm btn-info" disabled>';
         }
         //定义删除按钮样式，只有管理员或自己编辑的任务才有权删除
         if({{session.get('access',None)}} == '1' || "{{session.get('name',None)}}" == rowobj['userid']){
@@ -205,6 +228,10 @@ $(function(){
         }
 
         return [
+            style_action,
+                '<i class="fa fa-power-off"> 开关</i>',
+            '</a>', 
+
             style_edit,
                 '<i class="fa fa-edit"> 编辑</i>',
             '</a>',
