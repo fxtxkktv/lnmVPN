@@ -184,7 +184,8 @@
               </div>
            </div>
            <div class="modal-body" id="p_g">
-                       <span style="color:red;">备注: 如服务启动失败请检查<strong>&nbsp;证书已初始化&nbsp;</strong>且<strong>&nbsp;已配置组策略ProfileXML属性文件.&nbsp;</strong></span>
+                       <span style="color:red;">备注: 1. 如服务启动失败请检查<strong>&nbsp;证书已初始化&nbsp;</strong>且<strong>&nbsp;已配置组策略ProfileXML属性文件.&nbsp;</strong></span><br>
+                       <span style="color:red;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 配置双向路由，请手动更新plugins/ocserv/servroute.conf文件,内容格式如:<strong>&nbsp;username,192.168.100.0/255.255.255.0&nbsp;</strong></span>
            </div>
            <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>

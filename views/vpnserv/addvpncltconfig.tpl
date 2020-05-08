@@ -39,13 +39,13 @@
                            <span class="input-group-addon">验证方式&emsp;</span>
                            <select style="width:420px" class="form-control" id="sel" name="authtype">
                                 <option 
-                        		%if info.get('authtype','') == '1':
+                        		%if info.get('authtype','') == 1:
                                     selected
                                 %end 
                                     value="1">密码认证
                                 </option>
                                 <option 
-                                %if info.get('authtype','') == '0':
+                                %if info.get('authtype','') == 0:
                                     selected
                                 %end 
                                     value="0">证书认证

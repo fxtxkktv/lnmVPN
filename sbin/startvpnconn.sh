@@ -53,9 +53,9 @@ for fileID in $(find $confdir -name "ocserv_client_${2}.conf"|xargs);do
        servport=${uDict["servport"]}
        tunid=${uDict["tunid"]}
        vmtu=${uDict["vmtu"]}
-       certinfo=${uDict["certinfo"]}
+       certinfo=${uDict["certuser"]}
        connpass=${uDict["certpass"]}
-       if [ ${uDict["dtls"]} = "1"  ];then
+       if [ ${uDict["dtls"]} = "1" ];then
           OPTIONS="-c $wkdir/certs/conncerts/$certinfo --pfs $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"
        else
           OPTIONS="-c $wkdir/certs/conncerts/$certinfo --no-dtls $server:$servport --interface=tun${tunid} $script -m $vmtu --reconnect-timeout 10 --no-cert-check --syslog"

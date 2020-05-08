@@ -25,6 +25,11 @@ if [ "$REASON" = "connect" ];then
    $pytools $wkdir/tools/API.py API wrtvpnlogin "Ocserv" "登录成功,分配地址:$IP_REMOTE" $USERNAME $IP_REAL >/dev/null 2>&1
    # Reload User StaticRoute
    $wkdir/sbin/AdvRouteAPI.sh onlySR >/dev/null 2>&1
+   # Reload Server Route
+   if [ -f $wkdir/plugins/ocserv/servroute.conf ];then
+      routestr=$(cat $wkdir/plugins/ocserv/servroute.conf|grep "^$USERNAME"|awk -F, '{print $NF}')
+      ip route add $routestr via $IP_REMOTE dev $DEVICE >/dev/null 2>&1
+   fi
 else
    $ipset del VPN_Client_$getid $IP_REMOTE >/dev/null 2>&1
    # writelog
