@@ -43,7 +43,7 @@ function mkADVRoute(){
          ip route flush table $id >/dev/null 2>&1
          ifaceaddr=$($pytools $wkdir/tools/API.py API getniaddr "${uDict["iflist"]}")
          #忽略接口不存在地址的情况路由
-         if [ $ifaceaddr = "" ];then
+         if [ "$ifaceaddr" = "" ];then
             continue
          fi
          if [[ ${uDict["iflist"]} =~ "tun10" ]];then
