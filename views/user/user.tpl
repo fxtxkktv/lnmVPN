@@ -88,7 +88,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary  btn-sm">保存</button>
+                    <button type="submit" class="btn btn-primary btn-sm" name="off3Uapi" value="1">关闭服务</button>
+                    <button type="submit" class="btn btn-primary btn-sm">保存配置</button>
                     <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">关闭</button>
                 </div>
             </form>

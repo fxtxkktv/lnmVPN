@@ -96,7 +96,7 @@ def adduser():
         """
     data = (username,m_encrypt,stopdate,policy,access,comment)
     result = writeDb(sql,data)
-    if result:
+    if result == True:
        wrtlog('User','新增用户成功:%s' % username,s['username'],s.get('clientip'))
        writeVPNconf(action='uptuser')
        return '0'
@@ -160,7 +160,7 @@ def deluser():
            return '-1'
         sql = "delete from user where id in (%s) "
         result = writeDb(sql,(i,))
-    if result:
+    if result == True:
        wrtlog('User','删除用户成功',s['username'],s.get('clientip'))
        writeVPNconf(action='uptuser')
        return '0'
@@ -183,11 +183,18 @@ def do_3Uapi():
        UUUinfo = json.loads(UUUresult[0].get('value'))
     except:
        UUUinfo = {}
-    info = {}
-    info['api_url'] = request.forms.get('api_url')
-    info['api_token'] = request.forms.get('api_token')
-    info['api_map'] = request.forms.get('api_map')
-    info['api_pkey'] = request.forms.get('api_pkey')
+    if request.forms.get('off3Uapi') == '1':
+       sqlx = """ delete from sysattr where attr='3Uapi' """
+       result = writeDb(sqlx,)
+       msg = {'color':'red', 'message':'关闭服务成功'}
+       UUUinfo = {}
+       return template('user',session=s,msg=msg,plylist_result=plylist_result,UUUinfo=UUUinfo)
+    else:
+       info = {}
+       info['api_url'] = request.forms.get('api_url')
+       info['api_token'] = request.forms.get('api_token')
+       info['api_map'] = request.forms.get('api_map')
+       info['api_pkey'] = request.forms.get('api_pkey')
     try:
        req = requests.get('%s/wsapi?token=%s&otype=1' % (info['api_url'],info['api_token']),verify=False,timeout=5).text.replace('&#039;','\'').replace('\n','')
     except:
