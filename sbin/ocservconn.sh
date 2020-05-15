@@ -26,9 +26,11 @@ if [ "$REASON" = "connect" ];then
    # Reload User StaticRoute
    $wkdir/sbin/AdvRouteAPI.sh onlySR >/dev/null 2>&1
    # Reload Server Route
-   if [ -f $wkdir/plugins/ocserv/servroute.conf ];then
-      routestr=$(cat $wkdir/plugins/ocserv/servroute.conf|grep "^$USERNAME"|awk -F, '{print $NF}')
-      ip route add $routestr via $IP_REMOTE dev $DEVICE >/dev/null 2>&1
+   ServRte=$($pytools $wkdir/tools/API.py API getVPNautoroute $USERNAME)
+   if [ "$ServRte" != "None" ] && [ "$ServRte" != "" ];then
+      for i in $(echo $ServRte|sed 's/,/\n/g') ;do
+          ip route add $i via $IP_REMOTE dev $DEVICE >/dev/null 2>&1
+      done
    fi
 else
    $ipset del VPN_Client_$getid $IP_REMOTE >/dev/null 2>&1

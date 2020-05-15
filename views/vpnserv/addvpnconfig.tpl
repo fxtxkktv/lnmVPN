@@ -183,9 +183,15 @@
                             </select>
               </div>
            </div>
+           <div class="modal-body" id="p_h">
+             <div class="input-group">
+                  <!--span class="input-group-addon">自主路由配置</span-->
+                  <textarea id="autoroute" name="autoroute" style="height:100px;width:515px" placeholder="双向路由">{{info.get('autoroute','')}}</textarea>
+             </div>
+           </div>
            <div class="modal-body" id="p_g">
                        <span style="color:red;">备注: 1. 如服务启动失败请检查<strong>&nbsp;证书已初始化&nbsp;</strong>且<strong>&nbsp;已配置组策略ProfileXML属性文件.&nbsp;</strong></span><br>
-                       <span style="color:red;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 配置双向路由，请手动更新plugins/ocserv/servroute.conf文件,内容格式如:<strong>&nbsp;username,192.168.100.0/255.255.255.0&nbsp;</strong></span>
+                       <span style="color:red;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 配置双向路由,内容格式如:<strong>&nbsp;username:192.168.100.0/255.255.255.0 一个用户仅一行多路由以,隔开&nbsp;</strong></span>
            </div>
            <div class="modal-footer">
                         <button type="submit" style="float:left" class="btn btn-primary">保存配置</button>
@@ -211,6 +217,7 @@ $(function(){
     $('#p_e').hide();
     $('#p_f').hide();
     $('#p_g').hide();
+    $('#p_h').hide();
     } else {
     $('#p_a').show();
     $('#p_b').show();
@@ -219,6 +226,7 @@ $(function(){
     $('#p_e').show();
     $('#p_f').show();
     $('#p_g').show();
+    $('#p_h').show();
     }
  });
  $('#sel').click();

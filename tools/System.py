@@ -1287,6 +1287,7 @@ def do_addservconf():
     idata['locktime'] = request.forms.get("locktime")
     idata['comp'] = request.forms.get("comp")
     idata['cisco'] = request.forms.get("cisco")
+    idata['autoroute'] = request.forms.get("autoroute")
     if netmod.checkip(idata['virip']) == False or netmod.checkmask(idata['virmask']) == False :  
        msg = {'color':'red','message':u'虚拟地址填写不合法，保存失败'}
        return template('vpnservconf',session=s,msg=msg,info={})

@@ -55,5 +55,8 @@ if __name__ == '__main__' :
    #获取本机外网地址
    elif sys.argv[1] == 'API' and sys.argv[2] == 'getnetip':
       print netmod.NetIP()
+   #获取VPN客户端网段路由
+   elif sys.argv[1] == 'API' and sys.argv[2] == 'getVPNautoroute':
+      print API.getVPNautoroute(sys.argv[3])
    else:
       sys.exit()
