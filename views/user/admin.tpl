@@ -233,6 +233,7 @@ $(function(){
         $('#modalTitle').html('添加用户');
         $('#hidInput').val('0');
         $('#myModal').modal('show');
+        document.getElementById("username").readOnly=false;
         $('#modalForm')[0].reset();
         $('#stopdate').val('2099-12-31');
         isEdit = 0;
