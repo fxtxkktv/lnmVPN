@@ -22,7 +22,7 @@ source venv/bin/activate <br>
 
 2. 安装程序运行模块 <br>
 安装lnmVPN相关服务组件 <br>
-yum install -y gnutls-utils ocserv openconnect iptables ipset dnsmasq iftop<br>
+yum install -y gnutls-utils ocserv openconnect iptables ipset dnsmasq iftop ppp rp-pppoe<br>
 安装Python程序扩展包 <br>
 pip install -r readme/requirements.txt <br>
 
