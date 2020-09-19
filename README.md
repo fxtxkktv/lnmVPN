@@ -27,6 +27,7 @@ yum install -y gnutls-utils ocserv openconnect iptables ipset dnsmasq iftop ppp 
 pip install -r readme/requirements.txt <br>
 
 3. 创建数据库并恢复数据模版 <br>
+[启动数据库]: # service mysqld restart 
 [创建数据库]: # mysql -u root -p -e "create database vpndb" <br>
 [恢复数据模版]: # mysql -u root -p vpndb < readme/db_schema.sql <br>
 [配置数据库连接及其他]: # vim config/config.ini <br>

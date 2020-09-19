@@ -112,6 +112,16 @@
                          </select>
                  </div>
             </div>
+            <div class="modal-body" id="chkipaddr">
+                 <div class="input-group">
+                      <span class="input-group-addon" hidden>检测地址&emsp;</span>
+                      <input type="text" style="width:420px" class="form-control" id="chkipaddr" name="chkipaddr" placeholder="ping 检测地址" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" aria-describedby="inputGroupSuccess4Status"
+                            %if info.get('chkipaddr',''): 
+                                value="{{info.get('chkipaddr','')}}"
+                            %end 
+                      >
+                 </div>
+            </div>
             <div class="modal-body" id="chkdtls">
                  <div class="input-group">
                       <span class="input-group-addon" hidden>DTLS优化&emsp;</span>

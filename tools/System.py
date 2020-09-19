@@ -1351,6 +1351,7 @@ def addclientconf():
     tunid = request.forms.get("tunid")
     vmtu = request.forms.get("vmtu")
     chkconn = request.forms.get("chkconn")
+    chkipaddr = request.forms.get("chkipaddr")
     chkdtls = request.forms.get("chkdtls")
     #获取证书选择列表
     conncerts_list=[]
@@ -1372,9 +1373,13 @@ def addclientconf():
           if ipaddr in i.get('ipaddr'):
              msg = {'color':'red','message':u'配置保存失败，服务器地址重复'}
              return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+    #判断服务器地址和检测IP格式是否合规
+    if (netmod.checkip(ipaddr) == False and netmod.is_domain(ipaddr) == False ) or netmod.checkip(chkipaddr) == False:
+       msg = {'color':'red','message':u'配置保存失败，地址参数设置错误'}
+       return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
     #写入数据库
-    sql = " insert into vnodemgr(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-    idata=(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn)
+    sql = " insert into vnodemgr(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn,chkipaddr) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+    idata=(vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn,chkipaddr)
     result = writeDb(sql,idata)
     if result == True :
        msg = {'color':'green','message':u'配置保存成功'}
@@ -1398,7 +1403,7 @@ def editcltconf(id):
            infos['filename']=str(i)
            conncerts_list.append(infos)
     #加载现有配置
-    sql = " select vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn from vnodemgr where tunid=%s "
+    sql = " select vnodename,authtype,ipaddr,servport,tunid,vmtu,chkdtls,vconninfo,chkconn,chkipaddr from vnodemgr where tunid=%s "
     xdata = readDb(sql,(id,))
     info['vnodename']=xdata[0].get('vnodename')
     info['authtype']=xdata[0].get('authtype')
@@ -1414,6 +1419,7 @@ def editcltconf(id):
     info['vmtu']=xdata[0].get('vmtu')
     info['chkdtls']=xdata[0].get('chkdtls')
     info['chkconn']=xdata[0].get('chkconn')
+    info['chkipaddr']=xdata[0].get('chkipaddr')
     return template('addvpncltconfig',session=s,msg={},info=info,conncerts_list=conncerts_list)
 
 @route('/editcltconf/<id>',method="POST")
@@ -1432,6 +1438,7 @@ def post_editcltconf(id):
     servport = request.forms.get("servport")
     vmtu = request.forms.get("vmtu")
     chkconn = request.forms.get("chkconn")
+    chkipaddr = request.forms.get("chkipaddr")
     chkdtls = request.forms.get("chkdtls")
     #获取证书选择列表
     conncerts_list=[]
@@ -1453,9 +1460,13 @@ def post_editcltconf(id):
           if ipaddr in i.get('ipaddr'):
              msg = {'color':'red','message':u'配置保存失败，服务器地址重复'}
              return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
+    #判断服务器地址和检测IP格式是否合规
+    if (netmod.checkip(ipaddr) == False and netmod.is_domain(ipaddr) == False ) or netmod.checkip(chkipaddr) == False:
+       msg = {'color':'red','message':u'配置保存失败，地址参数设置错误'}
+       return template('addvpncltconfig',session=s,msg=msg,info={},conncerts_list=conncerts_list)
     #更新数据库
-    sql = " UPDATE vnodemgr set vnodename=%s,authtype=%s,ipaddr=%s,servport=%s,vmtu=%s,chkdtls=%s,vconninfo=%s,chkconn=%s where tunid=%s "
-    idata=(vnodename,authtype,ipaddr,servport,vmtu,chkdtls,vconninfo,chkconn,id)
+    sql = " UPDATE vnodemgr set vnodename=%s,authtype=%s,ipaddr=%s,servport=%s,vmtu=%s,chkdtls=%s,vconninfo=%s,chkconn=%s,chkipaddr=%s where tunid=%s "
+    idata=(vnodename,authtype,ipaddr,servport,vmtu,chkdtls,vconninfo,chkconn,chkipaddr,id)
     result = writeDb(sql,idata)
     if result == True :
        msg = {'color':'green','message':u'配置保存成功'}
