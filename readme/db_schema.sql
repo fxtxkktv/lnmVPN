@@ -84,7 +84,7 @@ CREATE TABLE `logrecord` (
   `objtext` varchar(255) DEFAULT NULL,
   `objhost` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1234 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1270 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `ruleconfnat` (
   `runobject` varchar(255) DEFAULT NULL,
   `status` int(11) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +232,7 @@ CREATE TABLE `sysinfo` (
   `tim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=690669 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=760627 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -251,7 +251,7 @@ CREATE TABLE `sysroute` (
   `iface` varchar(10) DEFAULT NULL COMMENT '匹配接口',
   `fromtype` int(2) DEFAULT NULL COMMENT '路由来源（系统、用户定义）',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4778 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4875 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +273,7 @@ CREATE TABLE `sysrouteadv` (
   `starttime` time DEFAULT NULL,
   `stoptime` time DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,6 +315,7 @@ CREATE TABLE `vnodemgr` (
   `vmtu` int(11) DEFAULT NULL,
   `vconninfo` varchar(255) DEFAULT NULL,
   `chkconn` int(11) DEFAULT '0',
+  `chkipaddr` varchar(255) DEFAULT NULL,
   `status` int(11) DEFAULT '1',
   PRIMARY KEY (`tunid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -349,7 +350,7 @@ CREATE TABLE `vpnpolicy` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-26  2:23:19
+-- Dump completed on 2020-09-19  3:09:50
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -387,7 +388,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-26  2:23:19
+-- Dump completed on 2020-09-19  3:09:50
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: lnmdb
@@ -425,4 +426,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-26  2:23:19
+-- Dump completed on 2020-09-19  3:09:50
