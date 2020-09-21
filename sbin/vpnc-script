@@ -534,7 +534,7 @@ case "$reason" in
 		;;
 	connect)
 		do_connect
-		startnetworks.sh restart
+		AdvRouteAPI.sh FlushVPNRoute ${TUNDEV}
 		;;
 	disconnect)
 		do_disconnect
