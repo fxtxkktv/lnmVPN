@@ -1,5 +1,5 @@
 Beaker==1.10.0
-bottle==0.12.16
+bottle==0.12.19
 certifi==2018.10.15
 chardet==3.0.4
 funcsigs==1.0.2
